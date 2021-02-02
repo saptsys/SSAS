@@ -1,8 +1,8 @@
 {
-  "name": "app",
-  "productName": "app",
+  "name": "ssas",
+  "productName": "ssas",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Saptsys Simple Accounting Software",
   "main": "electron/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -15,8 +15,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "kdholakiya",
-    "email": "kevald47@gmail.com"
+    "name": "saptsys",
+    "email": "saptsys.tech@gmail.com"
   },
   "license": "MIT",
   "config": {
