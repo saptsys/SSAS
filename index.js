@@ -33,7 +33,7 @@ const createWindow = () => {
   };
   const mainWindow = new BrowserWindow(windowOptions);
 
-  mainWindow.loadFile(path.join(__dirname, "../src", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
     // Open the DevTools automatically if developing
