@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow ,ipcMain} = require("electron");
 const path = require("path");
 const glob = require("glob");
 if (require("electron-squirrel-startup")) {
@@ -17,21 +17,37 @@ const createWindow = () => {
   const windowOptions = {
     webPreferences: {
       nodeIntegration: false,
+      // contextIsolation: process.env.NODE_ENV !== "test",
+      
+      webSecurity: true,
       preload: __dirname + "/preload.js",
     },
+    backgroundColor: "-webkit-linear-gradient(top, #3dadc2 0%,#2f4858 100%)",
+
     width: 1080,
     height: 840,
     resizable: false,
+        show: false,
+
     title: app.getName(),
   };
   const mainWindow = new BrowserWindow(windowOptions);
 
   mainWindow.loadFile(path.join(__dirname, "../src", "index.html"));
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    // Open the DevTools automatically if developing
+    if (process.env.NODE_ENV !== "test") {
+      mainWindow.webContents.openDevTools();
+    }
+  });
 };
 
 app.on("ready", () => {
   createWindow();
 });
+
+
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -45,8 +61,9 @@ app.on("activate", () => {
   }
 });
 
-// Import all the IPC sender from Main Process
 function loadMainProcess() {
   const files = glob.sync(path.join(__dirname, 'services/**/*.js'));
   files.forEach((file) => require(file));
 }
+
+

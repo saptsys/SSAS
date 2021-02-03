@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { render } from "react-dom";
-const ipcRenderer = window.ipcRenderer;
+const api = window.api;
 
 const Test = (props) => {
   const [title, setTitle] = useState("ssas");
   const [body, setBody] = useState("body");
   const send = () => {
-    ipcRenderer.send("fire", {
+    api.send("send", {
       title: title,
       body: body,
     });
