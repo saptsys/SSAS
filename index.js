@@ -1,9 +1,15 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const glob = require("glob");
+const { createConnection } = require("typeorm");
+const PartyMasterService = require('./electron/services/PartyMasterSevice')
+
+
+
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
 try {
   require("electron-reloader")(module, {
     debug: true,
@@ -32,16 +38,28 @@ const createWindow = () => {
 
     title: app.getName(),
   };
-  const mainWindow = new BrowserWindow(windowOptions);
+  // const mainWindow = new BrowserWindow(windowOptions);
 
-  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
-  mainWindow.once("ready-to-show", () => {
-    mainWindow.show();
-    // Open the DevTools automatically if developing
-    if (process.env.NODE_ENV !== "test") {
-      mainWindow.webContents.openDevTools();
-    }
-  });
+  // mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
+  // mainWindow.once("ready-to-show", () => {
+  //   mainWindow.show();
+  //   // Open the DevTools automatically if developing
+  //   if (process.env.NODE_ENV !== "test") {
+  //     mainWindow.webContents.openDevTools();
+  //   }
+  // });
+
+  createConnection().then(conn => {
+    const serv = new PartyMasterService(conn)
+    serv.saveParty({
+      name: "VB ACD",
+      type: "BOTH",
+      stateCode: 24
+    }).then(console.log).catch(console.log)
+
+  }).catch(e => console.log("\n\nConnection Error ===> ", e, "\n\n"))
+
+
 };
 
 app.on("ready", () => {

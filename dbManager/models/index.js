@@ -1,3 +1,5 @@
+const PartyMaster = require('./PartyMaster')
+
 module.exports = {
-    PartyMaster : require('./PartyMaster')
+    PartyMaster
 }
