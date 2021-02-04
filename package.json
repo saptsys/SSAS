@@ -3,7 +3,7 @@
   "productName": "ssas",
   "version": "1.0.0",
   "description": "Saptsys Simple Accounting Software",
-  "main": "electron/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -47,6 +47,8 @@
     }
   },
   "dependencies": {
+    "axios": "^0.21.1",
+    "electron-promise-ipc": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
