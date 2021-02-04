@@ -1,34 +1,15 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { render } from "react-dom";
-const api = window.api;
+const promiseIpc = window.promiseIpc;
 
 const Test = (props) => {
-  const [title, setTitle] = useState("ssas");
-  const [body, setBody] = useState("body");
-  const send = () => {
-    api.send("send", {
-      title: title,
-      body: body,
-    });
-  };
+  const [users, setUsers] = useState({});
+  useEffect(() => {
+    promiseIpc.send("users/getAll").then(setUsers).catch(console.log);
+  }, [0])
   return (
     <div>
-      Title :
-      <input
-        type="text"
-        onChange={(e) => {
-          setTitle(e.target.value);
-        }}
-      ></input>
-      <br />
-      Body :
-      <input
-        type="text"
-        onChange={(e) => {
-          setBody(e.target.value);
-        }}
-      ></input>
-      <button onClick={send}>Send</button>
+      {JSON.stringify(users)}
     </div>
   );
 };

@@ -1,10 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const glob = require("glob");
-const { createConnection } = require("typeorm");
-const PartyMasterService = require('./electron/services/PartyMasterSevice')
-
-
+const { createConnection, getConnection } = require("typeorm");
+const PartyMasterService = require("./electron/services/PartyMasterSevice");
+const promiseIpc = require("electron-promise-ipc");
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -26,7 +25,7 @@ const createWindow = () => {
       // contextIsolation: process.env.NODE_ENV !== "test",
 
       webSecurity: true,
-      contextIsolation: true,
+      contextIsolation: false,
       preload: __dirname + "/preload.js",
     },
     backgroundColor: "-webkit-linear-gradient(top, #3dadc2 0%,#2f4858 100%)",
@@ -38,35 +37,21 @@ const createWindow = () => {
 
     title: app.getName(),
   };
-  // const mainWindow = new BrowserWindow(windowOptions);
+  const mainWindow = new BrowserWindow(windowOptions);
 
-  // mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
-  // mainWindow.once("ready-to-show", () => {
-  //   mainWindow.show();
-  //   // Open the DevTools automatically if developing
-  //   if (process.env.NODE_ENV !== "test") {
-  //     mainWindow.webContents.openDevTools();
-  //   }
-  // });
-
-  createConnection().then(conn => {
-    const serv = new PartyMasterService(conn)
-    serv.saveParty({
-      name: "VB ACD",
-      type: "BOTH",
-      stateCode: 24
-    }).then(console.log).catch(console.log)
-
-  }).catch(e => console.log("\n\nConnection Error ===> ", e, "\n\n"))
-
-
+  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    // Open the DevTools automatically if developing
+    if (process.env.NODE_ENV !== "test") {
+      mainWindow.webContents.openDevTools();
+    }
+  });
 };
 
 app.on("ready", () => {
   createWindow();
 });
-
-
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -81,8 +66,14 @@ app.on("activate", () => {
 });
 
 function loadMainProcess() {
-  const files = glob.sync(path.join(__dirname, 'electron/main-processes/**/*.js'));
+  setDatabaseConnection();
+  const files = glob.sync(
+    path.join(__dirname, "electron/main-processes/**/*.js")
+  );
   files.forEach((file) => require(file));
 }
 
+async function setDatabaseConnection() {
+  await createConnection();
+}
 
