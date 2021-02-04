@@ -1,8 +1,7 @@
 #custom
 build
 databases
-
-
+.vscode
 
 # Logs
 logs

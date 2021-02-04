@@ -39,4 +39,4 @@ class PartyMaster {
 		this.system = system;
 	}
 }
-module.exports = PartyMaster
+module.exports = PartyMaster 
