@@ -1,4 +1,4 @@
-const { app, BrowserWindow ,ipcMain} = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const glob = require("glob");
 if (require("electron-squirrel-startup")) {
@@ -18,8 +18,9 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: false,
       // contextIsolation: process.env.NODE_ENV !== "test",
-      
+
       webSecurity: true,
+      contextIsolation: true,
       preload: __dirname + "/preload.js",
     },
     backgroundColor: "-webkit-linear-gradient(top, #3dadc2 0%,#2f4858 100%)",
@@ -27,7 +28,7 @@ const createWindow = () => {
     width: 1080,
     height: 840,
     resizable: false,
-        show: false,
+    show: false,
 
     title: app.getName(),
   };
@@ -62,7 +63,7 @@ app.on("activate", () => {
 });
 
 function loadMainProcess() {
-  const files = glob.sync(path.join(__dirname, 'services/**/*.js'));
+  const files = glob.sync(path.join(__dirname, 'electron/main-processes/**/*.js'));
   files.forEach((file) => require(file));
 }
 
