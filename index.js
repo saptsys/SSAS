@@ -1,9 +1,14 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const glob = require("glob");
-const { createConnection, getConnection } = require("typeorm");
-const PartyMasterService = require("./electron/services/PartyMasterSevice");
-const promiseIpc = require("electron-promise-ipc");
+const url = require("url");
+
+const { createConnection } = require("typeorm");
+const {
+  default: installExtension,
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+} = require("electron-devtools-installer");
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -19,6 +24,11 @@ try {
 }
 
 loadMainProcess();
+
+let isDev = false;
+if (process.env.NODE_ENV !== "test") {
+  isDev = true;
+}
 
 const createWindow = () => {
   const windowOptions = {
@@ -41,13 +51,44 @@ const createWindow = () => {
   };
   const mainWindow = new BrowserWindow(windowOptions);
 
-  mainWindow.loadFile(path.join(__dirname, "public", "index.html"));
+  if (isDev) {
+    console.log("-------- DEVELOPER MODE --------");
+
+    // if we are in dev mode load up 'http://localhost:8080/index.html'
+    indexPath = url.format({
+      protocol: "http:",
+      host: "localhost:8080",
+      pathname: "index.html",
+      slashes: true,
+    });
+
+    // If we are in developer mode Add React & Redux DevTools to Electon App
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log("An error occurred: ", err));
+
+    installExtension(REDUX_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log("An error occurred: ", err));
+  } else {
+    console.log("-------- PRODUCTION MODE --------");
+    indexPath = url.format({
+      // if we are not in dev mode load production build file
+      protocol: "file:",
+      pathname: path.join(__dirname, "build", "index.html"),
+      slashes: true,
+    });
+  }
+  mainWindow.loadURL(indexPath);
+
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
-    // Open the DevTools automatically if developing
-    if (process.env.NODE_ENV !== "test") {
-      mainWindow.webContents.openDevTools();
+    if (isDev && process.env.NODE_ENV !== "test") {
+      mainWindow.webContents.openDevTools({ mode: "detach" });
     }
+  });
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
 };
 
@@ -76,8 +117,7 @@ function loadMainProcess() {
 }
 
 async function setDatabaseConnection() {
-  console.log("\n\n-------Creating DBConnection------------")
+  console.log("\n\n-------Creating DBConnection------------");
   await createConnection();
-  console.log("-------DBConnection Created------------\n\n")
+  console.log("-------DBConnection Created------------\n\n");
 }
-
