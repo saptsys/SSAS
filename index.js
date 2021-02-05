@@ -17,7 +17,9 @@ try {
 } catch (_) {
   console.log("electron-preloader-notfound");
 }
+
 loadMainProcess();
+
 const createWindow = () => {
   const windowOptions = {
     webPreferences: {
@@ -39,7 +41,7 @@ const createWindow = () => {
   };
   const mainWindow = new BrowserWindow(windowOptions);
 
-  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "public", "index.html"));
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
     // Open the DevTools automatically if developing
@@ -74,6 +76,8 @@ function loadMainProcess() {
 }
 
 async function setDatabaseConnection() {
+  console.log("\n\n-------Creating DBConnection------------")
   await createConnection();
+  console.log("-------DBConnection Created------------\n\n")
 }
 

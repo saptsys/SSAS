@@ -1,10 +1,8 @@
 const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
 const { Connection, getConnection, createConnection } = require("typeorm");
-const promiseIpc = require("electron-promise-ipc")
 class PartyMasterService extends __BaseService {
   /**
-   *
    * @param {Connection} connection
    */
   constructor() {
@@ -15,20 +13,20 @@ class PartyMasterService extends __BaseService {
   }
 
   /**
-   *
    * @param {Models.PartyMaster} party
    */
   saveParty(party) {
     return this.partyMSTRepo.save(party);
   }
 
+  /**
+   * @returns {Promise<Models.PartyMaster>}
+   */
   getAll() {
     return this.partyMSTRepo.find();
   }
 }
 
-promiseIpc.on("users/getAll", () => {
-    return new PartyMasterService().getAll()
-});
+
 
 module.exports = PartyMasterService;
