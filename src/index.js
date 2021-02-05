@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
+import ReactDom from "react-dom";
 import App from "./App";
 
-ReactDOM.render(<App />, document.getElementById("root"))
+const root = document.createElement("div");
+root.id = "root";
+document.body.appendChild(root);
+
+ReactDom.render(<App />, document.getElementById("root"))
