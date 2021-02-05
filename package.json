@@ -47,6 +47,7 @@
     }
   },
   "dependencies": {
+    "antd": "^4.12.2",
     "axios": "^0.21.1",
     "electron-promise-ipc": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
