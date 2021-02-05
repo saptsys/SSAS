@@ -79,7 +79,7 @@ module.exports = {
         },
       },
     }),
-    new CspHtmlWebpackPlugin()
+    new CspHtmlWebpackPlugin(),
     new BundleAnalyzerPlugin({
       openAnalyzer: false,
       analyzerMode: "static",
