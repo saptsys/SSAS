@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { DATA_BASE } from '../Constants/Ipc-Calls';
-const promiseIpc = window.promiseIpc;
-
-const App = () => {
-   
+import React from "react";
+import ReactDOM from "react-dom";
+import {Provider} from "react-redux";
+import Store from "./state/Store"
+import Test from "./Test";
+class App extends React.Component {
+  render() {
     return (
-        <div>
-            Hello Lets Start
-        </div>
+      <Provider store={Store}>
+          <Test/>
+      </Provider>
     );
-};
-
+  }
+}
 export default App;
