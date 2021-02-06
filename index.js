@@ -49,7 +49,7 @@ const createWindow = () => {
 
     title: app.getName(),
   };
-  const mainWindow = new BrowserWindow(windowOptions);
+  let mainWindow = new BrowserWindow(windowOptions);
 
   if (isDev) {
     console.log("-------- DEVELOPER MODE --------");

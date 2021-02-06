@@ -6,15 +6,16 @@ import { PartyMasterActions } from "./_redux/actionFiles/PartyMasterRedux";
 const Test = () => {
   const dispatch = useDispatch()
 
-  const PartyMasterState = useSelector(state => state.PartyMaster.list)
+  const PartyMasterState = useSelector(state => state.PartyMaster)
   const [parties, setParties] = useState([])
   useEffect(() => {
     dispatch(PartyMasterActions.getAll()).then(setParties)
   }, [])
+  console.log("Sttate === ",PartyMasterState)
   return (
     <div>
       {PartyMasterState.loading === false && PartyMasterState.error && (<>ERROR === {PartyMasterState.error}</>)}
-      {PartyMasterState.loading ? "Loading..." :"Data => "+ JSON.stringify(parties)}
+      {PartyMasterState.loading ? "Loading..." : "Data => " + JSON.stringify(parties)}
     </div>
   );
 };

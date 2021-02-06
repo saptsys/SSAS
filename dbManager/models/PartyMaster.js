@@ -1,11 +1,7 @@
+const _BaseModel = require("./_BaseModel");
 
-class PartyMaster {
+class PartyMaster extends _BaseModel {
 	constructor({
-		id,
-		createdAt,
-		createdBy,
-		modifiedAt,
-		modifiedBy,
 		name,
 		type,
 		phone,
@@ -17,14 +13,11 @@ class PartyMaster {
 		isActive,
 		gstin,
 		pan,
-		system
+		system,
+		...rest
 	} = {}
 	) {
-		this.id = id;
-		this.createdAt = createdAt;
-		this.createdBy = createdBy;
-		this.modifiedAt = modifiedAt;
-		this.modifiedBy = modifiedBy;
+		super(rest)
 		this.name = name;
 		this.type = type;
 		this.phone = phone;

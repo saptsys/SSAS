@@ -2,31 +2,16 @@ const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
 const { Connection, getConnection, createConnection } = require("typeorm");
 class PartyMasterService extends __BaseService {
-  /**
-   * @param {Connection} connection
-   */
+
+  //You can access this.repository which targets current repository.
+
   constructor() {
-    super()
+    //you need to pass current/main repository for set default repository for default base methods
+    super(Models.PartyMaster)
+    this.repository = getConnection().getRepository(Models.PartyMaster)
     //define repositories which is required
-    //you can pass array also
-    this.partyMSTRepo = getConnection().getRepository(Models.PartyMaster);
-  }
-
-  /**
-   * @param {Models.PartyMaster} party
-   */
-  saveParty(party) {
-    return this.partyMSTRepo.save(party);
-  }
-
-  /**
-   * @returns {Promise<Models.PartyMaster>}
-   */
-  getAll() {
-    return this.partyMSTRepo.find();
   }
 }
-
 
 
 module.exports = PartyMasterService;

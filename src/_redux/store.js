@@ -16,3 +16,8 @@ export const Store = configureStore({
     middleware,
     devTools: process.env.NODE_ENV !== "production",
 });
+
+// export const Store = createStore(
+//     rootReducer,
+//     applyMiddleware(thunk),
+// );
