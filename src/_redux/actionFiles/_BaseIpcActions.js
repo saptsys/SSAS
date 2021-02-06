@@ -2,7 +2,7 @@ import _BaseSlice from "./_BaseSlice";
 
 const promiseIpc = window.promiseIpc;
 
-export default class _BaseActions {
+export default class _BaseIpcActions {
     /**
      * 
      * @param {string} ipcCallMaster 

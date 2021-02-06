@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export default class _BaseSlice {
-    constructor(reducerName, initialState = {}, callTypes = {}, extraReducers = {}) {
-        this.initialState = {
+    constructor(reducerName, initialState = null, callTypes = null, extraReducers = null) {
+        this.initialState = initialState ?? {
             //whenever we getting bunch of records like getAll getAllBySomething....
             list: {
                 loading: false,
@@ -21,13 +21,13 @@ export default class _BaseSlice {
 
             ...initialState
         }
-        this.callTypes = {
+        this.callTypes = callTypes ?? {
             list: 'list',
             action: 'action',
             other: 'other',
             ...callTypes
         }
-        const reducers = {
+        const reducers = extraReducers ?? {
             reIniState: (state, action) => {
                 for (const k in state) {
                     state[k] = this.initialState[k]
