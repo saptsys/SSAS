@@ -2,8 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CspHtmlWebpackPlugin = require("csp-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const webpack = require("webpack");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
   mode: "development",
@@ -32,6 +34,15 @@ module.exports = {
                 plugins: ["@babel/plugin-proposal-class-properties"],
               },
             ],
+            plugins: [
+              [
+                "import",
+                {
+                  libraryName: "antd",
+                  style: "css", // or 'css'
+                },
+              ],
+            ],
           },
         },
         resolve: {
@@ -40,7 +51,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: [path.resolve(__dirname, "../src"), path.resolve(__dirname, "../node_modules")],
+        include: [
+          path.resolve(__dirname, "../src"),
+          path.resolve(__dirname, "../node_modules"),
+        ],
         use: [MiniCssExtractPlugin.loader, "css-loader"],
         resolve: {
           extensions: [".css"],
@@ -51,12 +65,14 @@ module.exports = {
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "../", "build"),
-    
   },
   plugins: [
+    new MomentLocalesPlugin({
+      localesToKeep: ["en"],
+    }),
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({}),
     new HtmlWebpackPlugin({
-
       filename: "index.html",
       title: "ssas",
       cspPlugin: {
@@ -64,16 +80,13 @@ module.exports = {
         policy: {
           "base-uri": "'self'",
           "object-src": "'none'",
-          "script-src": ["'self'"],
-          "style-src": ["'self'"],
+          "script-src": ["'self'"]
         },
         hashEnabled: {
           "script-src": true,
-          "style-src": true,
         },
         nonceEnabled: {
           "script-src": true,
-          "style-src": true,
         },
       },
     }),
