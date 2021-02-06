@@ -1,10 +1,9 @@
 const promiseIpc = require("electron-promise-ipc");
-const { PARTY_MASTER } = require("../../../Constants/Ipc-Calls");
-const { PartyMaster } = require("../../../dbManager/models");
 const PartyMasterService = require("../../services/PartyMasterSevice");
 
+const createPath = (endpoint) => "PartyMaster/" + endpoint
 
-promiseIpc.on(PARTY_MASTER.getAll, () => {
+promiseIpc.on(createPath("getAll"), () => {
     const service = new PartyMasterService()
     return service.getAll()
 });

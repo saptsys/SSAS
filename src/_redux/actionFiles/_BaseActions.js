@@ -1,9 +1,15 @@
-import { errorMessageFormatter, sortArray, sortByStandard } from "../_commons/Utils"
+import _BaseSlice from "./_BaseSlice";
+
 const promiseIpc = window.promiseIpc;
 
 export default class _BaseActions {
+    /**
+     * 
+     * @param {string} ipcCallMaster 
+     * @param {_BaseSlice} sliceObj 
+     */
     constructor(ipcCallMaster, sliceObj) {
-        this.sendIPC = (endPoint) => promiseIpc.send(ipcCallMaster + '.' + endPoint)
+        this.sendIPC = (endPoint) => promiseIpc.send(ipcCallMaster + '/' + endPoint)
         this.actions = sliceObj.slice.actions
         this.callTypes = sliceObj.callTypes
         this.reducerName = sliceObj.slice.name
@@ -18,18 +24,15 @@ export default class _BaseActions {
         dispatch(this.actions.startCall({ callType: this.callTypes.list }))
         return this.sendIPC('getAll')
             .then(res => {
-                if (res?.status) {
-                    return Promise.resolve(res.data)
+                if (res?.length) {
+                    dispatch(this.actions.stopCall({ callType: this.callTypes.list }))
+                    return Promise.resolve(res)
                 } else {
-                    const err = {
-                        userMessage: errorMessageFormatter(res.data),
-                        error: res.data
-                    }
-                    dispatch(this.actions.catchError({ error: err, callType: this.callTypes.list }))
+                    dispatch(this.actions.catchError({ error: res, callType: this.callTypes.list }))
                 }
             })
             .catch(error => {
-                dispatch(this.actions.catchError({ error: error.message, callType: this.callTypes.list }))
+                dispatch(this.actions.catchError({ error: error, callType: this.callTypes.list }))
             })
     }
 }

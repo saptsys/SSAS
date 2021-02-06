@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-export default class BaseSlice {
-    constructor(reducerName, idFieldName, initialState = {}, callTypes = {}, extraReducers = {}) {
+export default class _BaseSlice {
+    constructor(reducerName, initialState = {}, callTypes = {}, extraReducers = {}) {
         this.initialState = {
             //whenever we getting bunch of records like getAll getAllBySomething....
             list: {
                 loading: false,
-                error: null
+                error: null,
             },
             //whenever we making some actions like updating fetching single entity or deleting
             action: {
