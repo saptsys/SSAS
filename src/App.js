@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { DATA_BASE } from '../Constants/Ipc-Calls';
-const promiseIpc = window.promiseIpc;
+import MainLayout from './components/Layout/MainLayout';
 
 const App = () => {
    
     return (
-        <div>
-            Hello Lets Start
-        </div>
+        <MainLayout>
+            <h1>This is from Layout content</h1>
+        </MainLayout>
     );
 };
 
