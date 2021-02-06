@@ -26,10 +26,10 @@ try {
 loadMainProcess();
 
 let isDev = false;
-if (process.env.NODE_ENV !== "test") {
+
+if (process.env.NODE_ENV !== "production") {
   isDev = true;
 }
-
 const createWindow = () => {
   const windowOptions = {
     webPreferences: {
@@ -83,7 +83,7 @@ const createWindow = () => {
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
-    if (isDev && process.env.NODE_ENV !== "test") {
+    if (isDev) {
       mainWindow.webContents.openDevTools({ mode: "detach" });
     }
   });

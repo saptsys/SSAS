@@ -7,7 +7,7 @@ module.exports = merge(base, {
   output: {
     filename: "app.js",
     path: path.resolve(__dirname, "../", "build"),
-    publicPath: "/",
+    publicPath: "./",
   },
   devtool: "nosources-source-map",
 });
