@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 const { Sider, Header, Content, Footer } = Layout
 import './MainLayout.less'
+import PartyMaster  from  "./partyMaster/PartyMaster";
 const MainLayout = () => {
     const LayoutState = useSelector(state => state.Layout)
 
@@ -16,7 +17,7 @@ const MainLayout = () => {
                     <Layout>
                         <Header className="header">This is Header</Header>
                         <Content className="content">
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
+                            <PartyMaster/>
                         </Content>
                     </Layout>
                 </Layout>
