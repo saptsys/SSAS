@@ -9,6 +9,7 @@ import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
 import moment from "moment";
 import { LayoutActions } from '../_redux/actionFiles/LayoutRedux';
+import PartyMaster from './partyMaster/PartyMaster';
 
 const MainLayout = ({ children }) => {
     const dispatch = useDispatch()

@@ -3,7 +3,14 @@ const PartyMasterService = require("../../services/PartyMasterSevice");
 
 const createPath = (endpoint) => "PartyMaster/" + endpoint
 
+const service = new PartyMasterService()
+
 promiseIpc.on(createPath("getAll"), () => {
-    const service = new PartyMasterService()
     return service.getAll()
 });
+
+promiseIpc.on(createPath("save"), (payload) => {
+    console.log(payload)
+    return service.save(payload)
+});
+
