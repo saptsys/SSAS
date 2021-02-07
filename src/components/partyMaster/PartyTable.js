@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Table } from "antd";
+import { Button, Drawer, Space, Table } from "antd";
 import { PartyMasterActions } from "./../../_redux/actionFiles/PartyMasterRedux";
+import { LayoutActions } from "../../_redux/actionFiles/LayoutRedux";
+import PartyMasterForm from "./PartyMasterForm";
 function PartyTable() {
   const dispatch = useDispatch();
 
   const partyMaster = useSelector((state) => state.PartyMaster);
+  const [drawer, setDrawer] = useState(false)
+  useEffect(() => {
+    dispatch(LayoutActions.setTitle("Party Master"))
+    dispatch(LayoutActions.setInformation("F1-Save F2-Cancel F3-Reload"))
+    dispatch(LayoutActions.setMessage("Getting all parties..."))
+    dispatch(LayoutActions.setToolbar((
+      <Space>
+        <Button onClick={() => {
+          setDrawer(true)
+        }}>Create New</Button>
+      </Space>
+    )))
+  }, [])
 
   const columns = [
     {
@@ -68,16 +83,29 @@ function PartyTable() {
   }, []);
 
   return (
-    <Table
-      rowKey={(record) => record.id}
-      bordered={true}
-      rowSelection={true}
-      size="small"
-      scroll={true}
-      loading={partyMaster.loading}
-      columns={columns}
-      dataSource={parties}
-    />
+    <>
+      <Table
+        rowKey={(record) => record.id}
+        bordered={true}
+        rowSelection={true}
+        size="small"
+        scroll={true}
+        loading={partyMaster.loading}
+        columns={columns}
+        dataSource={parties}
+      />
+      <Drawer
+        title="Create a new party"
+        width={720}
+        onClose={() => setDrawer(false)}
+        visible={drawer}
+        bodyStyle={{ paddingBottom: 80 }}
+      >
+
+        <PartyMasterForm />
+
+      </Drawer>
+    </>
   );
 }
 

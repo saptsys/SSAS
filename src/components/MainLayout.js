@@ -10,15 +10,11 @@ import Text from 'antd/lib/typography/Text';
 import moment from "moment";
 import { LayoutActions } from '../_redux/actionFiles/LayoutRedux';
 
-const MainLayout = () => {
+const MainLayout = ({ children }) => {
     const dispatch = useDispatch()
     const LayoutState = useSelector(state => state.Layout)
     const [currentDateTime, setCurrentDateTime] = useState()
     useEffect(() => {
-        dispatch(LayoutActions.setTitle("Hello This is Title"))
-        dispatch(LayoutActions.setToolbar(<Button type="ghost">CLICK</Button>))
-        dispatch(LayoutActions.setInformation("This is Info"))
-        dispatch(LayoutActions.setMessage("This is Message"))
 
         const intrvl = setInterval(() => {
             setCurrentDateTime(moment(new Date()).format("hh:mm:ss A DD/MM/yyyy"))
@@ -36,7 +32,7 @@ const MainLayout = () => {
                             <Image src={logoSrc} />
                             {/* <b>ABC PHOTO PVT LTD</b> */}
                         </div>
-                        <Menu theme="dark" mode="inline">
+                        <Menu theme="light" mode="inline" className="menu" defaultSelectedKeys={["2","3"]}>
                             <Menu.Item key="1">Dashboard</Menu.Item>
                             <SubMenu key="2" title="Masters">
                                 <Menu.Item key="3">Party Master</Menu.Item>
@@ -63,27 +59,7 @@ const MainLayout = () => {
                             </Row>
                         </Header>
                         <Content className="content">
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                        This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
+                            {children}
                         </Content>
                     </Layout>
                 </Layout>

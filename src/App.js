@@ -1,18 +1,19 @@
-import React from "react";
+import { Card, Drawer } from "antd";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import MainLayout from "./components/MainLayout";
+import PartyMaster from "./components/partyMaster/PartyMaster";
+import PartyTable from "./components/partyMaster/PartyTable";
 import { Store } from "./_redux/store";
 
-class App extends React.Component {
-  render() {
-    return (
-      <Provider store={Store}>
-        <MainLayout>
-          ABCD content
-        </MainLayout>
-      </Provider>
-    );
-  }
+const App = () => {
+  return (
+    <Provider store={Store}>
+      <MainLayout>
+        <PartyTable />
+      </MainLayout>
+    </Provider>
+  );
 }
 export default App;
