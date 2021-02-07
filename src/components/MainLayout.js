@@ -9,6 +9,7 @@ import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
 import moment from "moment";
 import { LayoutActions } from '../_redux/actionFiles/LayoutRedux';
+import PartyMaster from './partyMaster/PartyMaster';
 
 const MainLayout = () => {
     const dispatch = useDispatch()
@@ -63,7 +64,7 @@ const MainLayout = () => {
                             </Row>
                         </Header>
                         <Content className="content">
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
+                            {/* This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
                         This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
                         This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
                         This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
@@ -83,7 +84,8 @@ const MainLayout = () => {
                             This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
                             This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
                             This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
-                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
+                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br /> */}
+                            <PartyMaster/>
                         </Content>
                     </Layout>
                 </Layout>
