@@ -5,7 +5,10 @@ export const reducerInfo = {
 }
 
 const initialState = {
-    title: "This is ini title",
+    title: "",
+    toolbar: null,
+    information: null,
+    message: null
 }
 const reducers = {
     /**
@@ -13,6 +16,21 @@ const reducers = {
      */
     setTitle: (state, action) => {
         state.title = action.payload
+    },
+    setToolbar: (state, action) => {
+        state.toolbar = action.payload
+    },
+    setStatusbar: (state, action) => {
+        switch (action.payload.type) {
+            case "info":
+                state.information = action.payload.content
+                break;
+            case "msg":
+                state.message = action.payload.content
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -27,6 +45,20 @@ class Actions {
     setTitle = (text) => dispatch => {
         dispatch(this.actions.setTitle(text))
     }
+
+    setToolbar = (content) => dispatch => {
+        dispatch(this.actions.setToolbar(content))
+    }
+
+    setInformation = (content) => dispatch => {
+        dispatch(this.actions.setStatusbar({ content: content, type: 'info' }))
+    }
+
+    setMessage = (content) => dispatch => {
+        dispatch(this.actions.setStatusbar({ content: content, type: 'msg' }))
+    }
+
+
 }
 
 export const LayoutSlice = new _BaseSlice(reducerInfo.name, initialState, {}, reducers)

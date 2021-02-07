@@ -4,9 +4,10 @@
 @import '~antd/dist/antd.less';
 
 // -------- Colors -----------
-@saptsys-dark-color: #0b1228;
-@saptsys-sky-color-1: #0994b7;
-@saptsys-sky-color-2: #187288;
+@saptsys-color-0: #e6feff;
+@saptsys-color-1: #03a2ca;
+@saptsys-color-2: #003d57;
+@saptsys-color-3: #002030;
 
 @primary-color: @blue-6;
 @info-color: @primary-color;
@@ -20,14 +21,16 @@
 @black: #000;
 
 //----------- Layout --------------
-@layout-body-background: #f0f2f5;
-@layout-header-background: @blue-3;
-@layout-header-height: 40px;
-@layout-header-padding: 0 10px;
-@layout-header-color: @text-color-dark;
-@layout-footer-padding: 3px;
-@layout-footer-background: @saptsys-sky-color-2;
-@layout-sider-background: @saptsys-dark-color;
+@layout-body-background: #fff;
+@layout-header-background: #f9f9f9;
+@layout-header-height: 55px;
+@layout-header-padding: 0 5px;
+@layout-header-color: @text-color;
+@layout-footer-padding: 1px;
+@layout-footer-background: @saptsys-color-3;
+@layout-footer-color: #BBB;
+@layout-sider-background: @saptsys-color-2;
+@layout-sider-color: #888;
 @layout-trigger-height: 48px;
 @layout-trigger-background: #002140;
 @layout-trigger-color: #fff;
@@ -37,3 +40,18 @@
 @layout-sider-background-light: #fff;
 @layout-trigger-background-light: #fff;
 @layout-trigger-color-light: @text-color;
+
+@logo-bg: #f9f9f9;
+
+//-------------- Menu ----------------
+@menu-dark-color: @text-color-secondary-dark;
+@menu-dark-danger-color: @error-color;
+@menu-dark-bg: @saptsys-color-2;
+@menu-dark-arrow-color: #fff;
+@menu-dark-inline-submenu-bg: fade(@saptsys-color-3, 50%);
+@menu-dark-highlight-color: #fff;
+@menu-dark-item-active-bg: fade(@saptsys-color-1, 90%);
+@menu-dark-item-active-danger-bg: @error-color;
+@menu-dark-selected-item-icon-color: @white;
+@menu-dark-selected-item-text-color: @white;
+@menu-dark-item-hover-bg: fade(@saptsys-color-1, 50%);

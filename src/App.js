@@ -8,7 +8,9 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={Store}>
-        <MainLayout />
+        <MainLayout>
+          ABCD content
+        </MainLayout>
       </Provider>
     );
   }
