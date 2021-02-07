@@ -44,12 +44,13 @@ const createWindow = () => {
 
     width: 1080,
     height: 840,
-    resizable: false,
+    // resizable: false,
     show: false,
 
     title: app.getName(),
   };
   let mainWindow = new BrowserWindow(windowOptions);
+  mainWindow.setMenu(null)
 
   if (isDev) {
     console.log("-------- DEVELOPER MODE --------");
@@ -83,6 +84,7 @@ const createWindow = () => {
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
+    mainWindow.maximize();
     if (isDev) {
       mainWindow.webContents.openDevTools({ mode: "detach" });
     }

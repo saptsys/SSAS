@@ -1,31 +1,27 @@
-import { Button, Input, Layout, Space } from 'antd';
-import { Content, Header } from 'antd/lib/layout/layout';
-import Title from 'antd/lib/typography/Title';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { LayoutActions } from '../_redux/actionFiles/LayoutRedux';
-
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Layout } from 'antd';
+const { Sider, Header, Content, Footer } = Layout
+import './MainLayout.less'
 const MainLayout = () => {
-    const dispatch = useDispatch()
-    const [val, setVal] = useState("")
-    const { headerTitle } = useSelector(state => ({
-        headerTitle: state.Layout.title
-    }))
+    const LayoutState = useSelector(state => state.Layout)
+
     return (
-        <Layout>
-            <Header>
-                <Title style={{ color: "#eee" }}>{headerTitle}</Title>
-            </Header>
-            <Content style={{padding:"50px"}}>
-                <Space size={10}>
-                    <Input placeholder="Enter title here" value={val} onChange={e => setVal(e.target.value)} ></Input>
-                    <Button onClick={() => {
-                        dispatch(LayoutActions.setTitle(val))
-                    }}>
-                        Change Title
-                    </Button>
-                </Space>
+        <Layout className="main-layout">
+            <Content className="main-content">
+                <Layout className="sub-layout">
+                    <Sider className="sider">
+                        this is siders
+                    </Sider>
+                    <Layout>
+                        <Header className="header">This is Header</Header>
+                        <Content className="content">
+                            This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />This is Content <br />
+                        </Content>
+                    </Layout>
+                </Layout>
             </Content>
+            <Footer className="main-footer">This is footer</Footer>
         </Layout>
     );
 };
