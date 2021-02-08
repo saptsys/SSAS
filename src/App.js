@@ -11,7 +11,7 @@ const App = () => {
   return (
     <Provider store={Store}>
       <MainLayout>
-        <PartyTable />
+        {/* <PartyTable /> */}
       </MainLayout>
     </Provider>
   );

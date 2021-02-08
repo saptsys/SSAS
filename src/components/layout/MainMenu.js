@@ -1,42 +1,52 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Menu } from 'antd';
+import { generateUrlChain, ROUTES } from '../../Helpers/routes';
 const { SubMenu } = Menu
 
 const MainMenu = () => {
+    const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
+        console.log(key)
+    }
     return (
-        <Menu theme="light" mode="inline" className="menu" defaultSelectedKeys={window.location.pathname.split("/")}>
+        <Menu
+            theme="light"
+            mode="inline"
+            className="menu"
+            defaultSelectedKeys={window.location.pathname}
+            onClick={handleMenuClicked}
+        >
 
-            <Menu.Item key="dashboard">Dashboard</Menu.Item>
+            <Menu.Item key={ROUTES.dashboard._path}>Dashboard</Menu.Item>
 
-            <SubMenu key="masters" title="Masters">
-                <Menu.Item key="party-master">Party Master</Menu.Item>
-                <SubMenu key="item" title="Item">
-                    <Menu.Item key="item-group-master">Item Group Master</Menu.Item>
-                    <Menu.Item key="item-master">Item Master</Menu.Item>
-                    <Menu.Item key="unit-master">Unit Master</Menu.Item>
+            <SubMenu key={ROUTES.masters._path} title="Masters">
+                <Menu.Item key={ROUTES.masters.partyMaster._path}>Party Master</Menu.Item>
+                <SubMenu key={ROUTES.masters.item._path} title="Item">
+                    <Menu.Item key={ROUTES.masters.item.itemGroupMaster._path}>Item Group Master</Menu.Item>
+                    <Menu.Item key={ROUTES.masters.item.itemMaster._path}>Item Master</Menu.Item>
+                    <Menu.Item key={ROUTES.masters.item.unitMaster._path}>Unit Master</Menu.Item>
                 </SubMenu>
             </SubMenu>
 
-            <SubMenu key="transactions" title="Transactions">
-                <SubMenu key="sales" title="Sales">
-                    <Menu.Item key="sales-invoice">Sales Invoice</Menu.Item>
+            <SubMenu key={ROUTES.transactions._path} title="Transactions">
+                <SubMenu key={ROUTES.transactions.sales._path} title="Sales">
+                    <Menu.Item key={ROUTES.transactions.sales.salesInvoice._path}>Sales Invoice</Menu.Item>
                 </SubMenu>
-                <SubMenu key="purchase" title="Purchase">
-                    <Menu.Item key="purchase-invoice">Purchase Invoice</Menu.Item>
+                <SubMenu key={ROUTES.transactions.purchase._path} title="Purchase">
+                    <Menu.Item key={ROUTES.transactions.purchase.purchaseInvoice._path}>Purchase Invoice</Menu.Item>
                 </SubMenu>
-                <Menu.Item key="delivery-challan">Delivery Challan</Menu.Item>
+                <Menu.Item key={ROUTES.transactions.deliveryChallan}>Delivery Challan</Menu.Item>
             </SubMenu>
 
-            <SubMenu key="reports" title="Reports">
-                <SubMenu key="delivery-challan-reports" title="Delivery Challan">
-                    <Menu.Item key="delivery-challan-reports-item-wise">Item Wise</Menu.Item>
-                    <Menu.Item key="delivery-challan-reports-party-wise">Item Wise</Menu.Item>
+            <SubMenu key={ROUTES.reports._path} title="Reports">
+                <SubMenu key={ROUTES.reports.deliveryChallan._path} title="Delivery Challan">
+                    <Menu.Item key={ROUTES.reports.deliveryChallan.itemWise._path}>Item Wise</Menu.Item>
+                    <Menu.Item key={ROUTES.reports.deliveryChallan.partyWise._path}>Item Wise</Menu.Item>
                 </SubMenu>
             </SubMenu>
 
-            <SubMenu key="utility" title="Utility">
-                <Menu.Item key="firm-info">Firm/Company Info</Menu.Item>
-                <Menu.Item key="settings">Settings</Menu.Item>
+            <SubMenu key={ROUTES.utility._path} title="Utility">
+                <Menu.Item key={ROUTES.utility.firmInfo._path}>Firm/Company Info</Menu.Item>
+                <Menu.Item key={ROUTES.utility.settings._path}>Settings</Menu.Item>
             </SubMenu>
         </Menu>
     );
