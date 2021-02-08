@@ -37,15 +37,14 @@ export default class _BaseIpcActions {
     }
 
     save = (payload) => dispatch => {
-        dispatch(this.actions.startCall({ callType: this.callTypes.list }))
-        this.sendIPC('save' , payload).catch(console.log)
+        dispatch(this.actions.startCall({ callType: this.callTypes.actions }))
         return this.sendIPC('save' , payload)
             .then(res => {
                 if (res?.length) {
-                    dispatch(this.actions.stopCall({ callType: this.callTypes.list }))
+                    dispatch(this.actions.stopCall({ callType: this.callTypes.actions }))
                     return Promise.resolve(res)
                 } else {
-                    dispatch(this.actions.catchError({ error: res, callType: this.callTypes.list }))
+                    dispatch(this.actions.catchError({ error: res, callType: this.callTypes.actions }))
                 }
             })
             .catch(error => {
