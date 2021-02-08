@@ -14,6 +14,7 @@ function init() {
     reloader(module, {
       debug: true,
       watchRenderer: true,
+      ignore:["./databases" ,"./src"]
     });
   } catch (_) {
     console.log("electron-preloader-notfound");
