@@ -4,12 +4,10 @@ import { Button, Col, Image, Layout, Menu, Row, Space } from 'antd';
 const { Sider, Header, Content, Footer } = Layout
 import './MainLayout.less'
 import SubMenu from 'antd/lib/menu/SubMenu';
-import logoSrc from "../assets/images/logo-sm.png"
-import Title from 'antd/lib/typography/Title';
+import logoSrc from "../../assets/images/logo-sm.png"
 import Text from 'antd/lib/typography/Text';
 import moment from "moment";
-import { LayoutActions } from '../_redux/actionFiles/LayoutRedux';
-import PartyMaster from './partyMaster/PartyMaster';
+import MainMenu from './MainMenu';
 
 const MainLayout = ({ children }) => {
     const dispatch = useDispatch()
@@ -33,18 +31,7 @@ const MainLayout = ({ children }) => {
                             <Image src={logoSrc} />
                             {/* <b>ABC PHOTO PVT LTD</b> */}
                         </div>
-                        <Menu theme="light" mode="inline" className="menu" defaultSelectedKeys={["2","3"]}>
-                            <Menu.Item key="1">Dashboard</Menu.Item>
-                            <SubMenu key="2" title="Masters">
-                                <Menu.Item key="3">Party Master</Menu.Item>
-                                <Menu.Item key="4">Party Item Master</Menu.Item>
-
-                                <SubMenu key="5" title="Sub Master">
-                                    <Menu.Item key="6">A Master</Menu.Item>
-                                    <Menu.Item key="7">B Item Master</Menu.Item>
-                                </SubMenu>
-                            </SubMenu>
-                        </Menu>
+                        <MainMenu />
                     </Sider>
                     <Layout>
                         <Header className="header" >
