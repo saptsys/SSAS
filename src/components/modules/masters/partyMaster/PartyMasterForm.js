@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Form, Input, Button, Select, Switch, Tooltip, Row, Col } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
 
-import { PartyMasterActions } from "./../../_redux/actionFiles/PartyMasterRedux";
 
 function PartyMasterForm() {
   const dispatch = useDispatch();

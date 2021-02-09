@@ -1,18 +1,21 @@
 import React, { useMemo } from 'react';
 import { Menu } from 'antd';
-import { generateUrlChain, ROUTES } from '../../Helpers/routes';
+import { generateUrlChain, ROUTES } from '../../helpers/routes';
+import { useHistory } from 'react-router-dom';
 const { SubMenu } = Menu
 
 const MainMenu = () => {
+    const history = useHistory()
     const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
-        console.log(key)
+        history.push(key)
     }
     return (
         <Menu
             theme="light"
             mode="inline"
             className="menu"
-            defaultSelectedKeys={window.location.pathname}
+            defaultSelectedKeys={window.location.hash.replaceAll("#","")}
+            defaultOpenKeys={generateUrlChain(window.location.hash.replaceAll("#",""))}
             onClick={handleMenuClicked}
         >
 

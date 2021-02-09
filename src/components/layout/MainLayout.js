@@ -12,12 +12,14 @@ import MainMenu from './MainMenu';
 const MainLayout = ({ children }) => {
     const dispatch = useDispatch()
     const LayoutState = useSelector(state => state.Layout)
-    const [currentDateTime, setCurrentDateTime] = useState()
-    useEffect(() => {
 
+    const getFormattedTime = () => moment(new Date()).format("hh:mm A DD/MM/yyyy")
+
+    const [currentDateTime, setCurrentDateTime] = useState(getFormattedTime())
+    useEffect(() => {
         const intrvl = setInterval(() => {
-            setCurrentDateTime(moment(new Date()).format("hh:mm:ss A DD/MM/yyyy"))
-        }, 1000)
+            setCurrentDateTime(getFormattedTime())
+        }, 60000)
         return () => {
             clearInterval(intrvl)
         }

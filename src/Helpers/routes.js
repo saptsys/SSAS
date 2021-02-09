@@ -61,18 +61,6 @@ export const ROUTES = {
     }
 }
 
-
-// export function generateUrl(objecKeys) {
-//     console.log("Generating URL...")
-
-//     let currentObject = { ...ROUTES }
-//     let url = ""
-//     objecKeys.split('.').forEach(obj => {
-//         url += "/" + currentObject[obj].path
-//         currentObject = currentObject[obj]
-//     });
-//     return url;
-// }
 export function generateUrlChain(objPath) {
     console.log("getting chain of key ...")
 
@@ -84,3 +72,4 @@ export function generateUrlChain(objPath) {
     })
     return final
 }
+
