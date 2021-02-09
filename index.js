@@ -4,9 +4,6 @@ const glob = require("glob");
 const url = require("url");
 const { createConnection } = require("typeorm");
 const reloader = require("electron-reloader");
-// if (require("electron-squirrel-startup")) {
-//   app.quit();
-// }
 
 function init() {
   // TODO: in produciton remove this
@@ -14,22 +11,28 @@ function init() {
     reloader(module, {
       debug: true,
       watchRenderer: true,
-      ignore:["./databases" ,"./src"]
+      ignore:["./databases" ,"./src" , "./electron" ,  "db*" , "webpack"]
     });
   } catch (_) {
     console.log("electron-preloader-notfound");
   }
 
   // load main processes only after we created database connection
+  console.log("database connecting ")
   setDatabaseConnection()
     .then(() => {
+      console.log("database connected ")
+
       loadMainProcess();
     })
-    .catch(() => {
+    .catch((e) => {
+      console.log(e)
+
       console.log("database connection failed");
       app.quit();
     });
-
+    
+    // return;
   const createWindow = () => {
     const windowOptions = {
       webPreferences: {

@@ -79,7 +79,8 @@ function PartyTable() {
   const [parties, setParties] = useState([]);
 
   useEffect(() => {
-    dispatch(PartyMasterActions.getAll()).then(setParties);
+    console.log(dispatch(PartyMasterActions.getAll()))
+    dispatch(PartyMasterActions.getAll()).then(setParties).catch(console.log);
   }, []);
 
   return (
