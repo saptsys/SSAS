@@ -28,7 +28,7 @@ const MainLayout = ({ children }) => {
         <Layout className="main-layout">
             <Content className="main-content">
                 <Layout className="sub-layout">
-                    <Sider className="sider">
+                    <Sider className="sider" id="aside-menu">
                         <div className="sider-header">
                             <Image src={logoSrc} />
                             {/* <b>ABC PHOTO PVT LTD</b> */}
@@ -48,7 +48,7 @@ const MainLayout = ({ children }) => {
                                 </Col>
                             </Row>
                         </Header>
-                        <Content className="content">
+                        <Content className="content" id="layout-main-content">
                             {children}
                         </Content>
                     </Layout>

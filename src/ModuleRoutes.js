@@ -4,7 +4,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './helpers/routes';
 
 const Dashboard = lazy(() => import("./components/modules/dashboard/Dashboard"))
-const PartyMaster = lazy(() => import("./components/modules/masters/partyMaster/PartyMaster"))
+const PartyMaster = lazy(() => import("./components/modules/masters/partyMaster/PartyMasterPage"))
 
 const ModuleRoutes = () => {
     return (
