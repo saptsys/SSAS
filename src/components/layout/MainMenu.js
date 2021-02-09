@@ -1,21 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Menu } from 'antd';
-import { generateUrlChain, ROUTES } from '../../helpers/routes';
-import { useHistory } from 'react-router-dom';
+import { generateUrlChain, getTitleByUrl, ROUTES } from '../../helpers/routes';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { LayoutActions } from '../../_redux/actionFiles/LayoutRedux';
 const { SubMenu } = Menu
 
 const MainMenu = () => {
     const history = useHistory()
+    const location = useLocation()
+    const dispatch = useDispatch()
+
+
+
     const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
+        const title = getTitleByUrl(key) ?? domEvent.currentTarget.innerText
+        dispatch(LayoutActions.setTitle(title))
         history.push(key)
     }
+
+    useEffect(() => {
+        const title = getTitleByUrl(location.pathname.replaceAll("#", "")) ?? document.getElementsByClassName("ant-menu-item-selected")?.item(0)?.innerText
+        dispatch(LayoutActions.setTitle(title))
+    }, [])
     return (
         <Menu
             theme="light"
             mode="inline"
             className="menu"
-            defaultSelectedKeys={window.location.hash.replaceAll("#","")}
-            defaultOpenKeys={generateUrlChain(window.location.hash.replaceAll("#",""))}
+            selectedKeys={generateUrlChain(location.pathname.replaceAll("#", ""))}
+            defaultOpenKeys={generateUrlChain(location.pathname.replaceAll("#", ""))}
             onClick={handleMenuClicked}
         >
 
@@ -41,10 +55,7 @@ const MainMenu = () => {
             </SubMenu>
 
             <SubMenu key={ROUTES.reports._path} title="Reports">
-                <SubMenu key={ROUTES.reports.deliveryChallan._path} title="Delivery Challan">
-                    <Menu.Item key={ROUTES.reports.deliveryChallan.itemWise._path}>Item Wise</Menu.Item>
-                    <Menu.Item key={ROUTES.reports.deliveryChallan.partyWise._path}>Item Wise</Menu.Item>
-                </SubMenu>
+                <Menu.Item key={ROUTES.reports.deliveryChallan._path}>Item Wise</Menu.Item>
             </SubMenu>
 
             <SubMenu key={ROUTES.utility._path} title="Utility">

@@ -1,22 +1,24 @@
 export const ROUTES = {
     dashboard: {
-        _path: "/dashboard"
+        _path: "/dashboard",
+        _title:"Dashboard"
     },
     masters: {
         _path: "/masters",
         partyMaster: {
-            _path: "/masters/party-master"
+            _path: "/masters/party-master",
         },
         item: {
-            _path: '/item',
+            _path: '/masters/item',
             itemGroupMaster: {
-                _path: "/item/item-group-master"
+                _path: "/masters/item/item-group-master",
+                _title:"Item Group Master"
             },
             itemMaster: {
-                _path: "/item/item-master"
+                _path: "/masters/item/item-master",
             },
             unitMaster: {
-                _path: "/item/unit-master"
+                _path: "/masters/item/unit-master",
             }
         }
     },
@@ -25,17 +27,18 @@ export const ROUTES = {
         sales: {
             _path: '/transactions/sales',
             salesInvoice: {
-                _path: '/transactions/sales/sales-invoice'
+                _path: '/transactions/sales/sales-invoice',
+                _title:"Sales Invoice"
             }
         },
         purchase: {
             _path: '/purchase',
             purchaseInvoice: {
-                _path: '/transactions/purchase/purchase-invoice'
+                _path: '/transactions/purchase/purchase-invoice',
             }
         },
         deliveryChallan: {
-            _path: '/transactions/delivery-challan'
+            _path: '/transactions/delivery-challan',
         }
     },
     reports: {
@@ -43,11 +46,12 @@ export const ROUTES = {
         deliveryChallan: {
             _path: '/reports/delivery-challan',
             partyWise: {
-                _path: '/reports/delivery-challan/party-wise'
+                _path: '/reports/delivery-challan/party-wise',
+                _title:"Delivery Challan Report"
             },
-            itemWise: {
-                _path: '/reports/delivery-challan/item-wise'
-            }
+            // itemWise: {
+            //     _path: '/reports/delivery-challan/item-wise'
+            // }
         }
     },
     utility: {
@@ -62,8 +66,6 @@ export const ROUTES = {
 }
 
 export function generateUrlChain(objPath) {
-    console.log("getting chain of key ...")
-
     let final = []
     let last = []
     objPath.split("/").filter(x => x).forEach(u => {
@@ -73,3 +75,17 @@ export function generateUrlChain(objPath) {
     return final
 }
 
+export function getTitleByUrl(url, routeObj = ROUTES) {
+    let title = ""
+    const keys = Object.keys(routeObj).filter(x => !(x === "_path" || x === "_title"))
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (routeObj[key]._path === url) {
+            return routeObj[key]._title;
+        } else {
+            title = getTitleByUrl(url, routeObj[key])
+        }
+        if(title)
+            return title
+    }
+}
