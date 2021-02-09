@@ -6,7 +6,7 @@ module.exports = {
     "database": DB_PATH,
     'folder': DB_FILES_FOLDER,
     "synchronize": true,
-    "logging": false,
+    "logging": true,
     "entities": [
         `${DB_FILES_FOLDER}/entities/**/*.js`
     ],

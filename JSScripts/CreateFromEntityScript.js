@@ -22,11 +22,15 @@ glob(path.join(dbFolderDir, 'entities/*.js'), (er, files) => {
             let assignment = Object.keys(entitySchema.options.columns).map(x => `this.${x} = ${x};`).join('\n\t\t')
 
             const dataToWrite = `
-class ${entitySchema.options.name} {
+const _BaseModel = require("./_BaseModel");
+
+class ${entitySchema.options.name} extends _BaseModel {
     constructor({
-        ${params}
+        ${params},
+        ...rest
     } = {}
     ) {
+        super(rest),
         ${assignment}
     }
 }
