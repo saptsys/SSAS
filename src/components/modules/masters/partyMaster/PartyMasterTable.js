@@ -1,9 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Button, Drawer, Space, Table } from "antd";
-import PartyMasterForm from "./PartyMasterForm";
-import { LayoutActions } from "../../../../_redux/actionFiles/LayoutRedux";
-import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
+import React from "react";
 import CommonTable from "../../_common/CommonTable";
 
 function PartyMasterTable(props) {

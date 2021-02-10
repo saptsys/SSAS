@@ -1,20 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Input, Button, Select, Switch, Tooltip, Row, Col } from "antd";
-import { useSelector, useDispatch } from "react-redux";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
 
 
 function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
 
   const onFinish = (values) => {
-    debugger;
-    // dispatch(PartyMasterActions.save(values))
-    //   .then(console.log)
-    //   .catch(console.log);
-    // console.log("Success:", values);
-    saveBtnHandler(values)
+    saveBtnHandler && saveBtnHandler(values)
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -44,9 +37,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     <Form
       {...formItemLayout}
       name="basic"
-      initialValues={{
-        remember: true,
-      }}
+      initialValues={entityForEdit}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
