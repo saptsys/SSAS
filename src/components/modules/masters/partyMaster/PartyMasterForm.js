@@ -5,16 +5,16 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
 
 
-function PartyMasterForm() {
-  const dispatch = useDispatch();
+function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
-  const partyMaster = useSelector((state) => state.PartyMaster);
 
   const onFinish = (values) => {
-    dispatch(PartyMasterActions.save(values))
-      .then(console.log)
-      .catch(console.log);
-    console.log("Success:", values);
+    debugger;
+    // dispatch(PartyMasterActions.save(values))
+    //   .then(console.log)
+    //   .catch(console.log);
+    // console.log("Success:", values);
+    saveBtnHandler(values)
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -188,8 +188,10 @@ function PartyMasterForm() {
         </Row>
       </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
+      ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />
+
+      <Form.Item hidden>
+        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
           Submit
         </Button>
       </Form.Item>

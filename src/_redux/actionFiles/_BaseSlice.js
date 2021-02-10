@@ -41,7 +41,7 @@ export default class _BaseSlice {
             startCall: (state, action) => {
                 const callType = action.payload.callType
                 state[callType].error = null
-                state[callType].loading = true
+                state[callType].loading = action.payload.from ?? true
             },
             stopCall: (state, action) => {
                 const callType = action.payload.callType

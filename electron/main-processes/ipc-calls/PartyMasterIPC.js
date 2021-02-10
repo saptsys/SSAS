@@ -13,3 +13,8 @@ promiseIpc.on(createPath("getAll"), () => {
 promiseIpc.on(createPath("save"), (payload) => {
   return service.save(payload);
 });
+
+
+promiseIpc.on(createPath("getById"), (payload) => {
+  return service.getById(payload)
+});

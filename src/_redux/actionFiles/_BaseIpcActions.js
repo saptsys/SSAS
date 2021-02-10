@@ -9,10 +9,14 @@ export default class _BaseIpcActions {
      * @param {_BaseSlice} sliceObj 
      */
     constructor(ipcCallMaster, sliceObj) {
-        this.sendIPC = (endPoint , payload) => promiseIpc.send(ipcCallMaster + '/' + endPoint , payload)
+        this.sendIPC = (endPoint, payload) => promiseIpc.send(ipcCallMaster + '/' + endPoint, payload)
         this.actions = sliceObj.slice.actions
         this.callTypes = sliceObj.callTypes
         this.reducerName = sliceObj.slice.name
+
+        this.startCall = (calltype, from = null) => this.actions.startCall({ callType: calltype, from: from })
+        this.stopCall = (calltype, from = null) => this.actions.stopCall({ callType: calltype, from: from })
+        this.catchError = (error, calltype, from = null) => this.actions.catchError({ error: error, callType: this.callTypes.list, from: from })
     }
 
     reIniState = () => dispatch => {
@@ -21,34 +25,41 @@ export default class _BaseIpcActions {
     }
 
     getAll = () => dispatch => {
-        dispatch(this.actions.startCall({ callType: this.callTypes.list }))
+        const from = "getAll"
+        dispatch(this.startCall(this.callTypes.list, from))
         return this.sendIPC('getAll')
             .then(res => {
-                if (res?.length) {
-                    dispatch(this.actions.stopCall({ callType: this.callTypes.list }))
-                    return Promise.resolve(res)
-                } else {
-                    dispatch(this.actions.catchError({ error: res, callType: this.callTypes.list }))
-                }
+                dispatch(this.stopCall(this.callTypes.list, from))
+                return Promise.resolve(res)
             })
             .catch(error => {
-                dispatch(this.actions.catchError({ error: error, callType: this.callTypes.list }))
+                dispatch(this.catchError(error.message, this.callTypes.list, from))
             })
     }
 
     save = (payload) => dispatch => {
-        dispatch(this.actions.startCall({ callType: this.callTypes.actions }))
-        return this.sendIPC('save' , payload)
+        const from = "save"
+        dispatch(this.startCall(this.callTypes.action, from))
+        return this.sendIPC('save', payload)
             .then(res => {
-                if (res?.length) {
-                    dispatch(this.actions.stopCall({ callType: this.callTypes.actions }))
-                    return Promise.resolve(res)
-                } else {
-                    dispatch(this.actions.catchError({ error: res, callType: this.callTypes.actions }))
-                }
+                dispatch(this.stopCall(this.callTypes.action, from))
+                return Promise.resolve(res)
             })
             .catch(error => {
-                dispatch(this.actions.catchError({ error: error, callType: this.callTypes.actions }))
+                dispatch(this.catchError(error.message, this.callTypes.action, from))
+            })
+    }
+
+    getById = (id) => dispatch => {
+        const from = "getById"
+        dispatch(this.startCall(this.callTypes.action, from))
+        return this.sendIPC('getById', id)
+            .then(res => {
+                dispatch(this.stopCall(this.callTypes.action, from))
+                return Promise.resolve(res)
+            })
+            .catch(error => {
+                dispatch(this.catchError(error.message, this.callTypes.action, from))
             })
     }
 }

@@ -1,29 +1,27 @@
 import { Table } from 'antd';
 import React, { useMemo } from 'react';
 import { searchInArray } from '../../../helpers/arrayManipulation';
-import './CommonTable.less'
 
-const CommonTable = ({ columns, dataSource, loading = false, filterText = "" }) => {
+const CommonTable = ({ columns, dataSource, loading = false, filterText = "", editBtnHandler, deleteBtnHandler, rowKey = "id", style }) => {
     const filteredData = useMemo(() => searchInArray(dataSource, filterText), [dataSource, filterText])
+    const finalColumns = columns.map(col => {
+        return {
+            ...col,
+            filtered: !!filterText,
+            sorter: true
+        }
+    })
     return (
-        <div id="common-table">
+        <div id="common-table" style={style}>
             <Table
-                rowKey="id"
-                columns={columns.map(col => {
-                    return {
-                        ...col,
-                        filtered: !!filterText
-                    }
-                })}
+                rowKey={rowKey}
+                columns={finalColumns}
                 dataSource={filteredData}
-
                 size="small"
                 loading={loading}
                 bordered
-                pagination={{ pageSize: 50 }}
+                pagination={{ pageSize: 10 }}
                 sticky={true}
-            // scroll={{ y: document.getElementById("layout-main-content").clientHeight - (document.getElementsByClassName("ant-table-thead")[0]?.clientHeight ?? 40) - (document.getElementsByClassName("ant-pagination")[0]?.clientHeight ?? 25) - 35 }}
-            // scroll={{ y: "250" }}
             />
         </div>
 

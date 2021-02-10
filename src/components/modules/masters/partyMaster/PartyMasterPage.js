@@ -2,30 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../_redux/actionFiles/LayoutRedux';
 import PartyMasterTable from "./PartyMasterTable";
-import PartyMasterToolbar from './PartyMasterToolbar';
+import setupCommonToolBar from '../../_common/CommonToolbar';
+import CommonModuleView from '../../_common/CommonModuleView';
+import { PartyMasterActions, reducerInfo } from '../../../../_redux/actionFiles/PartyMasterRedux';
+import PartyMasterForm from './PartyMasterForm';
+
 function PartyMasterPage() {
-  const dispatch = useDispatch()
-  const [filterText, setFilterText] = useState("")
-  const createBtnHandler = (id = null) => {
-
-  }
-  //settings layout things
-  useEffect(() => {
-    dispatch(LayoutActions.setToolbar(
-      <PartyMasterToolbar
-        createBtnHandler={createBtnHandler}
-        searchHandler={setFilterText}
-      />
-    ))
-  }, [])
-
-  return (
-    <>
-      <PartyMasterTable 
-        filterText={filterText}
-      />
-    </>
-  )
+  return <CommonModuleView
+    reducerInfo={reducerInfo}
+    MainTable={PartyMasterTable}
+    EditForm={PartyMasterForm}
+    actions={PartyMasterActions}
+  />
 }
 
 export default PartyMasterPage

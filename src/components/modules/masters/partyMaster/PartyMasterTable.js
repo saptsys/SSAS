@@ -6,15 +6,7 @@ import { LayoutActions } from "../../../../_redux/actionFiles/LayoutRedux";
 import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
 import CommonTable from "../../_common/CommonTable";
 
-function PartyMasterTable({ filterText }) {
-  const dispatch = useDispatch();
-
-  const partyMaster = useSelector((state) => state.PartyMaster);
-  const [drawer, setDrawer] = useState(false)
-  useEffect(() => {
-
-  }, [])
-
+function PartyMasterTable(props) {
   const columns = [
     {
       title: "Id",
@@ -69,21 +61,11 @@ function PartyMasterTable({ filterText }) {
       dataIndex: "type",
     },
   ];
-  const [parties, setParties] = useState([]);
 
-  useEffect(() => {
-    dispatch(PartyMasterActions.getAll()).then(res => setParties(res));
-  }, []);
-  console.log(parties)
-  return (
-    <>
-      <CommonTable
-        columns={columns}
-        dataSource={parties}
-        filterText={filterText}
-      />
-    </>
-  );
+  return (<CommonTable
+    columns={columns}
+    {...props}
+  />)
 }
 
 export default PartyMasterTable;
