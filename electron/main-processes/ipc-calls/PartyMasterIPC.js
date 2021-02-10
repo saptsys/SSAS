@@ -6,9 +6,8 @@ const createPath = (endpoint) => "PartyMaster/" + endpoint;
 const service = new PartyMasterService();
 
 promiseIpc.on(createPath("getAll"), () => {
-  setTimeout(() => {
-    return service.getAll();
-  }, 100);
+  console.log(createPath("getAll requirest recieved"))
+  return service.getAll();
 });
 
 promiseIpc.on(createPath("save"), (payload) => {

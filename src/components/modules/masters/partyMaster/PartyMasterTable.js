@@ -5,22 +5,14 @@ import PartyMasterForm from "./PartyMasterForm";
 import { LayoutActions } from "../../../../_redux/actionFiles/LayoutRedux";
 import { PartyMasterActions } from "../../../../_redux/actionFiles/PartyMasterRedux";
 import CommonTable from "../../_common/CommonTable";
-function PartyMasterTable() {
+
+function PartyMasterTable({ filterText }) {
   const dispatch = useDispatch();
 
   const partyMaster = useSelector((state) => state.PartyMaster);
   const [drawer, setDrawer] = useState(false)
   useEffect(() => {
-    dispatch(LayoutActions.setTitle("Party Master"))
-    dispatch(LayoutActions.setInformation("F1-Save F2-Cancel F3-Reload"))
-    dispatch(LayoutActions.setMessage("Getting all parties..."))
-    dispatch(LayoutActions.setToolbar((
-      <Space>
-        <Button onClick={() => {
-          setDrawer(true)
-        }}>Create New</Button>
-      </Space>
-    )))
+
   }, [])
 
   const columns = [
@@ -80,15 +72,15 @@ function PartyMasterTable() {
   const [parties, setParties] = useState([]);
 
   useEffect(() => {
-    dispatch(PartyMasterActions.getAll()).then(res => setParties([...res,...res,...res,...res,...res,...res,...res,...res]));
+    dispatch(PartyMasterActions.getAll()).then(res => setParties(res));
   }, []);
-
+  console.log(parties)
   return (
     <>
       <CommonTable
         columns={columns}
         dataSource={parties}
-        
+        filterText={filterText}
       />
     </>
   );
