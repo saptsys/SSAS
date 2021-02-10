@@ -11,28 +11,28 @@ function init() {
     reloader(module, {
       debug: true,
       watchRenderer: true,
-      ignore:["./databases" ,"./src" , "./electron" ,  "db*" , "webpack"]
+      ignore: ["./databases", "./src", "./electron", "db*", "webpack"],
     });
   } catch (_) {
     console.log("electron-preloader-notfound");
   }
 
   // load main processes only after we created database connection
-  console.log("database connecting ")
+  console.log("database connecting ");
   setDatabaseConnection()
     .then(() => {
-      console.log("database connected ")
+      console.log("database connected ");
 
       loadMainProcess();
     })
     .catch((e) => {
-      console.log(e)
+      console.log(e);
 
       console.log("database connection failed");
       app.quit();
     });
-    
-    // return;
+
+  // return;
   const createWindow = () => {
     const windowOptions = {
       webPreferences: {
@@ -53,10 +53,11 @@ function init() {
       title: app.getName(),
     };
     let mainWindow = new BrowserWindow(windowOptions);
-    mainWindow.setMenu(null)
+    mainWindow.setMenu(null);
     if (isDev()) {
       console.log("-------- DEVELOPER MODE --------");
       installExtensions();
+      installIpcLogger();
       // if we are in dev mode load up 'http://localhost:8080/index.html'
       indexPath = url.format({
         protocol: "http:",
@@ -64,7 +65,6 @@ function init() {
         pathname: "index.html",
         slashes: true,
       });
-
     } else {
       console.log("-------- PRODUCTION MODE --------");
       indexPath = url.format({
@@ -89,7 +89,6 @@ function init() {
   };
   app.on("ready", () => {
     createWindow();
-
   });
 
   app.on("window-all-closed", () => {
@@ -104,8 +103,25 @@ function init() {
     }
   });
 }
+const installIpcLogger = () => {
+  try {
+    electronIpcLog((event) => {
+      var { channel, data, sent, sync } = event;
+      var args = [sent ? "⬆️" : "⬇️", channel, ...data];
+      if (sync) args.unshift("ipc:sync");
+      else args.unshift("ipc");
+      console.log(...args);
+    });
+  } catch (e) {
+    console.log("ipc logger not loaded.")
+  }
+};
 const installExtensions = async () => {
-  const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+  const {
+    default: installExtension,
+    REACT_DEVELOPER_TOOLS,
+    REDUX_DEVTOOLS,
+  } = require("electron-devtools-installer");
 
   const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
   for (const extension of extensions) {
@@ -113,11 +129,10 @@ const installExtensions = async () => {
       const name = await installExtension(extension);
       console.log(`Added Extension:  ${name}`);
     } catch (e) {
-      console.log('An error occurred: ', err);
+      console.log("An error occurred: ", err);
     }
   }
-}
-
+};
 
 function isDev() {
   return process.env.NODE_ENV !== "production";
