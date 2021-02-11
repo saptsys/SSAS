@@ -13,7 +13,6 @@ function CommonModuleView({
   methods = { fetchTableData: "getAll", fetchEditData: "getById", saveForm: "save" },
   actions
 }) {
-
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
     currentState: state[reducerInfo.name],
@@ -26,7 +25,7 @@ function CommonModuleView({
 
   const editFormBtnHandler = (params) => {
     if (params) {
-      dispatch(actions[methods.fetchTableData](params)).then((res) => {
+      dispatch(actions[methods.fetchEditData](params)).then((res) => {
         setEditMode({ mode: true, entityForEdit: res })
       })
     } else {
@@ -35,7 +34,8 @@ function CommonModuleView({
   }
   const saveBtnHandler = (values) => {
     dispatch(actions[methods.saveForm](values)).then((res) => {
-      message.success("Record Saved Successfuly", 5)
+      getTableData()
+      message.success("Record Saved Successfuly", 4)
       cancelEditBtnHandler()
     })
   }
@@ -64,7 +64,8 @@ function CommonModuleView({
         id="edit-drawer"
         width={720}
         onClose={() => cancelEditBtnHandler()}
-        destroyOnClose={true} visible={editMode.mode} getContainer={false}
+        visible={editMode.mode}
+        destroyOnClose={true}
         title={(
           <Row justify="space-around" align="middle">
             <Col flex="auto">
@@ -73,14 +74,14 @@ function CommonModuleView({
             <Col flex="none">
               <Space>
                 <Button type="ghost" onClick={() => cancelEditBtnHandler()}>CANCEL</Button>
-                <Button type="primary" onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>SAVE</Button>
+                <Button type="primary" loading={currentState.action.loading === methods.saveForm} onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>SAVE</Button>
               </Space>
             </Col>
           </Row>
         )}
         closable={false}
       >
-        <Spin spinning={currentState.action.loading}>
+        <Spin spinning={currentState.action.loading === methods.fetchEditData}>
           <EditForm
             entityForEdit={editMode.entityForEdit}
             saveBtnHandler={saveBtnHandler}

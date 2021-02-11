@@ -37,7 +37,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     <Form
       {...formItemLayout}
       name="basic"
-      initialValues={entityForEdit}
+      initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >

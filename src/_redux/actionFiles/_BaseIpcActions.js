@@ -15,8 +15,8 @@ export default class _BaseIpcActions {
         this.reducerName = sliceObj.slice.name
 
         this.startCall = (calltype, from = null) => this.actions.startCall({ callType: calltype, from: from })
-        this.stopCall = (calltype, from = null) => this.actions.stopCall({ callType: calltype, from: from })
-        this.catchError = (error, calltype, from = null) => this.actions.catchError({ error: error, callType: this.callTypes.list, from: from })
+        this.stopCall = (calltype) => this.actions.stopCall({ callType: calltype })
+        this.catchError = (error, calltype) => this.actions.catchError({ error: error, callType: calltype })
     }
 
     reIniState = () => dispatch => {
@@ -29,7 +29,7 @@ export default class _BaseIpcActions {
         dispatch(this.startCall(this.callTypes.list, from))
         return this.sendIPC('getAll')
             .then(res => {
-                dispatch(this.stopCall(this.callTypes.list, from))
+                dispatch(this.stopCall(this.callTypes.list))
                 return Promise.resolve(res)
             })
             .catch(error => {
@@ -42,7 +42,7 @@ export default class _BaseIpcActions {
         dispatch(this.startCall(this.callTypes.action, from))
         return this.sendIPC('save', payload)
             .then(res => {
-                dispatch(this.stopCall(this.callTypes.action, from))
+                dispatch(this.stopCall(this.callTypes.action))
                 return Promise.resolve(res)
             })
             .catch(error => {
@@ -55,7 +55,7 @@ export default class _BaseIpcActions {
         dispatch(this.startCall(this.callTypes.action, from))
         return this.sendIPC('getById', id)
             .then(res => {
-                dispatch(this.stopCall(this.callTypes.action, from))
+                dispatch(this.stopCall(this.callTypes.action))
                 return Promise.resolve(res)
             })
             .catch(error => {
