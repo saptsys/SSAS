@@ -14,6 +14,7 @@ const MainMenu = () => {
 
 
     const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
+        debugger;
         const title = getTitleByUrl(key) ?? domEvent.currentTarget.innerText
         dispatch(LayoutActions.setTitle(title))
         history.push(key)
@@ -51,11 +52,11 @@ const MainMenu = () => {
                 <SubMenu key={ROUTES.transactions.purchase._path} title="Purchase">
                     <Menu.Item key={ROUTES.transactions.purchase.purchaseInvoice._path}>Purchase Invoice</Menu.Item>
                 </SubMenu>
-                <Menu.Item key={ROUTES.transactions.deliveryChallan}>Delivery Challan</Menu.Item>
+                <Menu.Item key={ROUTES.transactions.deliveryChallan._path}>Delivery Challan</Menu.Item>
             </SubMenu>
 
             <SubMenu key={ROUTES.reports._path} title="Reports">
-                <Menu.Item key={ROUTES.reports.deliveryChallan._path}>Item Wise</Menu.Item>
+                <Menu.Item key={ROUTES.reports.deliveryChallan._path}>Delivery Challan</Menu.Item>
             </SubMenu>
 
             <SubMenu key={ROUTES.utility._path} title="Utility">

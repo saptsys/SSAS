@@ -62,7 +62,7 @@ function CommonModuleView({
       />
       <Drawer
         id="edit-drawer"
-        width={720}
+        width={500}
         onClose={() => cancelEditBtnHandler()}
         visible={editMode.mode}
         destroyOnClose={true}

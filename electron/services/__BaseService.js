@@ -27,21 +27,24 @@ class __BaseService {
    * @returns  Promise
    */
   create(entity) {
-    return this.repository.create(entity);
+    const entityToCreate = new this.ModelClass(entity)
+    return this.repository.create(entityToCreate);
   }
   /**
    *
    * @returns  Promise
    */
   update(entity) {
-    return this.repository.update(entity);
+    const entityToUpdate = new this.ModelClass(entity)
+    return this.repository.update(entityToUpdate);
   }
   /**
    *
    * @returns  Promise
    */
   save(entity) {
-    return this.repository.save(entity);
+    const entityToSave = new this.ModelClass(entity)
+    return this.repository.save(entityToSave);
   }
   /**
    *

@@ -28,7 +28,6 @@ export const ROUTES = {
             _path: '/transactions/sales',
             salesInvoice: {
                 _path: '/transactions/sales/sales-invoice',
-                _title:"Sales Invoice"
             }
         },
         purchase: {

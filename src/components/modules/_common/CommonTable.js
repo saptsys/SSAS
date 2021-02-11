@@ -32,7 +32,7 @@ const CommonTable = ({ columns, dataSource, loading = false, filterText = "", ed
                 columns={finalColumns}
                 dataSource={filteredData}
                 size="small"
-                loading={loading}
+                loading={!!loading}
                 bordered
                 pagination={{ pageSize: 10 }}
                 sticky={true}

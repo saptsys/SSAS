@@ -1,185 +1,62 @@
 import React from "react";
-import { Form, Input, Button, Select, Switch, Tooltip, Row, Col } from "antd";
+import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
-
+const { Option } = Select
 function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
 
   const onFinish = (values) => {
-    saveBtnHandler && saveBtnHandler(values)
+    saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const formItemLayout = {
+  const layout = {
     labelCol: {
-      xs: {
-        span: 24,
-      },
-      sm: {
-        span: 6,
-      },
+      span: 8,
     },
     wrapperCol: {
-      xs: {
-        span: 24,
-      },
-      sm: {
-        span: 15,
-      },
+      span: 16,
     },
   };
-
   return (
     <Form
-      {...formItemLayout}
+      {...layout}
       name="basic"
       initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              label="Customer Name"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Customer Type"
-              name="type"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
-            >
-              <Select>
-                <Select.Option value="CUSTOMER">Saundry-Debtor</Select.Option>
-                <Select.Option value="SUPPLIER">Saundry-Creditor</Select.Option>
-                <Select.Option value="BOTH">Both</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
+
+      <Form.Item name="name" label="Customer Name">
+        <Input />
       </Form.Item>
 
-      <Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item label="Phone" name="phone">
-              <Input type="number" />
-            </Form.Item>
-          </Col>
+      <Form.Item name="type" label="Type" required>
+        <Select
+          showSearch
+          optionFilterProp="label"
+          mode="multiple"
+          options={[
+            { label: 'Sundry Debtor', value: "CUSTOMER" },
+            { label: 'Sundry Creditor', value: "SUPPLIER" },
+            { label: 'Both', value: "BOTH" }
+          ]} />
 
-          <Col span={12}>
-            {" "}
-            <Form.Item label="Address" name="address">
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
+        {/* <Select
+          showSearch
+          style={{ width: 200 }}
+          placeholder="Search to Select"
+          optionFilterProp="children"
+        >
+          <Option value="SUPPLIER">Sundry Creditor</Option>
+          <Option value="CUSTOMER">Sundry Debtor</Option>
+          <Option value="BOTH">Both</Option>
+        </Select> */}
       </Form.Item>
-
-      <Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item label="Mobile" name="mobile">
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item label="City" name="city">
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                {
-                  type: "email",
-                  message: "The input is not valid E-mail!",
-                },
-              ]}
-            >
-              <Input type="email" />
-            </Form.Item>{" "}
-          </Col>
-        </Row>
-      </Form.Item>
-
-      <Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              label="State"
-              name="stateCode"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
-            >
-              <Select value="GJ">
-                <Select.Option value="GJ">Gujarat</Select.Option>
-                <Select.Option value="ASM">Assam</Select.Option>
-                <Select.Option value="KSHMR">Kashmir</Select.Option>
-                <Select.Option value="TMLN">Tamilnadu</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item label="Active" name="isActive">
-              <Switch checked />
-            </Form.Item>{" "}
-          </Col>
-        </Row>
-      </Form.Item>
-
-      <Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              label={
-                <span>
-                  GSTIN&nbsp;
-                  <Tooltip title="Enter If Comapny is Registered">
-                    <QuestionCircleOutlined />
-                  </Tooltip>
-                </span>
-              }
-              name="gstin"
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item label="PAN" name="pan">
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form.Item>
-
-      ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />ABCD<br />
 
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>
