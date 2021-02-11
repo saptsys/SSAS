@@ -54,6 +54,7 @@
     "@reduxjs/toolkit": "^1.5.0",
     "antd": "^4.12.2",
     "axios": "^0.21.1",
+    "electron-ipc-log": "^3.0.1",
     "electron-promise-ipc": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
     "moment": "^2.29.1",

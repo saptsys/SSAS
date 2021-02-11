@@ -69,8 +69,8 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
               ]}
             >
               <Select>
-                <Select.Option value="CUSTOMER">Customer</Select.Option>
-                <Select.Option value="SUPPLIER">Supplier</Select.Option>
+                <Select.Option value="CUSTOMER">Saundry-Debtor</Select.Option>
+                <Select.Option value="SUPPLIER">Saundry-Creditor</Select.Option>
                 <Select.Option value="BOTH">Both</Select.Option>
               </Select>
             </Form.Item>
