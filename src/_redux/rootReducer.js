@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { LayoutSlice } from "./actionFiles/LayoutRedux";
 import { PartyMasterSlice } from "./actionFiles/PartyMasterRedux";
+import { ItemGroupMasterSlice } from "./actionFiles/ItemGroupMasterRedux";
 
 //add your custom slice which you createed without _BaseSlice class
 let reducers = {
@@ -10,7 +11,8 @@ let reducers = {
 const redcuerList = [
 
     PartyMasterSlice,
-    LayoutSlice
+    ItemGroupMasterSlice,
+    LayoutSlice,
 
 ]
 redcuerList.forEach(slice => {

@@ -14,7 +14,6 @@ const MainMenu = () => {
 
 
     const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
-        debugger;
         const title = getTitleByUrl(key) ?? domEvent.currentTarget.innerText
         dispatch(LayoutActions.setTitle(title))
         history.push(key)
