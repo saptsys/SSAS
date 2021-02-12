@@ -9,6 +9,7 @@ function PartyMasterPage() {
     reducerInfo={reducerInfo}
     MainTable={PartyMasterTable}
     EditForm={PartyMasterForm}
+    drawerWidth="720"
     actions={PartyMasterActions}
   />
 }

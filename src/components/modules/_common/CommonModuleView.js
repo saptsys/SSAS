@@ -11,7 +11,8 @@ function CommonModuleView({
   MainTable,
   EditForm,
   methods = { fetchTableData: "getAll", fetchEditData: "getById", saveForm: "save" },
-  actions
+  actions,
+  drawerWidth = "500"
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -62,7 +63,7 @@ function CommonModuleView({
       />
       <Drawer
         id="edit-drawer"
-        width={500}
+        width={drawerWidth}
         onClose={() => cancelEditBtnHandler()}
         visible={editMode.mode}
         destroyOnClose={true}
