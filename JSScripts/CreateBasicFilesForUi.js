@@ -68,7 +68,7 @@ function mastersFormTemplate(entiryName) {
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 
-function ${entiryName}Page({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+function ${entiryName}Form({ entityForEdit, saveBtnHandler, saveBtnRef }) {
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -104,7 +104,7 @@ function ${entiryName}Page({ entityForEdit, saveBtnHandler, saveBtnRef }) {
   );
 }
 
-export default ${entiryName}Page;
+export default ${entiryName}Form;
 `;
 }
 
