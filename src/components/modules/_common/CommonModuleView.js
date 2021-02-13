@@ -43,6 +43,10 @@ function CommonModuleView({
   const cancelEditBtnHandler = () => {
     setEditMode({ mode: false, entityForEdit: null })
   }
+  const deleteBtnHandler = (param) => {
+    alert("Delete "+param)
+  }
+
   const getTableData = () => dispatch(actions[methods.fetchTableData]()).then(setTableData)
 
   useEffect(() => {
@@ -59,7 +63,7 @@ function CommonModuleView({
         loading={currentState.list.loading}
         filterText={filterText}
         editBtnHandler={editFormBtnHandler}
-        deleteBtnHandler={undefined}
+        deleteBtnHandler={deleteBtnHandler}
       />
       <Drawer
         id="edit-drawer"
@@ -75,7 +79,7 @@ function CommonModuleView({
             <Col flex="none">
               <Space>
                 <Button type="ghost" onClick={() => cancelEditBtnHandler()}>Cancel</Button>
-                <Button hidden={!editMode.entityForEdit?.id} type="ghost" danger onClick={() => cancelEditBtnHandler()}>Delete</Button>
+                <Button hidden={!editMode.entityForEdit?.id} type="ghost" danger onClick={() => deleteBtnHandler(editMode.entityForEdit.id)}>Delete</Button>
                 <Button type="primary" loading={currentState.action.loading === methods.saveForm} onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>Save</Button>
               </Space>
             </Col>
