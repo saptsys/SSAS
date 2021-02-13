@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 
@@ -27,8 +26,29 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      labelAlign="left"
     >
-      
+      <Form.Item name="name" label="Name">
+        <Input />
+      </Form.Item>
+      <Form.Item name="code" label="Code">
+        <Input />
+      </Form.Item>
+      <Form.Item name="description" label="Description">
+        <Input />
+      </Form.Item>
+      <Form.Item name="taxPercentage" label="Percentage">
+        <Input type="number" />
+      </Form.Item>
+      <Form.Item
+        name="isActive"
+        valuePropName="checked"
+        label="Active"
+        className="form-item-bordered-switch"
+      >
+        <Switch />
+      </Form.Item>
+
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>
           Submit

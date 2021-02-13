@@ -10,6 +10,8 @@ promiseIpc.on(createPath("getAll"), () => {
 });
 
 promiseIpc.on(createPath("save"), (payload) => {
+  console.log(payload)
+
   return service.save(payload);
 });
 

@@ -42,12 +42,16 @@ export default class _BaseIpcActions {
         dispatch(this.startCall(this.callTypes.action, from))
         return this.sendIPC('save', payload)
             .then(res => {
+
                 dispatch(this.stopCall(this.callTypes.action))
                 return Promise.resolve(res)
             })
             .catch(error => {
+                console.log(error)
+
                 dispatch(this.catchError(error.message, this.callTypes.action, from))
             })
+
     }
 
     getById = (id) => dispatch => {

@@ -42,6 +42,8 @@ const MainMenu = () => {
                     <Menu.Item key={ROUTES.masters.item.itemMaster._path}>Item Master</Menu.Item>
                     <Menu.Item key={ROUTES.masters.item.unitMaster._path}>Unit Master</Menu.Item>
                 </SubMenu>
+                <Menu.Item key={ROUTES.masters.taxMaster._path}>Tax Master</Menu.Item>
+
             </SubMenu>
 
             <SubMenu key={ROUTES.transactions._path} title="Transactions">

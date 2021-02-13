@@ -16,7 +16,7 @@ class ItemMaster extends _BaseModel {
     itemTaxable,
     HSNCode,
     VATRate,
-    AdditionalTax,
+    additionalTax,
     isActive,
     system,
     itemUnitMaster,
@@ -41,7 +41,7 @@ class ItemMaster extends _BaseModel {
     this.itemTaxable = itemTaxable;
     this.HSNCode = HSNCode;
     this.VATRate = VATRate;
-    this.AdditionalTax = AdditionalTax;
+    this.additionalTax = additionalTax;
     this.isActive = isActive;
     this.system = system;
     this.itemGroupMaster = itemGroupMaster;

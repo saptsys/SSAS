@@ -26,22 +26,21 @@ function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      labelAlign="left"
     >
-      <Form.Item name="name" label="Unit Name">
+      <Form.Item name="name" label="Group Name">
         <Input />
       </Form.Item>
-      <Form.Item name="code" label="Unit Code">
+      <Form.Item name="code" label="Group Code">
         <Input />
       </Form.Item>
       <Form.Item name="description" label="Description">
         <Input />
       </Form.Item>
-      <Form.Item name="isActive" label="Active">
-        <Switch defaultChecked={true} />
-      </Form.Item>
-      <Form.Item name="system" label="System">
-        <Switch defaultChecked={false} />
-      </Form.Item>
+      <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
+            <Switch />
+          </Form.Item>
+
 
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>

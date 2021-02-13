@@ -12,6 +12,7 @@ function ItemMasterPage() {
         MainTable={ItemMasterTable}
         actions={ItemMasterActions}
         reducerInfo={reducerInfo}
+        drawerWidth="750"
       />
     </div>
   )
