@@ -3,6 +3,9 @@ import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space } from "a
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import States from "../../../../../Constants/States";
+import Regex from "../../../../../Constants/Regex";
+import { useForm } from "antd/lib/form/Form";
+import validateMsgs from "../../../../helpers/validateMesseges";
 
 const { Option } = Select
 function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
@@ -12,9 +15,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  const [form] = useForm()
 
   const layout = {
     labelCol: {
@@ -24,28 +25,49 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       span: 15
     }
   };
-  console.log("Entity for Edit", entityForEdit)
+
+  const gstinNumberChanged = (e) => {
+    if (Regex.checkRegex(e.target.value, 'gstin')) {
+      form.setFieldsValue({ stateCode: parseInt(e.target.value.substr(0, 2)) })
+      form.setFieldsValue({ pan: (e.target.value.substr(2, 10)) })
+    }
+  }
+
   return (
     <Form
       {...layout}
       name="basic"
-      initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
+      initialValues={{...(entityForEdit ?? {})}}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       labelAlign="left"
+      form={form}
+      validateMessages={validateMsgs}
     >
 
       <Row>
         <Col span={11}>
-          <Form.Item name="name" label="Customer Name">
-            <Input />
+          <Form.Item
+            name="name"
+            label="Customer Name"
+            required rules={[{ required: true }]}
+          >
+            <Input
+              placeholder="Customer Name Here"
+            />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="type" label="Type" required >
+          <Form.Item
+            name="type"
+            label="Type"
+            required
+            tooltip="Account Type"
+            rules={[{ required: true }]}
+          >
             <Select
               showSearch
               optionFilterProp="label"
+              placeholder="Select account type"
               options={[
                 { label: 'Sundry Debtors', value: "CUSTOMER" },
                 { label: 'Sundry Creditors', value: "SUPPLIER" },
@@ -57,16 +79,24 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
       <Row>
         <Col span={11}>
-
           <Form.Item name="address" label="Address">
             <TextArea rows={4} />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="gstin" label="GSTIN">
-            <Input />
+          <Form.Item
+            name="gstin"
+            label="GSTIN"
+            rules={[{ pattern: Regex.gstin, message: 'GSTIN is not valid' }]}
+          >
+            <Input onChange={gstinNumberChanged} />
           </Form.Item>
-          <Form.Item name="pan" label="PAN">
+          <Form.Item
+            name="pan"
+            label="PAN"
+            rules={[{ pattern: Regex.pan, message: 'PAN is not valid' }]}
+          >
+
             <Input />
           </Form.Item>
         </Col>
@@ -87,7 +117,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
       <Row>
         <Col span={11}>
-          <Form.Item name="stateCode" label="State">
+          <Form.Item name="stateCode" label="State" required>
             <Select
               showSearch
               optionFilterProp="label"
@@ -96,7 +126,10 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="phone" label="Phone">
+          <Form.Item
+            name="phone"
+            label="Phone"
+          >
             <Input />
           </Form.Item>
         </Col>
@@ -109,7 +142,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="email" label="Email">
+          <Form.Item name="email" label="Email" rules={[{ pattern: Regex.email }]}>
             <Input />
           </Form.Item>
         </Col>

@@ -8,52 +8,24 @@ function PartyMasterTable(props) {
       dataIndex: "id",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
-    },
-    {
-      title: "address",
-      dataIndex: "address",
-    },
-    {
-      title: "city",
-      dataIndex: "city",
-    },
-    {
-      title: "email",
-      dataIndex: "email",
-    },
-    {
-      title: "gstin",
-      dataIndex: "gstin",
-    },
-    {
-      title: "isActive",
-      dataIndex: "isActive",
-    },
-    {
-      title: "mobile",
-      dataIndex: "mobile",
-    },
-    {
-      title: "name",
+      title: "Name",
       dataIndex: "name",
     },
     {
-      title: "phone",
-      dataIndex: "phone",
+      title: "GSTIN",
+      dataIndex: "gstin",
     },
     {
-      title: "stateCode",
-      dataIndex: "stateCode",
-    },
-    {
-      title: "system",
-      dataIndex: "system",
-    },
-    {
-      title: "type",
+      title: "Type",
       dataIndex: "type",
+    },
+    {
+      title: "City",
+      dataIndex: "city",
+    },
+    {
+      title: "State",
+      dataIndex: "stateCode",
     },
   ];
 
