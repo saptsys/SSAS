@@ -24,7 +24,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       span: 15
     }
   };
-
+  console.log("Entity for Edit", entityForEdit)
   return (
     <Form
       {...layout}
@@ -87,7 +87,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
       <Row>
         <Col span={11}>
-          <Form.Item name="state" label="State">
+          <Form.Item name="stateCode" label="State">
             <Select
               showSearch
               optionFilterProp="label"
@@ -104,7 +104,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
 
       <Row>
         <Col span={11} >
-          <Form.Item name="isActive" label="Active" wrapperCol={{ style: { border: '1px solid #ddd' } }}>
+          <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
             <Switch />
           </Form.Item>
         </Col>

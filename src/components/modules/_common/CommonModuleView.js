@@ -74,8 +74,9 @@ function CommonModuleView({
             </Col>
             <Col flex="none">
               <Space>
-                <Button type="ghost" onClick={() => cancelEditBtnHandler()}>CANCEL</Button>
-                <Button type="primary" loading={currentState.action.loading === methods.saveForm} onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>SAVE</Button>
+                <Button type="ghost" onClick={() => cancelEditBtnHandler()}>Cancel</Button>
+                <Button hidden={!editMode.entityForEdit?.id} type="ghost" danger onClick={() => cancelEditBtnHandler()}>Delete</Button>
+                <Button type="primary" loading={currentState.action.loading === methods.saveForm} onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>Save</Button>
               </Space>
             </Col>
           </Row>
