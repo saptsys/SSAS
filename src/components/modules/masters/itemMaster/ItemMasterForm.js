@@ -14,9 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
 import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
-
+import moment from "moment";
 function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
   const onFinish = (values) => {
+    values.date = values.date.format("MM-DD-YYYY");
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
 
@@ -74,7 +75,15 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     <Form
       {...layout}
       name="basic"
-      initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
+      initialValues={(function () {
+        if (entityForEdit) {
+          if (entityForEdit.date) {
+            return { ...entityForEdit, date: moment(entityForEdit.date) };
+          }
+          return entityForEdit;
+        }
+        return {};
+      })()}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       labelAlign="left"
@@ -100,7 +109,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="date" label="Date">
-            <DatePicker />
+            <DatePicker format="MM-DD-YYYY" />
           </Form.Item>
         </Col>
       </Row>
