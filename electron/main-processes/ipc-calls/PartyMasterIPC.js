@@ -20,12 +20,7 @@ promiseIpc.on(createPath("save"), (payload) => {
 });
 
 promiseIpc.on(createPath("getById"), (payload) => {
-  return new Promise((resolve, reject) => {
-    return setTimeout(() => {
-      // null.replace("a", "b")
-      resolve(service.getById(payload))
-    }, 3000)
-  })
+  return service.getById(payload);
 });
 
 promiseIpc.on(createPath("delete"), (payload) => {

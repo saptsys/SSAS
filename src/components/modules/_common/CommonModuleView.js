@@ -1,6 +1,5 @@
-import { Button, Col, Drawer, message, Row, Space, Spin } from 'antd';
+import { Button, Col, Drawer, message, Modal, Row, Space, Spin } from 'antd';
 import Text from 'antd/lib/typography/Text';
-import Title from 'antd/lib/typography/Title';
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import setupCommonToolBar from './CommonToolbar';
@@ -8,6 +7,7 @@ import './CommonModuleView.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
 import { useForm } from 'antd/lib/form/Form';
+import { errorDialog } from "../../../helpers/dialogs";
 
 function CommonModuleView({
   reducerInfo,
@@ -38,7 +38,12 @@ function CommonModuleView({
       setEditMode({ mode: true, entityForEdit: null })
       dispatch(actions[methods.fetchEditData](params)).then((res) => {
         setEditMode({ mode: true, entityForEdit: res })
-      })
+      }).catch(err => errorDialog(
+        "Error while getting record for edit!!",
+        <span>{err.message}<br /><br />Please retry or Close.</span>,
+        cancelEditBtnHandler,
+        () => editFormBtnHandler(params)
+      ))
     } else {
       setEditMode({ mode: true, entityForEdit: reducerInfo.model })
     }
@@ -46,8 +51,15 @@ function CommonModuleView({
   const saveBtnHandler = (values) => {
     dispatch(actions[methods.saveForm](values)).then((res) => {
       getTableData()
-      message.success("Record Saved Successfuly", 4)
       cancelEditBtnHandler()
+      message.success("Record Saved Successfuly", 4)
+    }).catch(err => {
+      errorDialog(
+        "Error while saving data !",
+        <span>{err.message}<br /><br />Please retry or close</span>,
+        () => { },
+        () => saveBtnHandler(values)
+      )
     })
   }
   const cancelEditBtnHandler = () => {
@@ -64,21 +76,38 @@ function CommonModuleView({
       onOk() {
         return new Promise((resolve, reject) => {
           return dispatch(actions[methods.deleteRecord](param)).then(res => {
-            message.success("Record Deleted Successfuly", 4)
             resolve()
             setTableData(tableData.filter(x => x.id !== param))
             cancelEditBtnHandler()
+            message.success("Record Deleted Successfuly", 4)
+          }).catch(err => {
+            reject()
+            errorDialog(
+              "Error while deleting record !",
+              <span>{err.message}<br /><br />Please retry or close.</span>,
+              () => Modal.destroyAll(),
+              () => { }
+            )
           })
         })
       },
     })
   }
 
-  const getTableData = () => dispatch(actions[methods.fetchTableData]()).then(setTableData)
+  const getTableData = () => dispatch(actions[methods.fetchTableData]())
+    .then(setTableData)
+    .catch(err => {
+      errorDialog(
+        "Error while getting data !",
+        <span>{err.message}<br /><br />Please retry or close</span>,
+        () => { },
+        () => getTableData()
+      )
+    })
 
   useEffect(() => {
     setupCommonToolBar(dispatch, {
-      createBtn: editFormBtnHandler,
+      createBtn: () => editFormBtnHandler(),
       searchBar: setFilterText
     })
     getTableData()
