@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 
-function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -27,6 +27,7 @@ function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       labelAlign="left"
+      form={form}
     >
       <Form.Item name="name" label="Unit Name">
         <Input />

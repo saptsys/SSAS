@@ -5,7 +5,7 @@ module.exports = {
     "type": "sqlite",
     "database": DB_PATH,
     'folder': DB_FILES_FOLDER,
-    "synchronize": true,
+    "synchronize": false,
     "logging": false,
     "entities": [
         `${DB_FILES_FOLDER}/entities/**/*.js`

@@ -9,6 +9,7 @@ class ItemMasterService extends __BaseService {
      */
     this.repository = getConnection().getRepository(Models.ItemMaster);
   }
+  // overriding to send extra fields
   getAll() {
     const stmt = this.repository
       .createQueryBuilder("item")
@@ -17,15 +18,12 @@ class ItemMasterService extends __BaseService {
       .leftJoin("item.taxMaster", "taxes")
 
       .select([
-        "item",
+        "item.*",
         "units.name as itemUnitMasterName",
         "groups.name as itemGroupMasterName",
-        "taxes.name as taxMasterName"
+        "taxes.name as taxMasterName",
       ]);
-    let dto = Models.ItemMaster;
-    console.log(dto)
-    console.log(stmt.getMany())
-    return stmt.getMany();
+    return stmt.getRawMany();
   }
 }
 module.exports = ItemMasterService;
