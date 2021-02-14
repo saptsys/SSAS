@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 
-function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -27,6 +27,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       labelAlign="left"
+      form={form}
     >
       <Form.Item name="name" label="Name">
         <Input />

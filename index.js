@@ -11,7 +11,15 @@ function init() {
     reloader(module, {
       debug: true,
       watchRenderer: true,
-      ignore: ["./databases", "./src", "./electron", "db*", "webpack","./*.js","logs"],
+      ignore: [
+        "./databases",
+        "./src",
+        "./electron",
+        "db*",
+        "webpack",
+        "./*.js",
+        "logs",
+      ],
     });
   } catch (_) {
     console.log("electron-preloader-notfound");
@@ -113,7 +121,7 @@ const installIpcLogger = () => {
       console.log(...args);
     });
   } catch (e) {
-    console.log("ipc logger not loaded.")
+    console.log("ipc logger not loaded.");
   }
 };
 const installExtensions = async () => {
@@ -148,7 +156,17 @@ function loadMainProcess() {
  * @returns Promise<Connection>
  */
 function setDatabaseConnection() {
-  return createConnection();
+  connectionPromise = createConnection();
+  connectionPromise.then((connection) => {
+    syncTypeORM(connection);
+  });
+  return connectionPromise;
+}
+
+async function syncTypeORM(connection) {
+  await connection.query("PRAGMA foreign_keys=OFF");
+  await connection.synchronize();
+  await connection.query("PRAGMA foreign_keys=ON");
 }
 
 init();

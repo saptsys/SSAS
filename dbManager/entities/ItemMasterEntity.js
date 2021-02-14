@@ -28,21 +28,28 @@ module.exports = new EntitySchema({
     date: {
       name: "date",
       type: "date",
+      nullable: true,
+
     },
     salePrice: {
       name: "sale_price",
       type: "double",
       default: 0.0,
+      nullable: true,
     },
     purchasePrice: {
       name: "purchase_price",
       type: "double",
       default: 0.0,
+      nullable: true,
+
     },
     itemTaxable: {
       name: "item_taxable",
       type: "boolean",
       default: false,
+      nullable: true,
+
     },
     HSNCode: {
       name: "hsn_code",
@@ -54,21 +61,28 @@ module.exports = new EntitySchema({
       name: "vat_rate",
       type: "double",
       default: 0.0,
+      nullable: true,
+
     },
     additionalTax: {
       name: "additional_tax",
       type: "double",
       default: 0.0,
+      nullable: true,
+
     },
     isActive: {
       name: "is_active",
       type: "boolean",
       default: true,
+
     },
     system: {
       name: "system",
       type: "boolean",
       default: false,
+      nullable: true,
+
     },
     itemUnitMaster: {
       name: "item_unti_mst_id",

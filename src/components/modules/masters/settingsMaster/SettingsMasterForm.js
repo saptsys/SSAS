@@ -2,7 +2,7 @@
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 
-function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -27,6 +27,7 @@ function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      form={form}
     >
       
       <Form.Item hidden>

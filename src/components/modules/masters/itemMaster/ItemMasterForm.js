@@ -8,15 +8,20 @@ import {
   Row,
   Col,
   DatePicker,
+  InputNumber
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
 import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
-
-function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+import moment from "moment";
+import { dateFormat } from "./../../../../../Constants/Formats";
+function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
+    if (values.date) {
+      values.date = values.date.format(dateFormat);
+    }
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
 
@@ -74,19 +79,46 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     <Form
       {...layout}
       name="basic"
-      initialValues={{ remember: true, ...(entityForEdit ?? {}) }}
+      initialValues={(function () {
+        if (entityForEdit) {
+          if (entityForEdit.date) {
+            var date = moment(entityForEdit.date, dateFormat);
+            if (!date.isValid()) {
+              date = null;
+            }
+            return {
+              ...entityForEdit,
+              date: date,
+            };
+          }
+        }
+        return entityForEdit ?? {};
+      })()}
+      form={form}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       labelAlign="left"
     >
       <Row>
         <Col span={11}>
-          <Form.Item name="name" label="Name">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              { required: true, message: "Please input your item name!" },
+            ]}
+          >
             <Input />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="code" label="Code">
+          <Form.Item
+            name="code"
+            label="Code"
+            rules={[
+              { required: true, message: "Please input your item code!" },
+            ]}
+          >
             <Input />
           </Form.Item>
         </Col>
@@ -100,27 +132,35 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="date" label="Date">
-            <DatePicker />
+            <DatePicker format={dateFormat} />
           </Form.Item>
         </Col>
       </Row>
 
       <Row>
         <Col span={11}>
-          <Form.Item name="salePrice" label="Sale rate">
-            <Input />
+          <Form.Item
+            name="salePrice"
+            label="Sale rate"
+            rules={[{ type: "number" ,message:'not a valid number'}]}
+          >
+            <InputNumber  />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="purchasePrice" label="Purchase rate">
-            <Input />
+          <Form.Item
+            name="purchasePrice"
+            label="Purchase rate"
+            rules={[{ type: "number",message:'not a valid number' }]}
+          >
+            <InputNumber  />
           </Form.Item>
         </Col>
       </Row>
 
       <Row>
         <Col span={11}>
-          <Form.Item name="taxMaster" label="Tax" required>
+          <Form.Item name="taxMaster" label="Tax">
             <Select showSearch optionFilterProp="label" options={taxes} />
           </Form.Item>
         </Col>
@@ -144,12 +184,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       </Row>
       <Row>
         <Col span={11}>
-          <Form.Item name="itemUnitMaster" label="Unit" required>
+          <Form.Item name="itemUnitMaster" label="Unit">
             <Select showSearch optionFilterProp="label" options={units} />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item name="itemGroupMaster" label="Group" required>
+          <Form.Item name="itemGroupMaster" label="Group">
             <Select showSearch optionFilterProp="label" options={groups} />
           </Form.Item>
         </Col>
@@ -161,15 +201,16 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
             valuePropName="checked"
             label="Taxable?"
           >
-            <Switch />
+            <Switch defaultChecked={true} />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="isActive" valuePropName="checked" label="Active?">
-            <Switch />
+            <Switch defaultChecked={true} />
           </Form.Item>
         </Col>
       </Row>
+
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>
           Submit

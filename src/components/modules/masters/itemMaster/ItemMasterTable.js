@@ -1,4 +1,3 @@
-
 import React from "react";
 import CommonTable from "../../_common/CommonTable";
 
@@ -9,13 +8,33 @@ function ItemMasterTable(props) {
       dataIndex: "id",
     },
     {
-      title: "name",
+      title: "Code",
+      dataIndex: "code",
+    },
+    {
+      title: "Name",
       dataIndex: "name",
     },
     {
-      title: "code",
-      dataIndex: "code",
+      title:"Group",
+      dataIndex:"itemGroupMasterName"
     },
+    {
+      title:"Unit",
+      dataIndex:"itemUnitMasterName"
+    },
+    {
+      title:"Tax",
+      dataIndex:"taxMasterName"
+    },
+    {
+      title:"HSN Code",
+      dataIndex:"HSNCode"
+    },
+    {
+      title:"Active",
+      dataIndex:"isActive"
+    }
   ];
 
   return <CommonTable columns={columns} {...props} />;

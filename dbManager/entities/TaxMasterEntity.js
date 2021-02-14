@@ -20,6 +20,7 @@ module.exports = new EntitySchema({
       name: "code",
       type: "text",
       nullable: false,
+      unique:true
     },
     description: {
       name: "description",
