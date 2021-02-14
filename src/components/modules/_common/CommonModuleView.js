@@ -5,12 +5,20 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import setupCommonToolBar from './CommonToolbar';
 import './CommonModuleView.less'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import confirm from 'antd/lib/modal/confirm';
+import { useForm } from 'antd/lib/form/Form';
 
 function CommonModuleView({
   reducerInfo,
   MainTable,
   EditForm,
-  methods = { fetchTableData: "getAll", fetchEditData: "getById", saveForm: "save" },
+  methods = {
+    fetchTableData: "getAll",
+    fetchEditData: "getById",
+    saveForm: "save",
+    deleteRecord: "delete"
+  },
   actions,
   drawerWidth = "500"
 }) {
@@ -23,9 +31,11 @@ function CommonModuleView({
   const [editMode, setEditMode] = useState({ mode: false, entityForEdit: null })
   const [tableData, setTableData] = useState([])
   const saveBtnRef = useRef()
+  const [editUseForm] = useForm()
 
   const editFormBtnHandler = (params) => {
     if (params) {
+      setEditMode({ mode: true, entityForEdit: null })
       dispatch(actions[methods.fetchEditData](params)).then((res) => {
         setEditMode({ mode: true, entityForEdit: res })
       })
@@ -44,7 +54,24 @@ function CommonModuleView({
     setEditMode({ mode: false, entityForEdit: null })
   }
   const deleteBtnHandler = (param) => {
-    alert("Delete "+param)
+    confirm({
+      title: 'Do you want to delete this record?',
+      icon: <ExclamationCircleOutlined style={{ color: 'orange' }} />,
+      content: 'When clicked the OK button, the record will be deleted',
+      okType: 'danger',
+      okButtonProps: { style: { width: '75px' } },
+      cancelButtonProps: { style: { width: '75px' } },
+      onOk() {
+        return new Promise((resolve, reject) => {
+          return dispatch(actions[methods.deleteRecord](param)).then(res => {
+            message.success("Record Deleted Successfuly", 4)
+            resolve()
+            setTableData(tableData.filter(x => x.id !== param))
+            cancelEditBtnHandler()
+          })
+        })
+      },
+    })
   }
 
   const getTableData = () => dispatch(actions[methods.fetchTableData]()).then(setTableData)
@@ -56,11 +83,19 @@ function CommonModuleView({
     })
     getTableData()
   }, [])
+
+  useEffect(() => {
+    if (editUseForm) {
+      editUseForm.resetFields()
+    }
+  }, [editMode.entityForEdit])
+
+
   return (
     <div style={{ position: 'relative' }}>
       <MainTable
         dataSource={tableData ?? []}
-        loading={currentState.list.loading}
+        loading={currentState.list.loading || currentState.action.loading === "delete"}
         filterText={filterText}
         editBtnHandler={editFormBtnHandler}
         deleteBtnHandler={deleteBtnHandler}
@@ -92,6 +127,7 @@ function CommonModuleView({
             entityForEdit={editMode.entityForEdit}
             saveBtnHandler={saveBtnHandler}
             saveBtnRef={saveBtnRef}
+            form={editUseForm}
           />
         </Spin>
         {/* <EditForm /> */}

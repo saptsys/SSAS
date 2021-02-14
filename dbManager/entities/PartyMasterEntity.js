@@ -70,6 +70,6 @@ module.exports = new EntitySchema({
       name: "system",
       type: "boolean",
       default: false,
-    },
+    }
   },
 });

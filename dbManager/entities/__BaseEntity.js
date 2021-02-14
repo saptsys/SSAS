@@ -24,5 +24,10 @@ module.exports = {
         name: 'modified_by',
         type: 'integer',
         default: 0,
+    },
+    deletedAt: {
+        name: 'deleted_at',
+        type: 'text',
+        deleteDate:true
     }
 }

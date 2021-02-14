@@ -4,13 +4,25 @@ import React, { useMemo } from 'react';
 import { searchInArray } from '../../../helpers/arrayManipulation';
 
 const CommonTable = ({ columns, dataSource, loading = false, filterText = "", editBtnHandler, deleteBtnHandler, rowKey = "id", style }) => {
-    const filteredData = useMemo(() => searchInArray(dataSource, filterText), [dataSource, filterText])
+    const filteredData = useMemo(() => {
+        let rederes = {}
+        columns.forEach(col => {
+            rederes[col.dataIndex] = col.render ? col.render : (a, b, c) => a
+        })
+        return dataSource.filter((row, rowIndex) => {
+            return Object.keys(row).filter(f => rederes.hasOwnProperty(f)).some((field) => {
+                return String(rederes[field](row[field], row, rowIndex))
+                    .toLowerCase()
+                    .includes(filterText.toLowerCase())
+            })
+        })
+    }, [filterText, dataSource])
     const finalColumns = [
         ...columns.map(col => {
             return {
-                ...col,
                 filtered: !!filterText,
-                sorter: (a, b) => a[col.dataIndex] < b[col.dataIndex] ? -1 : 1
+                sorter: (a, b) => a[col.dataIndex] < b[col.dataIndex] ? -1 : 1,
+                ...col,
             }
         }),
         {
@@ -49,6 +61,7 @@ const CommonTable = ({ columns, dataSource, loading = false, filterText = "", ed
                 bordered
                 pagination={{ showQuickJumper: true, showSizeChanger: true }}
                 sticky={true}
+                tableLayout='auto'
             />
         </div>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
@@ -8,14 +8,12 @@ import { useForm } from "antd/lib/form/Form";
 import validateMsgs from "../../../../helpers/validateMesseges";
 
 const { Option } = Select
-function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
+function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
 
 
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
   };
-
-  const [form] = useForm()
 
   const layout = {
     labelCol: {
@@ -37,7 +35,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef }) {
     <Form
       {...layout}
       name="basic"
-      initialValues={{...(entityForEdit ?? {})}}
+      initialValues={{ ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}

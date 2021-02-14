@@ -34,6 +34,7 @@ export default class _BaseIpcActions {
             })
             .catch(error => {
                 dispatch(this.catchError(error.message, this.callTypes.list, from))
+                return Promise.reject(error)
             })
     }
 
@@ -50,6 +51,7 @@ export default class _BaseIpcActions {
                 console.log(error)
 
                 dispatch(this.catchError(error.message, this.callTypes.action, from))
+                return Promise.reject(error)
             })
 
     }
@@ -64,6 +66,21 @@ export default class _BaseIpcActions {
             })
             .catch(error => {
                 dispatch(this.catchError(error.message, this.callTypes.action, from))
+                return Promise.reject(error)
+            })
+    }
+
+    delete = (id) => dispatch => {
+        const from = "delete"
+        dispatch(this.startCall(this.callTypes.action, from))
+        return this.sendIPC('delete', id)
+            .then(res => {
+                dispatch(this.stopCall(this.callTypes.action))
+                return Promise.resolve(res)
+            })
+            .catch(error => {
+                dispatch(this.catchError(error.message, this.callTypes.action, from))
+                return Promise.reject(error)
             })
     }
 }

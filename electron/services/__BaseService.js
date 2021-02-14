@@ -51,7 +51,7 @@ class __BaseService {
    * @returns  Promise
    */
   delete(id) {
-    return this.repository.softDelete(id);
+    return this.repository.softDelete(id)
   }
   /**
    *
