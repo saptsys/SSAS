@@ -4,7 +4,7 @@ import { Button, Col, Image, Layout, Menu, Row, Space } from 'antd';
 const { Sider, Header, Content, Footer } = Layout
 import './MainLayout.less'
 import SubMenu from 'antd/lib/menu/SubMenu';
-import logoSrc from "../../assets/images/logo-sm.png"
+import logoSrc from "../../assets/images/logo-s-round.png"
 import Text from 'antd/lib/typography/Text';
 import moment from "moment";
 import MainMenu from './MainMenu';
@@ -31,7 +31,7 @@ const MainLayout = ({ children }) => {
                     <Sider className="sider" id="aside-menu">
                         <div className="sider-header">
                             <Image src={logoSrc} />
-                            {/* <b>ABC PHOTO PVT LTD</b> */}
+                            <b>Saptsys</b>
                         </div>
                         <MainMenu />
                     </Sider>

@@ -8,6 +8,8 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
 import { useForm } from 'antd/lib/form/Form';
 import { errorDialog } from "../../../helpers/dialogs";
+import { LayoutActions } from '../../../_redux/actionFiles/LayoutRedux';
+import { registerShortcuts } from '../../../helpers/shortcutsRegister';
 
 function CommonModuleView({
   reducerInfo,
@@ -119,6 +121,24 @@ function CommonModuleView({
     }
   }, [editMode.entityForEdit])
 
+  useEffect(() => {
+    dispatch(LayoutActions.setMessage(currentState.list.error ? <Text type="danger">Error: {currentState.list.error} <Button danger type="ghost" size="small" style={{ padding: "0 2px", backgroundColor: 'rgba(0,0,0,0)' }} onClick={getTableData}>Retry</Button></Text> : null))
+  }, [currentState.list.error])
+
+  useEffect(() => {
+    return registerShortcuts(dispatch, [
+      {
+        key: "ctrl+a",
+        title: 'CTRL+A to Add ',
+        method: () => editFormBtnHandler(null)
+      },
+      {
+        key: "ctrl+v",
+        title: 'CTRL+V to Vaitul ',
+        method: () => alert("Vaitul Bhayani")
+      },
+    ])
+  }, [])
 
   return (
     <div style={{ position: 'relative' }}>

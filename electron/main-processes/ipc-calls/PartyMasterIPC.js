@@ -11,11 +11,6 @@ promiseIpc.on(createPath("getAll"), () => {
 });
 
 promiseIpc.on(createPath("save"), (payload) => {
-  reverseIpc
-    .dispatchToFocusedWindow("showAlert", { title: "hello" })
-    .then(console.log)
-    .catch(console.log);
-
   return service.save(payload);
 });
 
