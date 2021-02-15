@@ -152,7 +152,16 @@ function CommonModuleView({
             key: "ctrl+a",
             title: 'CTRL+A to Add ',
             method: () => !editMode.mode && editFormBtnHandler(null)
-          }
+          },
+          {
+            key: "ctrl+f",
+            title: 'CTRL+F to Search ',
+            method: () => {
+              const el = document.getElementById("toolbar-search")
+              if (el)
+                el.focus()
+            }
+          },
         ]} />)
       }
       <MainTable

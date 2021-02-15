@@ -11,6 +11,7 @@ export const CommonToolbar = ({ createBtn, searchBar }) => {
                 searchBar && (
                     <Tooltip title="Search here" trigger="focus" >
                         <Input
+                            id="toolbar-search"
                             placeholder="Search in all fields"
                             suffix={<SearchOutlined type="" style={{ fontSize: 16, color: '#444', }} />}
                             onChange={(e) => searchBar(e.target.value)}
