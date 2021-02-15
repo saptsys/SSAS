@@ -9,7 +9,7 @@ import confirm from 'antd/lib/modal/confirm';
 import { useForm } from 'antd/lib/form/Form';
 import { errorDialog } from "../../../helpers/dialogs";
 import { LayoutActions } from '../../../_redux/actionFiles/LayoutRedux';
-import { registerShortcuts } from '../../../helpers/shortcutsRegister';
+import { registerShortcuts, RegisterShortcutsWithComponent } from '../../../helpers/shortcutsRegister';
 
 function CommonModuleView({
   reducerInfo,
@@ -124,24 +124,30 @@ function CommonModuleView({
   useEffect(() => {
     dispatch(LayoutActions.setMessage(currentState.list.error ? <Text type="danger">Error: {currentState.list.error} <Button danger type="ghost" size="small" style={{ padding: "0 2px", backgroundColor: 'rgba(0,0,0,0)' }} onClick={getTableData}>Retry</Button></Text> : null))
   }, [currentState.list.error])
-
-  useEffect(() => {
-    return registerShortcuts(dispatch, [
-      {
-        key: "ctrl+a",
-        title: 'CTRL+A to Add ',
-        method: () => editFormBtnHandler(null)
-      },
-      {
-        key: "ctrl+v",
-        title: 'CTRL+V to Vaitul ',
-        method: () => alert("Vaitul Bhayani")
-      },
-    ])
-  }, [])
-
   return (
     <div style={{ position: 'relative' }}>
+      {
+        editMode.mode === true && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
+          {
+            key: "Esc",
+            title: 'Esc to Cancel ',
+            method: () => { cancelEditBtnHandler(); return true; }
+          }, {
+            key: "ctrl+s",
+            title: 'CTRL+S to Save ',
+            method: () => { currentState.action.loading !== methods.saveForm && saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
+          },
+        ]} />)
+      }
+      {
+        editMode.mode === false && (<RegisterShortcutsWithComponent name="table mode" shortcuts={[
+          {
+            key: "ctrl+a",
+            title: 'CTRL+A to Add ',
+            method: () => editFormBtnHandler(null)
+          }
+        ]} />)
+      }
       <MainTable
         dataSource={tableData ?? []}
         loading={currentState.list.loading || currentState.action.loading === "delete"}
