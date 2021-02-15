@@ -127,7 +127,7 @@ function CommonModuleView({
   return (
     <div style={{ position: 'relative' }}>
       {
-        editMode.mode === true && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
+        editMode.mode === true && !currentState.action.loading && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
           {
             key: "Esc",
             title: 'Esc to Cancel ',
@@ -135,8 +135,15 @@ function CommonModuleView({
           }, {
             key: "ctrl+s",
             title: 'CTRL+S to Save ',
-            method: () => { currentState.action.loading !== methods.saveForm && saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
+            method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
           },
+          {
+            ...(editMode.entityForEdit?.id ? {
+              key: 'ctrl+d',
+              title: "CTRL+D to Delete",
+              method: () => deleteBtnHandler(editMode.entityForEdit.id)
+            } : {})
+          }
         ]} />)
       }
       {
@@ -144,7 +151,7 @@ function CommonModuleView({
           {
             key: "ctrl+a",
             title: 'CTRL+A to Add ',
-            method: () => editFormBtnHandler(null)
+            method: () => !editMode.mode && editFormBtnHandler(null)
           }
         ]} />)
       }
