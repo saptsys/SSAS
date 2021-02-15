@@ -7,6 +7,23 @@ class ItemGroupMasterService extends __BaseService {
     super(Models.ItemGroupMaster)
     this.repository = getConnection().getRepository(Models.ItemGroupMaster)
   }
+  
+  /**
+   *
+   * @returns  Promise
+   */
+  save(entity) {
+    return super.save(entity , true);
+  }
+
+  /**
+   *
+   * @returns  Promise
+   */
+  update(entity) {
+    return super.update(entity , true);
+  }
+
 }
 module.exports = ItemGroupMasterService;
         

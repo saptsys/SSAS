@@ -7,6 +7,22 @@ class TaxMasterService extends __BaseService {
     super(Models.TaxMaster)
     this.repository = getConnection().getRepository(Models.TaxMaster)
   }
+  
+  /**
+   *
+   * @returns  Promise
+   */
+  save(entity) {
+    return super.save(entity , true);
+  }
+
+  /**
+   *
+   * @returns  Promise
+   */
+  update(entity) {
+    return super.update(entity , true);
+  }
 }
 module.exports = TaxMasterService;
         

@@ -34,16 +34,26 @@ class __BaseService {
    *
    * @returns  Promise
    */
-  update(entity) {
+  async update(entity , checkForUniqueCode = false) {
     const entityToUpdate = new this.ModelClass(entity)
+    if(checkForUniqueCode){
+      if (await this.existsByCode(entityToUpdate.code, entityToUpdate.id)) {
+        return Promise.reject({ message: "code already exists" });
+      }
+    }
     return this.repository.update(entityToUpdate);
   }
   /**
    *
    * @returns  Promise
    */
-  save(entity) {
+  async save(entity, checkForUniqueCode = false) {
     const entityToSave = new this.ModelClass(entity)
+    if(checkForUniqueCode){
+      if (await this.existsByCode(entityToSave.code, entityToSave.id)) {
+        return Promise.reject({ message: "code already exists" });
+      }
+    }
     return this.repository.save(entityToSave);
   }
   /**
@@ -59,6 +69,31 @@ class __BaseService {
    */
   deleteHard(id) {
     return this.repository.delete(id);
+  }
+  
+  /**
+   *
+   * @param {String} code
+   * @param {Number} id
+   * @returns Boolean
+   */
+  async existsByCode(code, id = null) {
+    try {
+      const stmt = this.repository
+        .createQueryBuilder()
+        .where("code = :code", { code: code });
+      if (id) {
+        stmt.andWhere("id != :id", { id: id });
+      }
+      stmt.select("count(id)", "total");
+      let { total } = await stmt.getRawOne();
+      if (total == 0) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return true;
+    }
   }
 }
 

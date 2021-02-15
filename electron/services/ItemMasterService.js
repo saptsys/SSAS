@@ -30,49 +30,16 @@ class ItemMasterService extends __BaseService {
    *
    * @returns  Promise
    */
-  async save(entity) {
-    const entityToSave = new this.ModelClass(entity);
-    if (await this.existsByCode(entityToSave.code, entityToSave.id)) {
-      return Promise.reject({ message: "item code already exists" });
-    }
-    return this.repository.save(entityToSave);
+  save(entity) {
+    return super.save(entity , true);
   }
 
   /**
    *
    * @returns  Promise
    */
-  async update(entity) {
-    if (await this.existsByCode(entity.code, entity.id)) {
-      return Promise.reject({ message: "item code already exists" });
-    }
-    const entityToUpdate = new this.ModelClass(entity);
-    return this.repository.update(entityToUpdate);
-  }
-
-  /**
-   *
-   * @param {String} code
-   * @param {Number} id
-   * @returns Boolean
-   */
-  async existsByCode(code, id = null) {
-    try {
-      const stmt = this.repository
-        .createQueryBuilder("item")
-        .where("item.code = :code", { code: code });
-      if (id) {
-        stmt.andWhere("item.id != :id", { id: id });
-      }
-      stmt.select("count(item.id)", "total");
-      let { total } = await stmt.getRawOne();
-      if (total == 0) {
-        return false;
-      }
-      return true;
-    } catch (e) {
-      return true;
-    }
+  update(entity) {
+    return super.update(entity , true);
   }
 }
 module.exports = ItemMasterService;
