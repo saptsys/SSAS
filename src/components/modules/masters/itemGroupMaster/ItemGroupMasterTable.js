@@ -8,16 +8,16 @@ function ItemGroupMasterTable(props) {
       dataIndex: "id",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
-    },
-    {
       title: "name",
       dataIndex: "name",
     },
     {
       title: "code",
       dataIndex: "code",
+    },
+    {
+      title:"items",
+      dataIndex:"containsItems"
     },
     {
       title: "description",

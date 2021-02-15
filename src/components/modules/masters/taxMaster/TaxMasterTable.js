@@ -9,10 +9,6 @@ function TaxMasterTable(props) {
       dataIndex: "id",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
-    },
-    {
       title: "name",
       dataIndex: "name",
     },
@@ -23,6 +19,10 @@ function TaxMasterTable(props) {
     {
       title: "code",
       dataIndex: "code",
+    },
+    {
+      title:"items",
+      dataIndex:"containsItems"
     },
     {
       title: "description",

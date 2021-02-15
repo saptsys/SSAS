@@ -21,6 +21,14 @@ function ItemUnitMasterTable(props) {
       dataIndex: "code",
     },
     {
+      title:"items",
+      dataIndex:"containsItems"
+    },
+    {
+      title:"items",
+      dataIndex:"containsItems"
+    },
+    {
       title: "description",
       dataIndex: "description",
     },

@@ -8,7 +8,7 @@ import {
   Row,
   Col,
   DatePicker,
-  InputNumber
+  InputNumber,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,10 @@ import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnit
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
 import moment from "moment";
 import { dateFormat } from "./../../../../../Constants/Formats";
+import validateMsgs from "../../../../helpers/validateMesseges";
+
+
+
 function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
     if (values.date) {
@@ -33,6 +37,11 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const [units, setUnits] = useState([]);
   const [groups, setGroups] = useState([]);
   const [taxes, setTaxes] = useState([]);
+  const [taxable, setTaxable] = useState(true);
+
+  useEffect(() => {
+    form.validateFields(["taxMaster"]);
+  }, [taxable]);
 
   useEffect(() => {
     dispatch(ItemGroupMasterActions.getAll()).then((res) => {
@@ -98,6 +107,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       labelAlign="left"
+      validateMessages={validateMsgs}
+
     >
       <Row>
         <Col span={11}>
@@ -105,7 +116,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="name"
             label="Name"
             rules={[
-              { required: true, message: "Please input your item name!" },
+              { required: true },
             ]}
           >
             <Input />
@@ -116,7 +127,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="code"
             label="Code"
             rules={[
-              { required: true, message: "Please input your item code!" },
+              { required: true },
             ]}
           >
             <Input />
@@ -142,25 +153,34 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           <Form.Item
             name="salePrice"
             label="Sale rate"
-            rules={[{ type: "number" ,message:'not a valid number'}]}
+            rules={[{ type: "number", message: "not a valid number" }]}
           >
-            <InputNumber  />
+            <InputNumber />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item
             name="purchasePrice"
             label="Purchase rate"
-            rules={[{ type: "number",message:'not a valid number' }]}
+            rules={[{ type: "number", message: "not a valid number" }]}
           >
-            <InputNumber  />
+            <InputNumber />
           </Form.Item>
         </Col>
       </Row>
 
       <Row>
         <Col span={11}>
-          <Form.Item name="taxMaster" label="Tax">
+          <Form.Item
+            name="taxMaster"
+            label="Tax"
+            rules={[
+              {
+                required: taxable,
+                message: "Please select tax",
+              },
+            ]}
+          >
             <Select showSearch optionFilterProp="label" options={taxes} />
           </Form.Item>
         </Col>
@@ -201,7 +221,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             valuePropName="checked"
             label="Taxable?"
           >
-            <Switch defaultChecked={true} />
+            <Switch
+              defaultChecked={true}
+              onChange={() => {
+                setTaxable(!taxable);
+              }}
+            />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
