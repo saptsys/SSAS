@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
+import validateMsgs from "../../../../helpers/validateMesseges";
 
 function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
@@ -28,6 +29,8 @@ function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form })
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       form={form}
+      validateMessages={validateMsgs}
+
     >
       
       <Form.Item hidden>

@@ -20,3 +20,7 @@ promiseIpc.on(createPath("getById"), (payload) => {
 promiseIpc.on(createPath("delete"), (payload) => {
   return service.delete(payload);
 });
+
+promiseIpc.on(createPath("checkUnique"), (payload) => {
+  return service.doCheckUnique(payload);
+});

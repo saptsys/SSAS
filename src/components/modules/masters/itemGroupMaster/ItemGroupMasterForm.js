@@ -1,7 +1,17 @@
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
+import validateMsgs from "../../../../helpers/validateMesseges";
+import { useDispatch } from "react-redux";
+import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
 
-function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function ItemGroupMasterTable({
+  entityForEdit,
+  saveBtnHandler,
+  saveBtnRef,
+  form,
+}) {
+  const dispatch = useDispatch();
+
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -9,7 +19,15 @@ function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef, form 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed: ", errorInfo);
   };
-
+  const validateCode = (rule, value, callback) => {
+    return dispatch(
+      ItemGroupMasterActions.checkUnique({
+        field: "code",
+        value: value,
+        id: entityForEdit.id,
+      })
+    );
+  };
   const layout = {
     labelCol: {
       span: 7,
@@ -29,22 +47,31 @@ function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef, form 
       onFinishFailed={onFinishFailed}
       labelAlign="left"
       form={form}
-      re
+      validateMessages={validateMsgs}
     >
-
-      <Form.Item name="code" label="Group Code"  required rules={[{ required: true }]}>
+      <Form.Item name="name" label="Name" required rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="name" label="Group Name" required rules={[{ required: true }]}>
+      <Form.Item
+        name="code"
+        label="Code"
+        validateTrigger="onBlur"
+        rules={[{ validator: validateCode }]}
+        hasFeedback
+      >
         <Input />
       </Form.Item>
       <Form.Item name="description" label="Description">
         <Input />
       </Form.Item>
-      <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
+      <Form.Item
+        name="isActive"
+        valuePropName="checked"
+        label="Active"
+        className="form-item-bordered-switch"
+      >
         <Switch />
       </Form.Item>
-
 
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>

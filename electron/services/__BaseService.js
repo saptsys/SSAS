@@ -63,19 +63,31 @@ class __BaseService {
     return this.repository.delete(id);
   }
 
-  withUniqueChecking(entity, withInique, uniqueRejectMessage) {
-    if (withInique.length) {
+  withUniqueChecking(entity, withUnique, uniqueRejectMessage) {
+    if (withUnique.length) {
       let condition = {}
-      withInique.forEach(col => condition[col] = entity[col])
-      return this.repository.findOne({ where: { ...condition, id: Not(entity.id ?? 0) } }).then(res => {
-        if (res) {
-          return Promise.reject({ message: uniqueRejectMessage ?? withInique.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ") + " already exist" })
-        } else {
-          return Promise.resolve(true)
-        }
-      }).catch(err => Promise.reject(err))
-    } else
-      return Promise.resolve(true)
+      withUnique.forEach(col => condition[col] = entity[col])
+      return this.doCheckUnique(condition , entity["id"], uniqueRejectMessage);
+    }
+  }
+
+  /**
+   * 
+   * @param {Object} condition 
+   * @param {Number} id 
+   */
+  doCheckUnique({field , value , id , uniqueRejectMessage}){
+    let condition = { [field]: value };
+    const criteria = { where: { ...condition } }
+    return this.repository.findOne(criteria).then(res => {
+      console.log(res)
+      console.log({ ...condition, id: Not(id ?? 0) })
+      if (res) {
+        return Promise.reject({ message: uniqueRejectMessage ?? Object.keys(condition).map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ") + " already exist" })
+      } else {
+        return Promise.resolve(true)
+      }
+    }).catch(err => Promise.reject(err))
   }
 }
 
