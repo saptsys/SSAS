@@ -17,3 +17,6 @@ promiseIpc.on(createPath("getById"), (payload) => {
   return service.getById(payload);
 });
         
+promiseIpc.on(createPath("delete"), (payload) => {
+  return service.delete(payload);
+});

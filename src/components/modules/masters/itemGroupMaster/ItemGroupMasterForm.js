@@ -12,10 +12,11 @@ function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef, form 
 
   const layout = {
     labelCol: {
-      span: 8,
+      span: 7,
+      offset: 2
     },
     wrapperCol: {
-      span: 16,
+      span: 13,
     },
   };
 
@@ -28,19 +29,21 @@ function ItemGroupMasterTable({ entityForEdit, saveBtnHandler, saveBtnRef, form 
       onFinishFailed={onFinishFailed}
       labelAlign="left"
       form={form}
+      re
     >
-      <Form.Item name="name" label="Group Name">
+
+      <Form.Item name="code" label="Group Code"  required rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="code" label="Group Code">
+      <Form.Item name="name" label="Group Name" required rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item name="description" label="Description">
         <Input />
       </Form.Item>
       <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
-            <Switch />
-          </Form.Item>
+        <Switch />
+      </Form.Item>
 
 
       <Form.Item hidden>

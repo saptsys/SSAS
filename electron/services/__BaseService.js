@@ -67,14 +67,15 @@ class __BaseService {
     if (withInique.length) {
       let condition = {}
       withInique.forEach(col => condition[col] = entity[col])
-      return this.repository.findOne({ where: { ...condition, id: Not(entity.id) } }).then(res => {
+      return this.repository.findOne({ where: { ...condition, id: Not(entity.id ?? 0) } }).then(res => {
         if (res) {
           return Promise.reject({ message: uniqueRejectMessage ?? withInique.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ") + " already exist" })
         } else {
           return Promise.resolve(true)
         }
       }).catch(err => Promise.reject(err))
-    }
+    } else
+      return Promise.resolve(true)
   }
 }
 

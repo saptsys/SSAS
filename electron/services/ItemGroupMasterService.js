@@ -22,7 +22,7 @@ class ItemGroupMasterService extends __BaseService {
   }
 
   save(entity) {
-    return super.save(entity, ["code"])
+      return super.save(entity, ["code"])
   }
 
 }
