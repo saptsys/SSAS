@@ -8,7 +8,6 @@ class PartyMasterService extends __BaseService {
   constructor() {
     //you need to pass current/main repository for set default repository for default base methods
     super(Models.PartyMaster)
-    this.repository = getConnection().getRepository(Models.PartyMaster)
     //define repositories which is required
   }
 }

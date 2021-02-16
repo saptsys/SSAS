@@ -9,7 +9,7 @@ export const CommonToolbar = ({ createBtn, searchBar }) => {
         <Space>
             {
                 searchBar && (
-                    <Tooltip title="Search here" trigger="focus" >
+                    <Tooltip title="Search here" trigger={['hover','focus']} >
                         <Input
                             id="toolbar-search"
                             placeholder="Search in all fields"

@@ -3,7 +3,17 @@ import { Space, Table, Tooltip } from 'antd';
 import React, { useMemo } from 'react';
 import { searchInArray } from '../../../helpers/arrayManipulation';
 
-const CommonTable = ({ columns, dataSource, loading = false, filterText = "", editBtnHandler, deleteBtnHandler, rowKey = "id", style }) => {
+const CommonTable = ({
+    columns,
+    dataSource,
+    loading = false,
+    filterText = "",
+    editBtnHandler,
+    deleteBtnHandler,
+    rowKey = "id",
+    style,
+    rowSelection = undefined
+}) => {
     const filteredData = useMemo(() => {
         let rederes = {}
         columns.forEach(col => {
@@ -62,6 +72,9 @@ const CommonTable = ({ columns, dataSource, loading = false, filterText = "", ed
                 pagination={{ showQuickJumper: true, showSizeChanger: true }}
                 sticky={true}
                 tableLayout='auto'
+                rowSelection={{
+                    
+                }}
             />
         </div>
 

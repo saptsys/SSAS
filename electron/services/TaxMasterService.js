@@ -5,29 +5,28 @@ const { getConnection } = require("typeorm");
 class TaxMasterService extends __BaseService {
   constructor() {
     super(Models.TaxMaster)
-    this.repository = getConnection().getRepository(Models.TaxMaster)
   }
-    
+
   /**
    *
    * @returns  Promise
    */
   getAll() {
-    const query =  this.repository.createQueryBuilder('tax');
-    query.leftJoin("ItemMaster","items","tax.id = items.taxMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
+    const query = this.repository.createQueryBuilder('tax');
+    query.leftJoin("ItemMaster", "items", "tax.id = items.taxMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
     query.select([
       "tax.*",
       "count(items.id) as containsItems"
     ]).groupBy("tax.id")
     return query.getRawMany();
   }
-  
+
   /**
    *
    * @returns  Promise
    */
   save(entity) {
-    return super.save(entity , true);
+    return super.save(entity, true);
   }
 
   /**
@@ -35,8 +34,7 @@ class TaxMasterService extends __BaseService {
    * @returns  Promise
    */
   update(entity) {
-    return super.update(entity , true);
+    return super.update(entity, true);
   }
 }
 module.exports = TaxMasterService;
-        

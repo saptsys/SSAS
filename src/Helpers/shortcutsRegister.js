@@ -5,20 +5,20 @@ import { LayoutActions } from "../_redux/actionFiles/LayoutRedux"
 
 export function registerShortcuts(dispatch, shortcuts) {
     const handler = (event) => {
-        if (event.ctrlKey) {
-            shortcuts.forEach((shortcut) => {
-                const keys = shortcut.key.replaceAll(" ", "").split('+')
-                if (keys.includes('ctrl') && keys.includes(event.key)) {
+        shortcuts.forEach((shortcut) => {
+            shortcut.key.replaceAll(" ", "").split("|").forEach(possibleKey => {
+                const keys = possibleKey.split('+')
+                if (keys.includes('ctrl') ? (event.ctrlKey && keys.includes(event.key)) : keys.includes(event.key)) {
                     if (!shortcut.method()) //if you do not want to prevent default return true in your method
                         event.preventDefault()
                 }
             })
-        }
+        })
     }
     const info = shortcuts.map((x, i) => (
         <Tooltip style={{ zIndex: 1069 }}
             placement="topRight"
-            title="Shortcut Key : Press these keys on key board to execute or click here to execute" key={i}>
+            title={`Shortcut Key : Press these keys on key board to execute or click here to execute`} key={i}>
             <Tag color="gold"
                 onClick={x.method}
                 style={{

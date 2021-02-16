@@ -5,7 +5,6 @@ const { getConnection } = require("typeorm");
 class BillsTransactionService extends __BaseService {
   constructor() {
     super(Models.BillsTransaction)
-    this.repository = getConnection().getRepository(Models.BillsTransaction)
   }
 }
 module.exports = BillsTransactionService;

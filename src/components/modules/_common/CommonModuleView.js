@@ -33,6 +33,7 @@ function CommonModuleView({
   const [editMode, setEditMode] = useState({ mode: false, entityForEdit: null })
   const [tableData, setTableData] = useState([])
   const saveBtnRef = useRef()
+  const deleteBtnRef = useRef()
   const [editUseForm] = useForm()
 
   const editFormBtnHandler = (params) => {
@@ -127,23 +128,23 @@ function CommonModuleView({
   return (
     <div style={{ position: 'relative' }}>
       {
-        editMode.mode === true && !currentState.action.loading && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
-          {
-            key: "Esc",
+        editMode.mode === true && editMode.entityForEdit && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
+          ...[{
+            key: "Escape",
             title: 'Esc to Cancel ',
             method: () => { cancelEditBtnHandler(); return true; }
           }, {
             key: "ctrl+s",
             title: 'CTRL+S to Save ',
             method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
-          },
-          {
-            ...(editMode.entityForEdit?.id ? {
-              key: 'ctrl+d',
-              title: "CTRL+D to Delete",
-              method: () => deleteBtnHandler(editMode.entityForEdit.id)
-            } : {})
-          }
+          }],
+          ...(editMode.entityForEdit?.id ? [
+            {
+              key: 'ctrl+d|Delete',
+              title: "CTRL+D/Del to Delete",
+              method: () => deleteBtnRef && deleteBtnRef.current && deleteBtnRef.current.click()
+            }
+          ] : [])
         ]} />)
       }
       {
@@ -184,9 +185,24 @@ function CommonModuleView({
             </Col>
             <Col flex="none">
               <Space>
-                <Button type="ghost" onClick={() => cancelEditBtnHandler()}>Cancel</Button>
-                <Button hidden={!editMode.entityForEdit?.id} type="ghost" danger onClick={() => deleteBtnHandler(editMode.entityForEdit.id)}>Delete</Button>
-                <Button type="primary" loading={currentState.action.loading === methods.saveForm} onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>Save</Button>
+                <Button
+                  type="ghost"
+                  onClick={() => cancelEditBtnHandler()}>
+                  Cancel
+                </Button>
+                <Button
+                  ref={deleteBtnRef}
+                  hidden={!editMode.entityForEdit?.id}
+                  type="ghost" danger
+                  onClick={() => deleteBtnHandler(editMode.entityForEdit.id)}>
+                  Delete
+                </Button>
+                <Button
+                  type="primary"
+                  loading={currentState.action.loading === methods.saveForm}
+                  onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>
+                  Save
+                </Button>
               </Space>
             </Col>
           </Row>

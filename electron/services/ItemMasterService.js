@@ -7,7 +7,6 @@ class ItemMasterService extends __BaseService {
     /**
      * @instance Repository
      */
-    this.repository = getConnection().getRepository(Models.ItemMaster);
   }
   // overriding to send extra fields
   getAll() {
