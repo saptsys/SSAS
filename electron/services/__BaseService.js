@@ -1,4 +1,4 @@
-const { getConnection } = require("typeorm");
+const { getConnection, Not } = require("typeorm");
 
 class __BaseService {
   /**
@@ -26,38 +26,30 @@ class __BaseService {
    *
    * @returns  Promise
    */
-  create(entity) {
+  create(entity, withInique = [], uniqueRejectMessage = null) {
     const entityToCreate = new this.ModelClass(entity)
-    return this.repository.create(entityToCreate);
+    return this.withUniqueChecking(entityToCreate, withInique, uniqueRejectMessage)
+      .then(() => this.repository.create(entityToCreate))
   }
   /**
    *
    * @returns  Promise
    */
-  async update(entity , checkForUniqueCode = false) {
+  async update(entity, withInique = [], uniqueRejectMessage = null) {
     const entityToUpdate = new this.ModelClass(entity)
-    if(checkForUniqueCode){
-      if (await this.existsByCode(entityToUpdate.code, entityToUpdate.id)) {
-        return Promise.reject({ message: "code already exists" });
-      }
-    }
-    return this.repository.update(entityToUpdate);
+    return this.withUniqueChecking(entityToUpdate, withInique, uniqueRejectMessage)
+      .then(() => this.repository.update(entityToUpdate))
   }
   /**
    *
    * @returns  Promise
    */
-  async save(entity, checkForUniqueCode = false) {
+  async save(entity, withInique = [], uniqueRejectMessage = null) {
     const entityToSave = new this.ModelClass(entity)
-    if(checkForUniqueCode){
-      if (await this.existsByCode(entityToSave.code, entityToSave.id)) {
-        return Promise.reject({ message: "code already exists" });
-      }
-    }
-    return this.repository.save(entityToSave);
+    return this.withUniqueChecking(entityToSave, withInique, uniqueRejectMessage)
+      .then(() => this.repository.save(entityToSave))
   }
   /**
-   *
    * @returns  Promise
    */
   delete(id) {
@@ -70,29 +62,18 @@ class __BaseService {
   deleteHard(id) {
     return this.repository.delete(id);
   }
-  
-  /**
-   *
-   * @param {String} code
-   * @param {Number} id
-   * @returns Boolean
-   */
-  async existsByCode(code, id = null) {
-    try {
-      const stmt = this.repository
-        .createQueryBuilder()
-        .where("code = :code", { code: code });
-      if (id) {
-        stmt.andWhere("id != :id", { id: id });
-      }
-      stmt.select("count(id)", "total");
-      let { total } = await stmt.getRawOne();
-      if (total == 0) {
-        return false;
-      }
-      return true;
-    } catch (e) {
-      return true;
+
+  withUniqueChecking(entity, withInique, uniqueRejectMessage) {
+    if (withInique.length) {
+      let condition = {}
+      withInique.forEach(col => condition[col] = entity[col])
+      return this.repository.findOne({ where: { ...condition, id: Not(entity.id) } }).then(res => {
+        if (res) {
+          return Promise.reject({ message: uniqueRejectMessage ?? withInique.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ") + " already exist" })
+        } else {
+          return Promise.resolve(true)
+        }
+      }).catch(err => Promise.reject(err))
     }
   }
 }
