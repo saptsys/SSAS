@@ -6,14 +6,14 @@ class ItemUnitMasterService extends __BaseService {
   constructor() {
     super(Models.ItemUnitMaster)
   }
-    
+
   /**
    *
    * @returns  Promise
    */
   getAll() {
-    const query =  this.repository.createQueryBuilder('itemUnit');
-    query.leftJoin("ItemMaster","items","itemUnit.id = items.itemUnitMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
+    const query = this.repository.createQueryBuilder('itemUnit');
+    query.leftJoin("ItemMaster", "items", "itemUnit.id = items.itemUnitMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
     query.select([
       "itemUnit.*",
       "count(items.id) as containsItems"
@@ -25,16 +25,8 @@ class ItemUnitMasterService extends __BaseService {
    * @returns  Promise
    */
   save(entity) {
-    return super.save(entity , true);
+    return super.save(entity, ["code"]);
   }
 
-  /**
-   *
-   * @returns  Promise
-   */
-  update(entity) {
-    return super.update(entity , true);
-  }
 }
 module.exports = ItemUnitMasterService;
-        

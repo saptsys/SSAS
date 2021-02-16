@@ -25,20 +25,8 @@ class ItemMasterService extends __BaseService {
     return stmt.getRawMany();
   }
 
-  /**
-   *
-   * @returns  Promise
-   */
   save(entity) {
-    return super.save(entity , true);
-  }
-
-  /**
-   *
-   * @returns  Promise
-   */
-  update(entity) {
-    return super.update(entity , true);
+    return super.save(entity, ["code"]);
   }
 }
 module.exports = ItemMasterService;

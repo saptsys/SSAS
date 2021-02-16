@@ -21,20 +21,8 @@ class ItemGroupMasterService extends __BaseService {
     return query.getRawMany();
   }
 
-  /**
-   *
-   * @returns  Promise
-   */
   save(entity) {
     return super.save(entity, ["code"])
-  }
-
-  /**
-   *
-   * @returns  Promise
-   */
-  update(entity) {
-    return super.update(entity, true);
   }
 
 }
