@@ -1,7 +1,6 @@
 
 const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
-const { getConnection } = require("typeorm");
 class TaxMasterService extends __BaseService {
   constructor() {
     super(Models.TaxMaster)
@@ -21,20 +20,9 @@ class TaxMasterService extends __BaseService {
     return query.getRawMany();
   }
 
-  /**
-   *
-   * @returns  Promise
-   */
   save(entity) {
-    return super.save(entity, true);
+    return super.save(entity, ["code"]);
   }
 
-  /**
-   *
-   * @returns  Promise
-   */
-  update(entity) {
-    return super.update(entity, true);
-  }
 }
 module.exports = TaxMasterService;
