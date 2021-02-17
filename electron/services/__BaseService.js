@@ -1,4 +1,3 @@
-const { message } = require("antd");
 const { getConnection, Not } = require("typeorm");
 
 class __BaseService {
@@ -73,13 +72,11 @@ class __BaseService {
               entityToDelete[col.propertyName] = entityToDelete[col.propertyName] + "__del_" + id
             })
           })
-          return entityManager.update(this.ModelClass, id, entityToDelete).then(() => {
-            return entityManager.softDelete(this.ModelClass, id).then(res => res.affected ? Promise.resolve(res) : Promise.reject({ message: "Something went wrong record(s) not deleted" }))
-          })
+          return entityManager.update(this.ModelClass, id, entityToDelete).then(() => entityManager.softDelete(this.ModelClass, id))
         })
 
       } else {
-        return Promise.reject({ message: "Something went wrong repository not found." })
+        return Promise.reject("Something went wrong repository not found.")
       }
     })
   }
