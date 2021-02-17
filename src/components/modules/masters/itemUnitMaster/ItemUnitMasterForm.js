@@ -1,7 +1,17 @@
 import React from "react";
 import { Form, Input, Button, Switch } from "antd";
+import validateMsgs from "../../../../helpers/validateMesseges";
+import { useDispatch } from "react-redux";
+import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
 
-function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function ItemUnitMasterForm({
+  entityForEdit,
+  saveBtnHandler,
+  saveBtnRef,
+  form,
+}) {
+  const dispatch = useDispatch();
+
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -19,6 +29,16 @@ function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form })
     },
   };
 
+  const validateCode = (rule, value, callback) => {
+    return dispatch(
+      ItemUnitMasterActions.checkUnique({
+        field: "code",
+        value: value,
+        id: entityForEdit.id,
+      })
+    );
+  };
+
   return (
     <Form
       {...layout}
@@ -28,11 +48,18 @@ function ItemUnitMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form })
       onFinishFailed={onFinishFailed}
       labelAlign="left"
       form={form}
+      validateMessages={validateMsgs}
     >
-      <Form.Item name="name" label="Unit Name">
+      <Form.Item name="name" label="Unit Name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="code" label="Unit Code">
+      <Form.Item
+        name="code"
+        label="Code"
+        validateTrigger="onBlur"
+        rules={[{ validator: validateCode }]}
+        hasFeedback
+      >
         <Input />
       </Form.Item>
       <Form.Item name="description" label="Description">

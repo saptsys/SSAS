@@ -11,15 +11,15 @@ import {
   InputNumber,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
 import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
+import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRedux";
+
 import moment from "moment";
 import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
-
-
 
 function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
@@ -75,6 +75,16 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       );
     });
   }, []);
+
+  const validateCode = (rule, value, callback) => {
+    return dispatch(
+      ItemMasterActions.checkUnique({
+        field: "code",
+        value: value,
+        id: entityForEdit.id,
+      })
+    );
+  };
   const layout = {
     labelCol: {
       span: 8,
@@ -108,16 +118,13 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       onFinishFailed={onFinishFailed}
       labelAlign="left"
       validateMessages={validateMsgs}
-
     >
       <Row>
         <Col span={11}>
           <Form.Item
             name="name"
             label="Name"
-            rules={[
-              { required: true },
-            ]}
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
@@ -126,9 +133,10 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           <Form.Item
             name="code"
             label="Code"
-            rules={[
-              { required: true },
-            ]}
+            validateTrigger="onBlur"
+            rules={[{ validator: validateCode }]}
+            requiredMark={true}
+            hasFeedback
           >
             <Input />
           </Form.Item>
@@ -154,6 +162,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="salePrice"
             label="Sale rate"
             rules={[{ type: "number", message: "not a valid number" }]}
+            hasFeedback
           >
             <InputNumber />
           </Form.Item>
@@ -163,6 +172,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="purchasePrice"
             label="Purchase rate"
             rules={[{ type: "number", message: "not a valid number" }]}
+            hasFeedback
           >
             <InputNumber />
           </Form.Item>
@@ -180,6 +190,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
                 message: "Please select tax",
               },
             ]}
+            hasFeedback
           >
             <Select showSearch optionFilterProp="label" options={taxes} />
           </Form.Item>
@@ -205,12 +216,22 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="itemUnitMaster" label="Unit">
-            <Select showSearch optionFilterProp="label" options={units} />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={units}
+              hasFeedback
+            />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="itemGroupMaster" label="Group">
-            <Select showSearch optionFilterProp="label" options={groups} />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={groups}
+              hasFeedback
+            />
           </Form.Item>
         </Col>
       </Row>

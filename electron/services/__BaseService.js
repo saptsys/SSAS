@@ -27,33 +27,42 @@ class __BaseService {
    * @returns  Promise
    */
   create(entity, withInique = [], uniqueRejectMessage = null) {
-    const entityToCreate = new this.ModelClass(entity)
-    return this.withUniqueChecking(entityToCreate, withInique, uniqueRejectMessage)
-      .then(() => this.repository.create(entityToCreate))
+    const entityToCreate = new this.ModelClass(entity);
+    return this.withUniqueChecking(
+      entityToCreate,
+      withInique,
+      uniqueRejectMessage
+    ).then(() => this.repository.create(entityToCreate));
   }
   /**
    *
    * @returns  Promise
    */
   async update(entity, withInique = [], uniqueRejectMessage = null) {
-    const entityToUpdate = new this.ModelClass(entity)
-    return this.withUniqueChecking(entityToUpdate, withInique, uniqueRejectMessage)
-      .then(() => this.repository.update(entityToUpdate))
+    const entityToUpdate = new this.ModelClass(entity);
+    return this.withUniqueChecking(
+      entityToUpdate,
+      withInique,
+      uniqueRejectMessage
+    ).then(() => this.repository.update(entityToUpdate));
   }
   /**
    *
    * @returns  Promise
    */
   async save(entity, withInique = [], uniqueRejectMessage = null) {
-    const entityToSave = new this.ModelClass(entity)
-    return this.withUniqueChecking(entityToSave, withInique, uniqueRejectMessage)
-      .then(() => this.repository.save(entityToSave))
+    const entityToSave = new this.ModelClass(entity);
+    return this.withUniqueChecking(
+      entityToSave,
+      withInique,
+      uniqueRejectMessage
+    ).then(() => this.repository.save(entityToSave));
   }
   /**
    * @returns  Promise
    */
   delete(id) {
-    return this.repository.softDelete(id)
+    return this.repository.softDelete(id);
   }
   /**
    *
@@ -63,19 +72,42 @@ class __BaseService {
     return this.repository.delete(id);
   }
 
-  withUniqueChecking(entity, withInique, uniqueRejectMessage) {
-    if (withInique.length) {
-      let condition = {}
-      withInique.forEach(col => condition[col] = entity[col])
-      return this.repository.findOne({ where: { ...condition, id: Not(entity.id ?? 0) } }).then(res => {
+  withUniqueChecking(entity, withUnique, uniqueRejectMessage) {
+    if (withUnique.length) {
+      let condition = {};
+      withUnique.forEach((col) => (condition[col] = entity[col]));
+
+      return this.doCheckUnique({
+        field: col,
+        value: entity[col],
+        uniqueRejectMessage: uniqueRejectMessage,
+      });
+    }
+  }
+
+  /**
+   *
+   * @param {Object} condition
+   * @param {Number} id
+   */
+  doCheckUnique({ field, value, id, uniqueRejectMessage }) {
+    let condition = { [field]: value };
+    return this.repository
+      .findOne({ ...condition, id: Not(id ?? 0) })
+      .then((res) => {
         if (res) {
-          return Promise.reject({ message: uniqueRejectMessage ?? withInique.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ") + " already exist" })
+          return Promise.reject({
+            message:
+              uniqueRejectMessage ??
+              Object.keys(condition)
+                .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                .join(", ") + " already exist",
+          });
         } else {
-          return Promise.resolve(true)
+          return Promise.resolve(true);
         }
-      }).catch(err => Promise.reject(err))
-    } else
-      return Promise.resolve(true)
+      })
+      .catch((err) => Promise.reject(err));
   }
 }
 

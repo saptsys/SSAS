@@ -9,36 +9,20 @@ function ItemUnitMasterTable(props) {
       dataIndex: "id",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
-    },
-    {
-      title: "name",
+      title: "Name",
       dataIndex: "name",
     },
     {
-      title: "code",
+      title: "Code",
       dataIndex: "code",
     },
     {
-      title:"items",
+      title:"Items",
       dataIndex:"containsItems"
     },
     {
-      title:"items",
-      dataIndex:"containsItems"
-    },
-    {
-      title: "description",
-      dataIndex: "description",
-    },
-    {
-      title: "active",
+      title: "Active",
       dataIndex: "isActive",
-    },
-    {
-      title: "system",
-      dataIndex: "system",
     },
   ];
   return <CommonTable columns={columns} {...props} />;
