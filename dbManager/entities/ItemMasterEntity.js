@@ -107,8 +107,8 @@ module.exports = new EntitySchema({
       joinTable: true,
       cascade: true,
       nullable: true,
-      joinColumn:{
-        name:"item_unti_mst_id",
+      joinColumn: {
+        name: "item_unti_mst_id",
       },
     },
     itemGroupMaster: {
@@ -117,8 +117,8 @@ module.exports = new EntitySchema({
       joinTable: true,
       cascade: true,
       nullable: true,
-      joinColumn:{
-        name:"item_group_mst_id",
+      joinColumn: {
+        name: "item_group_mst_id",
       },
     },
     taxMaster: {
@@ -127,8 +127,8 @@ module.exports = new EntitySchema({
       joinTable: true,
       cascade: true,
       nullable: true,
-      joinColumn:{
-        name:"tax_mst_id",
+      joinColumn: {
+        name: "tax_mst_id",
       },
     },
   },

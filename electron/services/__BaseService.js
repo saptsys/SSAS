@@ -1,3 +1,4 @@
+const { message } = require("antd");
 const { getConnection, Not } = require("typeorm");
 
 class __BaseService {
@@ -38,19 +39,19 @@ class __BaseService {
    *
    * @returns  Promise
    */
-  async update(entity, withInique = [], uniqueRejectMessage = null) {
+  update(entity, withInique = [], uniqueRejectMessage = null) {
     const entityToUpdate = new this.ModelClass(entity);
     return this.withUniqueChecking(
       entityToUpdate,
       withInique,
       uniqueRejectMessage
-    ).then(() => this.repository.update(entityToUpdate));
+    ).then(() => this.repository.update(entityToUpdate.id, entityToUpdate));
   }
   /**
    *
    * @returns  Promise
    */
-  async save(entity, withInique = [], uniqueRejectMessage = null) {
+  save(entity, withInique = [], uniqueRejectMessage = null) {
     const entityToSave = new this.ModelClass(entity);
     return this.withUniqueChecking(
       entityToSave,
@@ -62,7 +63,25 @@ class __BaseService {
    * @returns  Promise
    */
   delete(id) {
-    return this.repository.softDelete(id);
+    // return this.repository.softDelete(id);
+    return getConnection().transaction(entityManager => {
+      const localRepo = entityManager.getRepository(this.ModelClass)
+      if (localRepo) {
+        return localRepo.findOne(id).then(entityToDelete => {
+          localRepo.metadata.ownUniques.forEach(uniqCol => {
+            uniqCol.columns.filter(col => col.type === "text").forEach(col => {
+              entityToDelete[col.propertyName] = entityToDelete[col.propertyName] + "__del_" + id
+            })
+          })
+          return entityManager.update(this.ModelClass, id, entityToDelete).then(() => {
+            return entityManager.softDelete(this.ModelClass, id).then(res => res.affected ? Promise.resolve(res) : Promise.reject({ message: "Something went wrong record(s) not deleted" }))
+          })
+        })
+
+      } else {
+        return Promise.reject({ message: "Something went wrong repository not found." })
+      }
+    })
   }
   /**
    *
@@ -76,12 +95,22 @@ class __BaseService {
     if (withUnique.length) {
       let condition = {};
       withUnique.forEach((col) => (condition[col] = entity[col]));
-
-      return this.doCheckUnique({
-        field: col,
-        value: entity[col],
-        uniqueRejectMessage: uniqueRejectMessage,
-      });
+      return this.repository
+        .findOne({ ...condition, id: Not(entity.id ?? 0) })
+        .then((res) => {
+          if (res) {
+            return Promise.reject({
+              message:
+                uniqueRejectMessage ??
+                Object.keys(condition)
+                  .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+                  .join(", ") + " already exist",
+            });
+          } else {
+            return Promise.resolve(true);
+          }
+        })
+        .catch((err) => Promise.reject(err));
     } else
       return Promise.resolve(true)
   }
