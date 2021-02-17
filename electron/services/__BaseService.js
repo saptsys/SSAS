@@ -82,7 +82,8 @@ class __BaseService {
         value: entity[col],
         uniqueRejectMessage: uniqueRejectMessage,
       });
-    }
+    } else
+      return Promise.resolve(true)
   }
 
   /**
