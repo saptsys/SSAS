@@ -61,9 +61,6 @@ const CommonTable = ({
                 pagination={{ showQuickJumper: true, showSizeChanger: true }}
                 sticky={true}
                 tableLayout='auto'
-                rowSelection={{
-
-                }}
             />
         </div>
 
