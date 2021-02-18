@@ -37,11 +37,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const [units, setUnits] = useState([]);
   const [groups, setGroups] = useState([]);
   const [taxes, setTaxes] = useState([]);
-  const [taxable, setTaxable] = useState(true);
+  // const [taxable, setTaxable] = useState(true);
 
-  useEffect(() => {
-    form.validateFields(["taxMaster"]);
-  }, [taxable]);
+  // useEffect(() => {
+  //   form.validateFields(["taxMaster"]);
+  // }, [taxable]);
+
 
   useEffect(() => {
     dispatch(ItemGroupMasterActions.getAll()).then((res) => {
@@ -177,21 +178,25 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           </Form.Item>
         </Col>
       </Row>
-
       <Row>
         <Col span={11}>
-          <Form.Item
-            name="taxMaster"
-            label="Tax"
-            rules={[
-              {
-                required: taxable,
-                message: "Please select tax",
-              },
-            ]}
-            hasFeedback
-          >
-            <Select showSearch optionFilterProp="label" options={taxes} />
+          <Form.Item shouldUpdate noStyle>
+            {() => (
+              <Form.Item
+                name="taxMaster"
+                label="Tax"
+                shouldUpdate
+                rules={[
+                  {
+                    required: form.getFieldValue("itemTaxable"),
+                    message: "Please select tax",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Select showSearch optionFilterProp="label" options={taxes} />
+              </Form.Item>
+            )}
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
@@ -243,9 +248,6 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           >
             <Switch
               defaultChecked={true}
-              onChange={() => {
-                setTaxable(!taxable);
-              }}
             />
           </Form.Item>
         </Col>
