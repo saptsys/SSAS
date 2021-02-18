@@ -50,7 +50,7 @@ function ItemUnitMasterForm({
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Unit Name" rules={[{ required: true }]}>
-        <Input />
+        <Input tabIndex="0" autoFocus />
       </Form.Item>
       <Form.Item
         name="code"
@@ -59,18 +59,19 @@ function ItemUnitMasterForm({
         rules={[{ validator: validateCode }]}
         hasFeedback
       >
-        <Input />
+        <Input tabIndex="1" />
       </Form.Item>
       <Form.Item name="description" label="Description">
-        <Input />
+        <Input tabIndex="2" />
       </Form.Item>
       <Form.Item
         name="isActive"
         valuePropName="checked"
         label="Active"
         className="form-item-bordered-switch"
+        tabIndex="3"
       >
-        <Switch />
+        <Switch  defaultChecked={true}/>
       </Form.Item>
 
       <Form.Item hidden>

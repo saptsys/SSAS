@@ -121,12 +121,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
     >
       <Row>
         <Col span={11}>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true }]}
-          >
-            <Input />
+          <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+            <Input tabIndex="0" autoFocus />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
@@ -138,7 +134,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             requiredMark={true}
             hasFeedback
           >
-            <Input />
+            <Input tabIndex="1" />
           </Form.Item>
         </Col>
       </Row>
@@ -146,12 +142,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="description" label="Description">
-            <TextArea rows={4} />
+            <TextArea rows={4} tabIndex="2" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="date" label="Date">
-            <DatePicker format={dateFormat} />
+            <DatePicker format={dateFormat} tabIndex="3" />
           </Form.Item>
         </Col>
       </Row>
@@ -164,7 +160,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             rules={[{ type: "number", message: "not a valid number" }]}
             hasFeedback
           >
-            <InputNumber />
+            <InputNumber tabIndex="4" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
@@ -174,7 +170,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             rules={[{ type: "number", message: "not a valid number" }]}
             hasFeedback
           >
-            <InputNumber />
+            <InputNumber tabIndex="5" />
           </Form.Item>
         </Col>
       </Row>
@@ -194,26 +190,31 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
                 ]}
                 hasFeedback
               >
-                <Select showSearch optionFilterProp="label" options={taxes} />
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  options={taxes}
+                  tabIndex="6"
+                  showAction="focus" />
               </Form.Item>
             )}
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="HSNCode" label="HSN code">
-            <Input />
+            <Input tabIndex="7" />
           </Form.Item>
         </Col>
       </Row>
       <Row>
         <Col span={11}>
           <Form.Item name="VATRate" label="VAT rate">
-            <Input />
+            <Input tabIndex="8" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="additionalTax" label="Additional tax">
-            <Input />
+            <Input tabIndex="9" />
           </Form.Item>
         </Col>
       </Row>
@@ -225,6 +226,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
               optionFilterProp="label"
               options={units}
               hasFeedback
+              tabIndex="10"
+              showAction="focus"
             />
           </Form.Item>
         </Col>
@@ -235,6 +238,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
               optionFilterProp="label"
               options={groups}
               hasFeedback
+              showAction="focus"
+              tabIndex="11"
             />
           </Form.Item>
         </Col>
@@ -247,13 +252,14 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             label="Taxable?"
           >
             <Switch
+              tabIndex="12"
               defaultChecked={true}
             />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="isActive" valuePropName="checked" label="Active?">
-            <Switch defaultChecked={true} />
+            <Switch tabIndex="13" defaultChecked={true} />
           </Form.Item>
         </Col>
       </Row>

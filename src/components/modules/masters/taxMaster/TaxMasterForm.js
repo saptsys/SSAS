@@ -45,7 +45,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-        <Input />
+        <Input tabIndex="0" autoFocus />
       </Form.Item>
       <Form.Item
         name="code"
@@ -54,17 +54,17 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         rules={[{ validator: validateCode }]}
         hasFeedback
       >
-        <Input />
+        <Input tabIndex="1" />
       </Form.Item>
       <Form.Item name="description" label="Description">
-        <Input />
+        <Input tabIndex="2" />
       </Form.Item>
       <Form.Item
         name="taxPercentage"
         label="Percentage"
         rules={[{ type: "number", min: 0, max: 100 }]}
       >
-        <InputNumber />
+        <InputNumber tabIndex="3" />
       </Form.Item>
       <Form.Item
         name="isActive"
@@ -72,7 +72,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         label="Active"
         className="form-item-bordered-switch"
       >
-        <Switch />
+        <Switch tabIndex="4"  defaultChecked={true}/>
       </Form.Item>
 
       <Form.Item hidden>
