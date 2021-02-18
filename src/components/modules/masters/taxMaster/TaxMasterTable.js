@@ -25,7 +25,7 @@ function TaxMasterTable(props) {
       dataIndex:"containsItems"
     },
     {
-      title: "active",
+      title: "Active",
       dataIndex: "isActive",
     },
   ];

@@ -22,8 +22,7 @@ function ItemGroupMasterTable({
   const validateCode = (rule, value, callback) => {
     return dispatch(
       ItemGroupMasterActions.checkUnique({
-        field: "code",
-        value: value,
+        fields: { code: value },
         id: entityForEdit.id,
       })
     );
@@ -31,7 +30,7 @@ function ItemGroupMasterTable({
   const layout = {
     labelCol: {
       span: 7,
-      offset: 2
+      offset: 2,
     },
     wrapperCol: {
       span: 13,

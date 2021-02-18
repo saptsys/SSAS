@@ -93,12 +93,12 @@ export default class _BaseIpcActions {
    * @param {Number} param.id
    * @returns {Promise}
    */
-  checkUnique = ({ field, value, id }) => (dispatch) => {
+  checkUnique = ({ fields, id }) => (dispatch) => {
     const from = "checkUnique";
-    console.log(field, value, id);
+    console.log(fields, id);
 
     dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC(from, { field: field, value: value, id: id })
+    return this.sendIPC(from, { fields: fields, id: id })
       .then((res) => {
         dispatch(this.stopCall(this.callTypes.action));
         return Promise.resolve(res);

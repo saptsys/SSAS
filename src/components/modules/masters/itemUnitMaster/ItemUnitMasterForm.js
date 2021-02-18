@@ -32,8 +32,7 @@ function ItemUnitMasterForm({
   const validateCode = (rule, value, callback) => {
     return dispatch(
       ItemUnitMasterActions.checkUnique({
-        field: "code",
-        value: value,
+        fields: { code: value },
         id: entityForEdit.id,
       })
     );

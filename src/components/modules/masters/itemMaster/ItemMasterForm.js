@@ -79,8 +79,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const validateCode = (rule, value, callback) => {
     return dispatch(
       ItemMasterActions.checkUnique({
-        field: "code",
-        value: value,
+        fields: { code: value },
         id: entityForEdit.id,
       })
     );

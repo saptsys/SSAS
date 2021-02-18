@@ -1,7 +1,6 @@
 
 const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
-const { getConnection, Not } = require("typeorm");
 class ItemGroupMasterService extends __BaseService {
   constructor() {
     super(Models.ItemGroupMaster)

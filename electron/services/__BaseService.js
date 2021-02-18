@@ -63,22 +63,26 @@ class __BaseService {
    */
   delete(id) {
     // return this.repository.softDelete(id);
-    return getConnection().transaction(entityManager => {
-      const localRepo = entityManager.getRepository(this.ModelClass)
+    return getConnection().transaction((entityManager) => {
+      const localRepo = entityManager.getRepository(this.ModelClass);
       if (localRepo) {
-        return localRepo.findOne(id).then(entityToDelete => {
-          localRepo.metadata.ownUniques.forEach(uniqCol => {
-            uniqCol.columns.filter(col => col.type === "text").forEach(col => {
-              entityToDelete[col.propertyName] = entityToDelete[col.propertyName] + "__del_" + id
-            })
-          })
-          return entityManager.update(this.ModelClass, id, entityToDelete).then(() => entityManager.softDelete(this.ModelClass, id))
-        })
-
+        return localRepo.findOne(id).then((entityToDelete) => {
+          localRepo.metadata.ownUniques.forEach((uniqCol) => {
+            uniqCol.columns
+              .filter((col) => col.type === "text")
+              .forEach((col) => {
+                entityToDelete[col.propertyName] =
+                  entityToDelete[col.propertyName] + "__del_" + id;
+              });
+          });
+          return entityManager
+            .update(this.ModelClass, id, entityToDelete)
+            .then(() => entityManager.softDelete(this.ModelClass, id));
+        });
       } else {
-        return Promise.reject("Something went wrong repository not found.")
+        return Promise.reject("Something went wrong repository not found.");
       }
-    })
+    });
   }
   /**
    *
@@ -92,24 +96,12 @@ class __BaseService {
     if (withUnique.length) {
       let condition = {};
       withUnique.forEach((col) => (condition[col] = entity[col]));
-      return this.repository
-        .findOne({ ...condition, id: Not(entity.id ?? 0) })
-        .then((res) => {
-          if (res) {
-            return Promise.reject({
-              message:
-                uniqueRejectMessage ??
-                Object.keys(condition)
-                  .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-                  .join(", ") + " already exist",
-            });
-          } else {
-            return Promise.resolve(true);
-          }
-        })
-        .catch((err) => Promise.reject(err));
-    } else
-      return Promise.resolve(true)
+      return this.doCheckUnique({
+        fields: condition,
+        id: entity.id,
+        uniqueRejectMessage: uniqueRejectMessage,
+      });
+    } else return Promise.resolve(true);
   }
 
   /**
@@ -117,16 +109,16 @@ class __BaseService {
    * @param {Object} condition
    * @param {Number} id
    */
-  doCheckUnique({ field, value, id, uniqueRejectMessage }) {
-    let condition = { [field]: value };
+  doCheckUnique({ fields, id, uniqueRejectMessage }) {
+    console.log(fields, id);
     return this.repository
-      .findOne({ ...condition, id: Not(id ?? 0) })
+      .findOne({ ...fields, id: Not(id ?? 0) })
       .then((res) => {
         if (res) {
           return Promise.reject({
             message:
               uniqueRejectMessage ??
-              Object.keys(condition)
+              Object.keys(fields)
                 .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
                 .join(", ") + " already exist",
           });
