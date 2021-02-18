@@ -5,13 +5,6 @@ import CommonTable from "../../_common/CommonTable";
 function PartyMasterTable(props) {
   const columns = [
     {
-      title: "#",
-      dataIndex: "id",
-      width: '10%',
-      render: (a, b, i) => i + 1,
-      sorter: false
-    },
-    {
       title: "Name",
       dataIndex: "name",
       width: '25%'

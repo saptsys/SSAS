@@ -5,10 +5,6 @@ import CommonTable from "../../_common/CommonTable";
 function TaxMasterTable(props) {
   const columns = [
     {
-      title: "#",
-      dataIndex: "id",
-    },
-    {
       title: "Name",
       dataIndex: "name",
     },

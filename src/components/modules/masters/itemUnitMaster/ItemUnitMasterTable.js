@@ -5,10 +5,6 @@ import CommonTable from "../../_common/CommonTable";
 function ItemUnitMasterTable(props) {
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
-    },
-    {
       title: "Name",
       dataIndex: "name",
     },

@@ -5,10 +5,6 @@ import CommonTable from "../../_common/CommonTable";
 function ItemGroupMasterTable(props) {
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
-    },
-    {
       title: "Name",
       dataIndex: "name",
     },
@@ -18,14 +14,15 @@ function ItemGroupMasterTable(props) {
     },
     {
       title: "Items",
-      dataIndex: "containsItems"
+      dataIndex: "containsItems",
+      align: 'right'
     },
     {
       title: "Active",
       dataIndex: "isActive",
       render: isActiveColumnRenderer,
-      width:"70px",
-      align:'center'
+      width: "70px",
+      align: 'center'
     },
   ];
 
