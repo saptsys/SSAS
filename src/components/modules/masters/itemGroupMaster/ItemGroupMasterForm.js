@@ -49,7 +49,7 @@ function ItemGroupMasterTable({
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Name" required rules={[{ required: true }]}>
-        <Input />
+        <Input autoFocus tabIndex="0"/>
       </Form.Item>
       <Form.Item
         name="code"
@@ -58,10 +58,10 @@ function ItemGroupMasterTable({
         rules={[{ validator: validateCode }]}
         hasFeedback
       >
-        <Input />
+        <Input tabIndex="1"/>
       </Form.Item>
       <Form.Item name="description" label="Description">
-        <Input />
+        <Input tabIndex="2"/>
       </Form.Item>
       <Form.Item
         name="isActive"
@@ -69,7 +69,7 @@ function ItemGroupMasterTable({
         label="Active"
         className="form-item-bordered-switch"
       >
-        <Switch />
+        <Switch defaultChecked tabIndex="3"/>
       </Form.Item>
 
       <Form.Item hidden>

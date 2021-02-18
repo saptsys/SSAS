@@ -1,4 +1,5 @@
 import React from "react";
+import { isActiveColumnRenderer } from "../../../table/columnRenderers";
 import CommonTable from "../../_common/CommonTable";
 
 function ItemGroupMasterTable(props) {
@@ -16,12 +17,15 @@ function ItemGroupMasterTable(props) {
       dataIndex: "code",
     },
     {
-      title:"Items",
-      dataIndex:"containsItems"
+      title: "Items",
+      dataIndex: "containsItems"
     },
     {
       title: "Active",
       dataIndex: "isActive",
+      render: isActiveColumnRenderer,
+      width:"70px",
+      align:'center'
     },
   ];
 
