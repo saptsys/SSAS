@@ -15,14 +15,13 @@ class ItemMasterService extends __BaseService {
       .leftJoin("item.itemUnitMaster", "units")
       .leftJoin("item.itemGroupMaster", "groups")
       .leftJoin("item.taxMaster", "taxes")
-
       .select([
         "item.*",
         "units.name as itemUnitMasterName",
         "groups.name as itemGroupMasterName",
         "taxes.name as taxMasterName",
       ]);
-    return stmt.getRawMany();
+    return stmt.selec;
   }
 
   save(entity) {
