@@ -21,7 +21,7 @@ export const CommonToolbar = ({ createBtn, searchBar }) => {
             }
             {
                 createBtn && (
-                    <Button type="primary" onClick={createBtn}>Create</Button>
+                    <Button type="primary" onClick={createBtn} id="toolbar-create">Create</Button>
                 )
             }
 

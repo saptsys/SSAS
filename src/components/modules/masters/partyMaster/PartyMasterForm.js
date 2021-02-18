@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
-import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space } from "antd";
+import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space, Table } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import States from "../../../../../Constants/States";
 import Regex from "../../../../../Constants/Regex";
 import { useForm } from "antd/lib/form/Form";
 import validateMsgs from "../../../../helpers/validateMesseges";
+import AutoFocuser from "../../../form/AutoFocuser";
 
 const { Option } = Select
 function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
 
+  const generateId = (text) => "basic_" + text
 
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
@@ -47,10 +49,13 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           <Form.Item
             name="name"
             label="Customer Name"
-            required rules={[{ required: true }]}
+            required
+            rules={[{ required: true }]}
           >
             <Input
               placeholder="Customer Name Here"
+              tabIndex="0"
+              autoFocus
             />
           </Form.Item>
         </Col>
@@ -66,11 +71,14 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
               showSearch
               optionFilterProp="label"
               placeholder="Select account type"
+              showAction="focus"
               options={[
                 { label: 'Sundry Debtors', value: "CUSTOMER" },
                 { label: 'Sundry Creditors', value: "SUPPLIER" },
                 { label: 'Both', value: "BOTH" }
-              ]} />
+              ]}
+              tabIndex="1"
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -78,7 +86,10 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="address" label="Address">
-            <TextArea rows={4} />
+            <TextArea
+              rows={4}
+              tabIndex="4"
+            />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
@@ -87,7 +98,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             label="GSTIN"
             rules={[{ pattern: Regex.gstin, message: 'GSTIN is not valid' }]}
           >
-            <Input onChange={gstinNumberChanged} />
+            <Input onChange={gstinNumberChanged} tabIndex="2" />
           </Form.Item>
           <Form.Item
             name="pan"
@@ -95,7 +106,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             rules={[{ pattern: Regex.pan, message: 'PAN is not valid' }]}
           >
 
-            <Input />
+            <Input tabIndex="3" />
           </Form.Item>
         </Col>
       </Row>
@@ -103,23 +114,30 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="city" label="City">
-            <Input />
+            <Input tabIndex="5" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="mobile" label="Mobile">
-            <Input />
+            <Input tabIndex="7" />
           </Form.Item>
         </Col>
       </Row>
 
       <Row>
         <Col span={11}>
-          <Form.Item name="stateCode" label="State" required>
+          <Form.Item
+            name="stateCode"
+            label="State"
+            required
+            rules={[{ required: true }]}
+          >
             <Select
               showSearch
               optionFilterProp="label"
+              showAction="focus"
               options={States.map(x => ({ label: x.stateName + ` (${x.code})`, value: x.tin }))}
+              tabIndex="6"
             />
           </Form.Item>
         </Col>
@@ -128,7 +146,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="phone"
             label="Phone"
           >
-            <Input />
+            <Input tabIndex="8" />
           </Form.Item>
         </Col>
       </Row>
@@ -136,17 +154,15 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11} >
           <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
-            <Switch />
+            <Switch tabIndex="10" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="email" label="Email" rules={[{ pattern: Regex.email }]}>
-            <Input />
+            <Input tabIndex="9" />
           </Form.Item>
         </Col>
       </Row>
-
-
 
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>

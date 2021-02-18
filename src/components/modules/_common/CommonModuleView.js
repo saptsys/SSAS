@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, message, Modal, Row, Space, Spin } from 'antd';
+import { Button, Col, Drawer, message, Modal, Row, Space, Spin, Tooltip } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import { useForm } from 'antd/lib/form/Form';
 import { errorDialog } from "../../../helpers/dialogs";
 import { LayoutActions } from '../../../_redux/actionFiles/LayoutRedux';
 import { registerShortcuts, RegisterShortcutsWithComponent } from '../../../helpers/shortcutsRegister';
+import AutoFocuser from '../../form/AutoFocuser';
 
 function CommonModuleView({
   reducerInfo,
@@ -37,6 +38,7 @@ function CommonModuleView({
   const [editUseForm] = useForm()
 
   const editFormBtnHandler = (params) => {
+    document.getElementById("toolbar-create").focus()
     if (params) {
       setEditMode({ mode: true, entityForEdit: null })
       dispatch(actions[methods.fetchEditData](params)).then((res) => {
@@ -197,12 +199,15 @@ function CommonModuleView({
                   onClick={() => deleteBtnHandler(editMode.entityForEdit.id)}>
                   Delete
                 </Button>
-                <Button
-                  type="primary"
-                  loading={currentState.action.loading === methods.saveForm}
-                  onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>
-                  Save
+                <Tooltip title="Press enter to save" placement="bottomLeft" trigger="focus">
+                  <Button
+                    id="save"
+                    type="primary"
+                    loading={currentState.action.loading === methods.saveForm}
+                    onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>
+                    Save
                 </Button>
+                </Tooltip>
               </Space>
             </Col>
           </Row>
@@ -210,12 +215,14 @@ function CommonModuleView({
         closable={false}
       >
         <Spin spinning={currentState.action.loading === methods.fetchEditData}>
-          <EditForm
-            entityForEdit={editMode.entityForEdit}
-            saveBtnHandler={saveBtnHandler}
-            saveBtnRef={saveBtnRef}
-            form={editUseForm}
-          />
+          <AutoFocuser lastElement="#save">
+            <EditForm
+              entityForEdit={editMode.entityForEdit}
+              saveBtnHandler={saveBtnHandler}
+              saveBtnRef={saveBtnRef}
+              form={editUseForm}
+            />
+          </AutoFocuser>
         </Spin>
         {/* <EditForm /> */}
       </Drawer>
