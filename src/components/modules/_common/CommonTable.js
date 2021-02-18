@@ -49,7 +49,6 @@ const CommonTable = ({
             width: '35px'
         }
     ]
-    console.table(filteredData)
     return (
         <div id="common-table" style={style}>
             <Table
