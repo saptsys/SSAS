@@ -8,7 +8,6 @@ import { stringNormalize } from "./../../../../Helpers/utils"
 function ItemUnitMasterForm({
   entityForEdit,
   saveBtnHandler,
-  saveBtnRef,
   form,
 }) {
   const dispatch = useDispatch();
@@ -76,12 +75,6 @@ function ItemUnitMasterForm({
         tabIndex="3"
       >
         <Switch defaultChecked={true} />
-      </Form.Item>
-
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
       </Form.Item>
     </Form>
   );

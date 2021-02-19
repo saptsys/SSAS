@@ -9,7 +9,6 @@ import { stringNormalize } from "./../../../../Helpers/utils"
 function ItemGroupMasterTable({
   entityForEdit,
   saveBtnHandler,
-  saveBtnRef,
   form,
 }) {
   const dispatch = useDispatch();
@@ -76,12 +75,6 @@ function ItemGroupMasterTable({
         className="form-item-bordered-switch"
       >
         <Switch tabIndex="3" defaultChecked={true} />
-      </Form.Item>
-
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
       </Form.Item>
     </Form>
   );

@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
 import { stringNormalize } from "./../../../../Helpers/utils"
 
-function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch();
 
   const onFinish = (values) => {
@@ -83,12 +83,6 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         className="form-item-bordered-switch"
       >
         <Switch tabIndex="4" defaultChecked={true} />
-      </Form.Item>
-
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
       </Form.Item>
     </Form>
   );

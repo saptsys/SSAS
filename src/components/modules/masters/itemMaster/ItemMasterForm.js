@@ -22,7 +22,7 @@ import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
 
-function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
   const onFinish = (values) => {
     if (values.date) {
       values.date = values.date.format(dateFormat);
@@ -266,12 +266,6 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           </Form.Item>
         </Col>
       </Row>
-
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
-      </Form.Item>
     </Form>
   );
 }

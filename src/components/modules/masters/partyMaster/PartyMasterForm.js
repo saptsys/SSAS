@@ -9,7 +9,7 @@ import validateMsgs from "../../../../helpers/validateMesseges";
 import AutoFocuser from "../../../form/AutoFocuser";
 
 const { Option } = Select
-function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function PartyMasterForm({ entityForEdit, saveBtnHandler,  form }) {
 
   const generateId = (text) => "basic_" + text
 
@@ -163,13 +163,6 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           </Form.Item>
         </Col>
       </Row>
-
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
-      </Form.Item>
-      <br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/>
     </Form>
   );
 }

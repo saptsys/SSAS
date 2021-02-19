@@ -3,7 +3,7 @@ import React from "react";
 import { Form, Input, Button, Switch } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 
-function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
+function SettingsMasterForm({ entityForEdit, saveBtnHandler,  form }) {
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
@@ -32,12 +32,6 @@ function SettingsMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form })
       validateMessages={validateMsgs}
 
     >
-      
-      <Form.Item hidden>
-        <Button type="primary" htmlType="submit" ref={saveBtnRef}>
-          Submit
-        </Button>
-      </Form.Item>
     </Form>
   );
 }
