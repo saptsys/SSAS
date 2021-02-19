@@ -13,15 +13,18 @@ function ItemMasterTable(props) {
     },
     {
       title:"Group",
-      dataIndex:"itemGroupMasterName"
+      dataIndex:"itemGroupMaster",
+      render: x => x.name,
     },
     {
       title:"Unit",
-      dataIndex:"itemUnitMasterName"
+      dataIndex:"itemUnitMaster",
+      render: x => x.name,
     },
     {
       title:"Tax",
-      dataIndex:"taxMasterName"
+      dataIndex:"taxMaster",
+      render: x => x.name,
     },
     {
       title:"HSN Code",

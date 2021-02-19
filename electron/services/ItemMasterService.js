@@ -12,16 +12,30 @@ class ItemMasterService extends __BaseService {
   getAll() {
     const stmt = this.repository
       .createQueryBuilder("item")
-      .leftJoin("item.itemUnitMaster", "units")
-      .leftJoin("item.itemGroupMaster", "groups")
-      .leftJoin("item.taxMaster", "taxes")
-      .select([
-        "item.*",
-        "units.name as itemUnitMasterName",
-        "groups.name as itemGroupMasterName",
-        "taxes.name as taxMasterName",
-      ]);
-    return stmt.selec;
+      .leftJoinAndSelect("item.itemUnitMaster", "units")
+      .leftJoinAndSelect("item.itemGroupMaster", "groups")
+      .leftJoinAndSelect("item.taxMaster", "taxes");
+      
+
+    return stmt.getMany().then(res => {
+      return res.map(x => {
+        return {
+          ...x,
+          itemGroupMaster: {
+            name: x.itemGroupMaster?.name,
+            id: x.itemGroupMaster?.id
+          },
+          itemUnitMaster: {
+            name: x.itemUnitMaster?.name,
+            id: x.itemUnitMaster?.id
+          },
+          taxMaster: {
+            name: x.taxMaster?.name,
+            id: x.taxMaster?.id
+          }
+        }
+      })
+    })
   }
 
   save(entity) {
