@@ -11,8 +11,6 @@ import { errorDialog } from "../../../helpers/dialogs";
 import { LayoutActions } from '../../../_redux/actionFiles/LayoutRedux';
 import { registerShortcuts, RegisterShortcutsWithComponent } from '../../../helpers/shortcutsRegister';
 import AutoFocuser from '../../form/AutoFocuser';
-import CommonEditForm, { COMMON_FORM_EVENTS } from './CommonEditForm';
-import CommonEditDrawer from './CommonEditDrawer';
 
 function CommonModuleView({
   reducerInfo,
@@ -33,20 +31,45 @@ function CommonModuleView({
     title: state.Layout.title
   }))
   const [filterText, setFilterText] = useState("")
-  const [editMode, setEditMode] = useState({ mode: false, editId: null })
+  const [editMode, setEditMode] = useState({ mode: false, entityForEdit: null })
   const [tableData, setTableData] = useState([])
-
-  const deleteBtnRef = useRef()
   const saveBtnRef = useRef()
+  const deleteBtnRef = useRef()
+  const [editUseForm] = useForm()
 
-
-  const editFormBtnHandler = (id) => {
-    setEditMode({ mode: true, editId: id })
+  const editFormBtnHandler = (params) => {
+    document.getElementById("toolbar-create").focus()
+    if (params) {
+      setEditMode({ mode: true, entityForEdit: null })
+      dispatch(actions[methods.fetchEditData](params)).then((res) => {
+        setEditMode({ mode: true, entityForEdit: res })
+      }).catch(err => errorDialog(
+        "Error while getting record for edit!!",
+        <span>{err.message}<br /><br />Please retry or Close.</span>,
+        cancelEditBtnHandler,
+        () => editFormBtnHandler(params)
+      ))
+    } else {
+      setEditMode({ mode: true, entityForEdit: reducerInfo.model })
+    }
+  }
+  const saveBtnHandler = (values) => {
+    dispatch(actions[methods.saveForm](values)).then((res) => {
+      getTableData()
+      cancelEditBtnHandler()
+      message.success("Record Saved Successfuly", 4)
+    }).catch(err => {
+      errorDialog(
+        "Error while saving data !",
+        <span>{err.message}<br /><br />Please retry or close</span>,
+        () => { },
+        () => saveBtnHandler(values)
+      )
+    })
   }
   const cancelEditBtnHandler = () => {
-    setEditMode({ mode: false, editId: null })
+    setEditMode({ mode: false, entityForEdit: null })
   }
-  
   const deleteBtnHandler = (param) => {
     confirm({
       title: 'Do you want to delete this record?',
@@ -76,16 +99,6 @@ function CommonModuleView({
     })
   }
 
-  const onEditDrawerClosed = ({ event, param }) => {
-    if (event === COMMON_FORM_EVENTS.CREATED) {
-      getTableData()
-    }
-    if (event === COMMON_FORM_EVENTS.DELETED) {
-      setTableData(tableData.filter(x => x.id !== param))
-    }
-    cancelEditBtnHandler()
-  }
-
   const getTableData = () => dispatch(actions[methods.fetchTableData]())
     .then(setTableData)
     .catch(err => {
@@ -106,13 +119,18 @@ function CommonModuleView({
   }, [])
 
   useEffect(() => {
+    if (editUseForm) {
+      editUseForm.resetFields()
+    }
+  }, [editMode.entityForEdit])
+
+  useEffect(() => {
     dispatch(LayoutActions.setMessage(currentState.list.error ? <Text type="danger">Error: {currentState.list.error} <Button danger type="ghost" size="small" style={{ padding: "0 2px", backgroundColor: 'rgba(0,0,0,0)' }} onClick={getTableData}>Retry</Button></Text> : null))
   }, [currentState.list.error])
-
   return (
     <div style={{ position: 'relative' }}>
       {
-        editMode.mode === true && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
+        editMode.mode === true && editMode.entityForEdit && (<RegisterShortcutsWithComponent name="edit mode" shortcuts={[
           ...[{
             key: "Escape",
             title: 'Esc to Cancel ',
@@ -122,7 +140,7 @@ function CommonModuleView({
             title: 'CTRL+S to Save ',
             method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
           }],
-          ...(editMode.editId ? [
+          ...(editMode.entityForEdit?.id ? [
             {
               key: 'ctrl+d|Delete',
               title: "CTRL+D/Del to Delete",
@@ -156,21 +174,58 @@ function CommonModuleView({
         editBtnHandler={editFormBtnHandler}
         deleteBtnHandler={deleteBtnHandler}
       />
-      <CommonEditDrawer
+      <Drawer
+        id="edit-drawer"
         width={drawerWidth}
         onClose={() => cancelEditBtnHandler()}
         visible={editMode.mode}
+        destroyOnClose={true}
+        title={(
+          <Row justify="space-around" align="middle">
+            <Col flex="auto">
+              <Text className="header-title">{(editMode.entityForEdit?.id ? 'Edit ' : 'Create ') + title}</Text>
+            </Col>
+            <Col flex="none">
+              <Space>
+                <Button
+                  type="ghost"
+                  onClick={() => cancelEditBtnHandler()}>
+                  Cancel
+                </Button>
+                <Button
+                  ref={deleteBtnRef}
+                  hidden={!editMode.entityForEdit?.id}
+                  type="ghost" danger
+                  onClick={() => deleteBtnHandler(editMode.entityForEdit.id)}>
+                  Delete
+                </Button>
+                <Tooltip title="Press enter to save" placement="bottomLeft" trigger="focus">
+                  <Button
+                    id="save"
+                    type="primary"
+                    loading={currentState.action.loading === methods.saveForm}
+                    onClick={() => saveBtnRef && saveBtnRef.current && saveBtnRef.current.click()}>
+                    Save
+                </Button>
+                </Tooltip>
+              </Space>
+            </Col>
+          </Row>
+        )}
+        closable={false}
       >
-        <CommonEditForm
-          EditForm={EditForm}
-          actions={actions}
-          closeDialog={onEditDrawerClosed}
-          reducerInfo={reducerInfo}
-          titleSufix={title}
-          editId={editMode.editId}
-          refs={{ deleteBtn: deleteBtnRef, saveBtn: saveBtnRef }}
-        />
-      </CommonEditDrawer>
+        <Spin spinning={currentState.action.loading === methods.fetchEditData}>
+          <AutoFocuser lastElement="#save">
+            <EditForm
+              entityForEdit={editMode.entityForEdit}
+              saveBtnHandler={saveBtnHandler}
+              saveBtnRef={saveBtnRef}
+              form={editUseForm}
+            />
+          </AutoFocuser>
+        </Spin>
+        {/* <EditForm /> */}
+      </Drawer>
     </div>
   )
 }

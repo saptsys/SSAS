@@ -169,6 +169,7 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
           Submit
         </Button>
       </Form.Item>
+      <br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/><br/><hr/>
     </Form>
   );
 }

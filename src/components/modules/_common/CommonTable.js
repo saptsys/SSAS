@@ -3,6 +3,7 @@ import { Space, Table, Tooltip } from 'antd';
 import React, { useMemo } from 'react';
 import { searchInArray } from '../../../helpers/arrayManipulation';
 import { deleteColumnRenderer, editColumnRenderer } from '../../table/columnRenderers';
+import './commonTable.less'
 
 const CommonTable = ({
     columns,
@@ -34,7 +35,7 @@ const CommonTable = ({
             dataIndex: rowKey,
             render: (text, row, index) => dataSource.indexOf(row) + 1,
             sorter: (a, b) => dataSource.indexOf(a) > dataSource.indexOf(b) ? -1 : 1,
-            align:'right'
+            align: 'right'
         },
         ...columns.map(col => {
             return {
