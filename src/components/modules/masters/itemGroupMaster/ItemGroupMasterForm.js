@@ -3,6 +3,8 @@ import { Form, Input, Button, Switch } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
+import { stringNormalize } from "./../../../../Helpers/utils"
+
 
 function ItemGroupMasterTable({
   entityForEdit,
@@ -27,6 +29,10 @@ function ItemGroupMasterTable({
       })
     );
   };
+
+  const nameChanged = (e) => {
+    form.setFieldsValue({ code: stringNormalize(e.target.value) })
+  }
   const layout = {
     labelCol: {
       span: 7,
@@ -49,12 +55,12 @@ function ItemGroupMasterTable({
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Name" required rules={[{ required: true }]}>
-        <Input tabIndex="0" autoFocus />
+        <Input tabIndex="0" autoFocus onBlur={nameChanged} />
       </Form.Item>
       <Form.Item
         name="code"
         label="Code"
-        validateTrigger="onblur"
+        validateTrigger="onBlur"
         rules={[{ validator: validateCode }, { required: true }]}
         required
       >

@@ -4,12 +4,12 @@ import CommonTable from "../../_common/CommonTable";
 function ItemMasterTable(props) {
   const columns = [
     {
-      title: "Code",
-      dataIndex: "code",
-    },
-    {
       title: "Name",
       dataIndex: "name",
+    },
+    {
+      title: "Code",
+      dataIndex: "code",
     },
     {
       title:"Group",

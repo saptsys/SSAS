@@ -3,6 +3,7 @@ import { Form, Input, Button, Switch } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
+import { stringNormalize } from "./../../../../Helpers/utils"
 
 function ItemUnitMasterForm({
   entityForEdit,
@@ -19,7 +20,9 @@ function ItemUnitMasterForm({
   const onFinishFailed = (errorInfo) => {
     console.log("Failed: ", errorInfo);
   };
-
+  const nameChanged = (e) => {
+    form.setFieldsValue({ code: stringNormalize(e.target.value) })
+  }
   const layout = {
     labelCol: {
       span: 7,
@@ -51,7 +54,7 @@ function ItemUnitMasterForm({
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Unit Name" rules={[{ required: true }]}>
-        <Input tabIndex="0" autoFocus />
+        <Input tabIndex="0" autoFocus onBlur={nameChanged} />
       </Form.Item>
       <Form.Item
         name="code"

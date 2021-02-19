@@ -20,6 +20,7 @@ import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRe
 import moment from "moment";
 import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
+import { stringNormalize } from "./../../../../Helpers/utils"
 
 function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const onFinish = (values) => {
@@ -85,6 +86,9 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       })
     );
   };
+  const nameChanged = (e) => {
+    form.setFieldsValue({ code: stringNormalize(e.target.value) })
+  }
   const layout = {
     labelCol: {
       span: 8,
@@ -122,7 +126,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-            <Input tabIndex="0" autoFocus />
+            <Input tabIndex="0" autoFocus onBlur={nameChanged} />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
