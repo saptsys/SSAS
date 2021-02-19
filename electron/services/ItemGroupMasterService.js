@@ -17,7 +17,7 @@ class ItemGroupMasterService extends __BaseService {
       "itemGroup.*",
       "count(items.id) as containsItems"
     ]).groupBy("itemGroup.id")
-    return query.getRawMany();
+    return query.getMany();
   }
 
   save(entity) {

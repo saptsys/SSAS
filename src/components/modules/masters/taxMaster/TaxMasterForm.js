@@ -3,7 +3,7 @@ import { Form, Input, Button, Switch, InputNumber } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
-import Icon from "@ant-design/icons/lib/components/Icon";
+import { stringNormalize } from "./../../../../Helpers/utils"
 
 function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const dispatch = useDispatch();
@@ -24,7 +24,9 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       })
     );
   };
-
+  const nameChanged = (e) => {
+    form.setFieldsValue({ code: stringNormalize(e.target.value) })
+  }
   const layout = {
     labelCol: {
       span: 7,
@@ -47,7 +49,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       validateMessages={validateMsgs}
     >
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-        <Input tabIndex="0" autoFocus />
+        <Input tabIndex="0" autoFocus onBlur={nameChanged} />
       </Form.Item>
       <Form.Item
         name="code"
@@ -66,7 +68,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         label="Percentage"
         rules={[{ type: "number", min: 0, max: 100 }, { required: true }]}
         required
-        
+
       >
         <InputNumber
           tabIndex="3"
