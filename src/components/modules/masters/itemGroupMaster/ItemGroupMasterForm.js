@@ -56,7 +56,7 @@ function ItemGroupMasterTable({
         label="Code"
         validateTrigger="onblur"
         rules={[{ validator: validateCode }, { required: true }]}
-        hasFeedback
+        required
       >
         <Input tabIndex="1" />
       </Form.Item>

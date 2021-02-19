@@ -3,6 +3,7 @@ import { Form, Input, Button, Switch, InputNumber } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
+import Icon from "@ant-design/icons/lib/components/Icon";
 
 function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
   const dispatch = useDispatch();
@@ -26,10 +27,11 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
 
   const layout = {
     labelCol: {
-      span: 8,
+      span: 7,
+      offset: 2
     },
     wrapperCol: {
-      span: 16,
+      span: 13,
     },
   };
 
@@ -51,8 +53,8 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         name="code"
         label="Code"
         validateTrigger="onBlur"
-        rules={[{ validator: validateCode }]}
-        hasFeedback
+        rules={[{ validator: validateCode }, { required: true }]}
+        required
       >
         <Input tabIndex="1" />
       </Form.Item>
@@ -62,9 +64,15 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
       <Form.Item
         name="taxPercentage"
         label="Percentage"
-        rules={[{ type: "number", min: 0, max: 100 }]}
+        rules={[{ type: "number", min: 0, max: 100 }, { required: true }]}
+        required
+        
       >
-        <InputNumber tabIndex="3" />
+        <InputNumber
+          tabIndex="3"
+          style={{ width: '100%' }}
+          addonAfter="%"
+        />
       </Form.Item>
       <Form.Item
         name="isActive"
@@ -72,7 +80,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
         label="Active"
         className="form-item-bordered-switch"
       >
-        <Switch tabIndex="4"  defaultChecked={true}/>
+        <Switch tabIndex="4" defaultChecked={true} />
       </Form.Item>
 
       <Form.Item hidden>

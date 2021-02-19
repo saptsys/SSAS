@@ -22,10 +22,11 @@ function ItemUnitMasterForm({
 
   const layout = {
     labelCol: {
-      span: 8,
+      span: 7,
+      offset: 2
     },
     wrapperCol: {
-      span: 16,
+      span: 12,
     },
   };
 
@@ -56,8 +57,8 @@ function ItemUnitMasterForm({
         name="code"
         label="Code"
         validateTrigger="onBlur"
-        rules={[{ validator: validateCode }]}
-        hasFeedback
+        rules={[{ validator: validateCode }, { required: true }]}
+        required
       >
         <Input tabIndex="1" />
       </Form.Item>
@@ -71,7 +72,7 @@ function ItemUnitMasterForm({
         className="form-item-bordered-switch"
         tabIndex="3"
       >
-        <Switch  defaultChecked={true}/>
+        <Switch defaultChecked={true} />
       </Form.Item>
 
       <Form.Item hidden>

@@ -130,9 +130,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, saveBtnRef, form }) {
             name="code"
             label="Code"
             validateTrigger="onBlur"
-            rules={[{ validator: validateCode }]}
-            requiredMark={true}
-            hasFeedback
+            rules={[{ validator: validateCode }, { required: true }]}
+            required
           >
             <Input tabIndex="1" />
           </Form.Item>
