@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import {
   Form,
   Input,
-  Button,
-  Select,
   Switch,
   Row,
   Col,
@@ -12,15 +10,13 @@ import {
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useDispatch } from "react-redux";
-import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
-import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
-import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRedux";
 
 import moment from "moment";
 import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
+import { TaxDropdown , ItemGroupDropdown , ItemUnitDropdown } from "./../../_common/CommonDropdowns"
 
 function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
   const onFinish = (values) => {
@@ -35,50 +31,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
   };
   const dispatch = useDispatch();
 
-  const [units, setUnits] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [taxes, setTaxes] = useState([]);
-  // const [taxable, setTaxable] = useState(true);
 
-  // useEffect(() => {
-  //   form.validateFields(["taxMaster"]);
-  // }, [taxable]);
-
-
-  useEffect(() => {
-    dispatch(ItemGroupMasterActions.getAll()).then((res) => {
-      setGroups(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
-    });
-    dispatch(ItemUnitMasterActions.getAll()).then((res) => {
-      setUnits(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
-    });
-    dispatch(TaxMasterActions.getAll()).then((res) => {
-      setTaxes(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
-    });
-  }, []);
-
-  const validateCode = (rule, value, callback) => {
+  const validateCode = (rule, value) => {
     return dispatch(
       ItemMasterActions.checkUnique({
         fields: { code: value },
@@ -191,14 +145,8 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
                     message: "Please select tax",
                   },
                 ]}
-                hasFeedback
               >
-                <Select
-                  showSearch
-                  optionFilterProp="label"
-                  options={taxes}
-                  tabIndex="6"
-                  showAction="focus" />
+                <TaxDropdown />
               </Form.Item>
             )}
           </Form.Item>
@@ -224,26 +172,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="itemUnitMaster" label="Unit">
-            <Select
-              showSearch
-              optionFilterProp="label"
-              options={units}
-              hasFeedback
-              tabIndex="10"
-              showAction="focus"
-            />
+            <ItemUnitDropdown />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="itemGroupMaster" label="Group">
-            <Select
-              showSearch
-              optionFilterProp="label"
-              options={groups}
-              hasFeedback
-              showAction="focus"
-              tabIndex="11"
-            />
+            <ItemGroupDropdown/>
           </Form.Item>
         </Col>
       </Row>
