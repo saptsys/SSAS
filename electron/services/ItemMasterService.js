@@ -14,8 +14,7 @@ class ItemMasterService extends __BaseService {
       .createQueryBuilder("item")
       .leftJoinAndSelect("item.itemUnitMaster", "units")
       .leftJoinAndSelect("item.itemGroupMaster", "groups")
-      .leftJoinAndSelect("item.taxMaster", "taxes");
-      
+      .leftJoinAndSelect("item.taxMaster", "taxes")
 
     return stmt.getMany().then(res => {
       return res.map(x => {

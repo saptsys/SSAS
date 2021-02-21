@@ -104,21 +104,24 @@ module.exports = new EntitySchema({
     itemUnitMaster: {
       target: "ItemUnitMaster",
       type: "many-to-one",
-      joinTable: true,
       cascade: true,
       nullable: true,
+      inverseSide: 'id',
       joinColumn: {
         name: "item_unti_mst_id",
+        referencedColumnName: 'id'
       },
     },
     itemGroupMaster: {
       target: "ItemGroupMaster",
       type: "many-to-one",
       joinTable: true,
-      cascade: true,
+      cascade: false,
       nullable: true,
+      inverseSide: 'id',
       joinColumn: {
         name: "item_group_mst_id",
+        referencedColumnName: 'id'
       },
     },
     taxMaster: {
@@ -127,8 +130,10 @@ module.exports = new EntitySchema({
       joinTable: true,
       cascade: true,
       nullable: true,
+      inverseSide: 'id',
       joinColumn: {
         name: "tax_mst_id",
+        referencedColumnName: 'id'
       },
     },
   },

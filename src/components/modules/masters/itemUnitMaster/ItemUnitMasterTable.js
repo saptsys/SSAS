@@ -1,5 +1,6 @@
 
 import React from "react";
+import { isActiveColumnRenderer } from "../../../table/columnRenderers";
 import CommonTable from "../../_common/CommonTable";
 
 function ItemUnitMasterTable(props) {
@@ -13,12 +14,15 @@ function ItemUnitMasterTable(props) {
       dataIndex: "code",
     },
     {
-      title:"Items",
-      dataIndex:"containsItems"
+      title: "Items",
+      dataIndex: "containsItems"
     },
     {
       title: "Active",
       dataIndex: "isActive",
+      render: isActiveColumnRenderer,
+      width:'80px',
+      align:'center'
     },
   ];
   return <CommonTable columns={columns} {...props} />;

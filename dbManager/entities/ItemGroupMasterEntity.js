@@ -33,4 +33,15 @@ module.exports = new EntitySchema({
       default: false,
     },
   },
+  relations: {
+    items: {
+      target: "ItemMaster",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'itemGroupMaster'
+      },
+      inverseSide: 'itemGroupMaster',
+      type: "one-to-many",
+    }
+  }
 });

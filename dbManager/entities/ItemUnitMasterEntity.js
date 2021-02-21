@@ -1,5 +1,6 @@
 const EntitySchema = require("typeorm").EntitySchema;
 const __BaseEntity = require("./__BaseEntity");
+const { ItemMaster } = require('../models/index')
 
 const NAME = "ItemUnitMaster";
 const TABLE_NAME = "item_unit_mst";
@@ -20,7 +21,7 @@ module.exports = new EntitySchema({
       name: "code",
       type: "text",
       nullable: false,
-      unique:true
+      unique: true
     },
     description: {
       name: "description",
@@ -38,4 +39,15 @@ module.exports = new EntitySchema({
       default: false,
     },
   },
+  relations: {
+    items: {
+      target: "ItemMaster",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'itemUnitMaster'
+      },
+      inverseSide: 'itemUnitMaster',
+      type: "one-to-many",
+    }
+  }
 });
