@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React, { } from "react";
 import {
   Form,
   Input,
@@ -16,9 +16,10 @@ import moment from "moment";
 import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
-import { TaxDropdown , ItemGroupDropdown , ItemUnitDropdown } from "./../../_common/CommonDropdowns"
+import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_common/CommonDropdowns"
 
 function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
+
   const onFinish = (values) => {
     if (values.date) {
       values.date = values.date.format(dateFormat);
@@ -147,59 +148,64 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
                 ]}
               >
                 <TaxDropdown />
+                {/* <TaxDropdown filter={(options) => {
+                   return options.filter((x) => {
+                     return x.tax_percentage > parseInt(form.getFieldValue("HSNCode")??0)
+                   });
+                 }} /> */}
               </Form.Item>
             )}
-          </Form.Item>
+              </Form.Item>
         </Col>
-        <Col span={11} offset={2}>
-          <Form.Item name="HSNCode" label="HSN code">
-            <Input tabIndex="7" />
-          </Form.Item>
-        </Col>
+          <Col span={11} offset={2}>
+            <Form.Item name="HSNCode" label="HSN code">
+              <Input tabIndex="7" />
+            </Form.Item>
+          </Col>
       </Row>
-      <Row>
-        <Col span={11}>
-          <Form.Item name="VATRate" label="VAT rate">
-            <Input tabIndex="8" />
-          </Form.Item>
-        </Col>
-        <Col span={11} offset={2}>
-          <Form.Item name="additionalTax" label="Additional tax">
-            <Input tabIndex="9" />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={11}>
-          <Form.Item name="itemUnitMaster" label="Unit">
-            <ItemUnitDropdown />
-          </Form.Item>
-        </Col>
-        <Col span={11} offset={2}>
-          <Form.Item name="itemGroupMaster" label="Group">
-            <ItemGroupDropdown/>
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={11}>
-          <Form.Item
-            name="itemTaxable"
-            valuePropName="checked"
-            label="Taxable?"
-          >
-            <Switch
-              tabIndex="12"
-              defaultChecked={true}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={11} offset={2}>
-          <Form.Item name="isActive" valuePropName="checked" label="Active?">
-            <Switch tabIndex="13" defaultChecked={true} />
-          </Form.Item>
-        </Col>
-      </Row>
+        <Row>
+          <Col span={11}>
+            <Form.Item name="VATRate" label="VAT rate">
+              <Input tabIndex="8" />
+            </Form.Item>
+          </Col>
+          <Col span={11} offset={2}>
+            <Form.Item name="additionalTax" label="Additional tax">
+              <Input tabIndex="9" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={11}>
+            <Form.Item name="itemUnitMaster" label="Unit">
+              <ItemUnitDropdown />
+            </Form.Item>
+          </Col>
+          <Col span={11} offset={2}>
+            <Form.Item name="itemGroupMaster" label="Group">
+              <ItemGroupDropdown />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={11}>
+            <Form.Item
+              name="itemTaxable"
+              valuePropName="checked"
+              label="Taxable?"
+            >
+              <Switch
+                tabIndex="12"
+                defaultChecked={true}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={11} offset={2}>
+            <Form.Item name="isActive" valuePropName="checked" label="Active?">
+              <Switch tabIndex="13" defaultChecked={true} />
+            </Form.Item>
+          </Col>
+        </Row>
     </Form>
   );
 }

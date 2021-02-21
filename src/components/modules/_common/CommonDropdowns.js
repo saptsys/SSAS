@@ -19,23 +19,23 @@ export const TaxDropdown = (props) => {
 
   React.useEffect(() => {
     dispatch(TaxMasterActions.getAll()).then((res) => {
-      setOptions(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
+      setOptions(res);
     });
   }, []);
+
 
   return (
     <Select
       value={props.value}
       showSearch
       optionFilterProp="label"
-      options={options}
+      options={(props.filter ? props.filter(options) : options).map((x) => {
+        return {
+          label: x.name,
+          value: x.id,
+        };
+      })
+      }
       tabIndex="6"
       showAction="focus"
       onChange={triggerChange}
@@ -55,14 +55,7 @@ export const ItemGroupDropdown = (props) => {
 
   React.useEffect(() => {
     dispatch(ItemGroupMasterActions.getAll()).then((res) => {
-      setOptions(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
+      setOptions(res);
     });
   }, []);
 
@@ -71,8 +64,13 @@ export const ItemGroupDropdown = (props) => {
       value={props.value}
       showSearch
       optionFilterProp="label"
-      options={options}
-      tabIndex="6"
+      options={(props.filter ? props.filter(options) : options).map((x) => {
+        return {
+          label: x.name,
+          value: x.id,
+        };
+      })
+      }      tabIndex="6"
       showAction="focus"
       onChange={triggerChange}
       allowClear={true}
@@ -88,17 +86,10 @@ export const ItemUnitDropdown = (props) => {
       props.onChange(changedValue);
     }
   };
- 
+
   React.useEffect(() => {
     dispatch(ItemUnitMasterActions.getAll()).then((res) => {
-      setOptions(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
+      setOptions(res );
     });
   }, []);
 
@@ -107,8 +98,13 @@ export const ItemUnitDropdown = (props) => {
       value={props.value}
       showSearch
       optionFilterProp="label"
-      options={options}
-      tabIndex="6"
+      options={(props.filter ? props.filter(options) : options).map((x) => {
+        return {
+          label: x.name,
+          value: x.id,
+        };
+      })
+      }      tabIndex="6"
       showAction="focus"
       onChange={triggerChange}
       allowClear={true}
@@ -124,17 +120,10 @@ export const ItemDropdown = (props) => {
       props.onChange(changedValue);
     }
   };
- 
+
   React.useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then((res) => {
-      setOptions(
-        res.map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })
-      );
+      setOptions(res);
     });
   }, []);
 
@@ -143,8 +132,13 @@ export const ItemDropdown = (props) => {
       value={props.value}
       showSearch
       optionFilterProp="label"
-      options={options}
-      tabIndex="6"
+      options={(props.filter ? props.filter(options) : options).map((x) => {
+        return {
+          label: x.name,
+          value: x.id,
+        };
+      })
+      }      tabIndex="6"
       showAction="focus"
       onChange={triggerChange}
       allowClear={true}
