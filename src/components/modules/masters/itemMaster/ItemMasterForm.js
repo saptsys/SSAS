@@ -147,7 +147,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
                   },
                 ]}
               >
-                <TaxDropdown />
+                <TaxDropdown tabIndex="6"/>
                 {/* <TaxDropdown filter={(options) => {
                    return options.filter((x) => {
                      return x.tax_percentage > parseInt(form.getFieldValue("HSNCode")??0)
