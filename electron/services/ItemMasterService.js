@@ -8,17 +8,19 @@ const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 class ItemMasterService extends __BaseService {
   constructor() {
     super(Models.ItemMaster);
+    this.getAll();
   }
 
 
 
   // overriding to send extra fields
   getAll() {
+    super.getAll().then(console.table).catch(console.log)
     return this.repository
       .createQueryBuilder("item")
-      .innerJoin(Models.TaxMaster, "tax", "item.taxMasterId=tax.id")
-      .innerJoin(Models.ItemGroupMaster, "itemGroup", "item.itemGroupMasterId=itemGroup.id")
-      .innerJoin(Models.ItemUnitMaster, "itemUnit", "item.itemUnitMasterId=itemUnit.id")
+      .leftJoin(Models.TaxMaster, "tax", "item.taxMasterId=tax.id")
+      .leftJoin(Models.ItemGroupMaster, "itemGroup", "item.itemGroupMasterId=itemGroup.id")
+      .leftJoin(Models.ItemUnitMaster, "itemUnit", "item.itemUnitMasterId=itemUnit.id")
       .select([
         ...rowToModelPropertyMapper("item", Models.ItemMaster),
         "tax.name as taxMasterName",
