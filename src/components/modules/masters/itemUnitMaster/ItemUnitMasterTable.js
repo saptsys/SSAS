@@ -8,21 +8,25 @@ function ItemUnitMasterTable(props) {
     {
       title: "Name",
       dataIndex: "name",
+      width: '25%',
     },
     {
       title: "Code",
       dataIndex: "code",
+      width: '15%',
     },
     {
       title: "Items",
-      dataIndex: "containsItems"
+      dataIndex: "containsItems",
+      width: '15%',
     },
     {
       title: "Active",
       dataIndex: "isActive",
       render: isActiveColumnRenderer,
       width:'80px',
-      align:'center'
+      align:'center',
+      width: '15%',
     },
   ];
   return <CommonTable columns={columns} {...props} />;

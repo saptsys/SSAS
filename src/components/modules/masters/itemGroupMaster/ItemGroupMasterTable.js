@@ -7,22 +7,26 @@ function ItemGroupMasterTable(props) {
     {
       title: "Name",
       dataIndex: "name",
+      width: '25%',
     },
     {
       title: "Code",
       dataIndex: "code",
+      width: '15%',
     },
     {
       title: "Items",
       dataIndex: "containsItems",
-      align: 'right'
+      align: 'right',
+      width: '15%',
     },
     {
       title: "Active",
       dataIndex: "isActive",
       render: isActiveColumnRenderer,
       width: "70px",
-      align: 'center'
+      align: 'center',
+      width: '15%',
     },
   ];
 
