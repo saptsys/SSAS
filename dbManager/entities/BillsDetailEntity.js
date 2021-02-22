@@ -29,15 +29,15 @@ module.exports = new EntitySchema({
       type: "double",
       default: 0.0,
     },
-    billsTransaction: {
+    billsTransactionId: {
       name: "bill_trx_id",
       type: "integer",
     },
-    itemMaster:{
+    itemMasterId:{
       name: "item_mst_id",
       type: "integer",
     },
-    itemUnitMaster:{
+    itemUnitMasterId:{
       name: "item_unit_mst_id",
       type: "integer",
     }

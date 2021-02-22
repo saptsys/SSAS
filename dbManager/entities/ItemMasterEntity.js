@@ -84,17 +84,17 @@ module.exports = new EntitySchema({
       nullable: true,
 
     },
-    itemUnitMaster: {
-      name: "item_unti_mst_id",
+    itemUnitMasterId: {
+      name: "item_unit_mst_id",
       type: "integer",
       nullable: true,
     },
-    itemGroupMaster: {
+    itemGroupMasterId: {
       name: "item_group_mst_id",
       type: "integer",
       nullable: true,
     },
-    taxMaster: {
+    taxMasterId: {
       name: "tax_mst_id",
       type: "integer",
       nullable: true,
@@ -108,7 +108,7 @@ module.exports = new EntitySchema({
       nullable: true,
       inverseSide: 'id',
       joinColumn: {
-        name: "item_unti_mst_id",
+        name: "item_unit_mst_id",
         referencedColumnName: 'id'
       },
     },

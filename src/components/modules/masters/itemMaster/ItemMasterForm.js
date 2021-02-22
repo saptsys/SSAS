@@ -137,7 +137,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
           <Form.Item shouldUpdate noStyle>
             {() => (
               <Form.Item
-                name="taxMaster"
+                name="taxMasterId"
                 label="Tax"
                 shouldUpdate
                 rules={[
@@ -177,12 +177,12 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
         </Row>
         <Row>
           <Col span={11}>
-            <Form.Item name="itemUnitMaster" label="Unit">
+            <Form.Item name="itemUnitMasterId" label="Unit">
               <ItemUnitDropdown />
             </Form.Item>
           </Col>
           <Col span={11} offset={2}>
-            <Form.Item name="itemGroupMaster" label="Group">
+            <Form.Item name="itemGroupMasterId" label="Group">
               <ItemGroupDropdown />
             </Form.Item>
           </Col>

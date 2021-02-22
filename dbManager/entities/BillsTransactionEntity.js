@@ -131,7 +131,7 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true,
     },
-    partyMaster: {
+    partyMasterId: {
       name: "party_mst_id",
       type: "integer",
     },

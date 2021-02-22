@@ -16,16 +16,13 @@ class ItemMasterService extends __BaseService {
   getAll() {
     return this.repository
       .createQueryBuilder("item")
-      .innerJoin(Models.TaxMaster, "tax", "item.taxMaster=tax.id")
-      .innerJoin(Models.ItemGroupMaster, "itemGroup", "item.itemGroupMaster=itemGroup.id")
-      .innerJoin(Models.ItemUnitMaster, "itemUnit", "item.itemUnitMaster=itemUnit.id")
+      .innerJoin(Models.TaxMaster, "tax", "item.taxMasterId=tax.id")
+      .innerJoin(Models.ItemGroupMaster, "itemGroup", "item.itemGroupMasterId=itemGroup.id")
+      .innerJoin(Models.ItemUnitMaster, "itemUnit", "item.itemUnitMasterId=itemUnit.id")
       .select([
         ...rowToModelPropertyMapper("item", Models.ItemMaster),
-        "tax.id as taxMasterId",
         "tax.name as taxMasterName",
-        "itemGroup.id as itemGroupMasterId",
         "itemGroup.name as itemGroupMasterName",
-        "itemUnit.id as itemUnitMasterId",
         "itemUnit.name as itemUnitMasterName",
       ]).getRawMany()
   }
