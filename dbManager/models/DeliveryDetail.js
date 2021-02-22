@@ -11,9 +11,9 @@ class DeliveryDetail extends _BaseModel {
     quantity,
     rate,
     amount,
-    deliveryTransaction,
-    itemMaster,
-    unitMaster,
+    deliveryTransactionId,
+    itemMasterId,
+    unitMasterId,
     ...rest
   } = {}) {
     super(rest), (this.id = id);
@@ -25,9 +25,9 @@ class DeliveryDetail extends _BaseModel {
     this.quantity = quantity;
     this.rate = rate;
     this.amount = amount;
-    this.deliveryTransaction = deliveryTransaction;
-    this.itemMaster = itemMaster;
-    this.unitMaster = unitMaster;
+    this.deliveryTransactionId = deliveryTransactionId;
+    this.itemMasterId = itemMasterId;
+    this.unitMasterId = unitMasterId;
   }
 }
 module.exports = DeliveryDetail;

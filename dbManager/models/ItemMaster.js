@@ -19,9 +19,9 @@ class ItemMaster extends _BaseModel {
     additionalTax,
     isActive,
     system,
-    itemUnitMaster,
-    itemGroupMaster,
-    taxMaster,
+    itemUnitMasterId,
+    itemGroupMasterId,
+    taxMasterId,
     ...rest
 
   } = {}) {
@@ -44,9 +44,9 @@ class ItemMaster extends _BaseModel {
     this.additionalTax = additionalTax;
     this.isActive = isActive;
     this.system = system;
-    this.itemGroupMaster = itemGroupMaster;
-    this.itemUnitMaster = itemUnitMaster;
-    this.taxMaster = taxMaster;
+    this.itemGroupMasterId = itemGroupMasterId;
+    this.itemUnitMasterId = itemUnitMasterId;
+    this.taxMasterId = taxMasterId;
   }
 }
 module.exports = ItemMaster;

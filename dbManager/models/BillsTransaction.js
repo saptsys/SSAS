@@ -31,7 +31,7 @@ class BillsTransaction extends _BaseModel {
     otherAmount,
     netAmount,
     remarks,
-    partyMaster,
+    partyMasterId,
     ...rest
   } = {}) {
     super(rest), (this.id = id);
@@ -63,7 +63,7 @@ class BillsTransaction extends _BaseModel {
     this.otherAmount = otherAmount;
     this.netAmount = netAmount;
     this.remarks = remarks;
-    this.partyMaster = partyMaster;
+    this.partyMasterId = partyMasterId;
   }
 }
 module.exports = BillsTransaction;
