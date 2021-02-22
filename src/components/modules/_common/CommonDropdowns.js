@@ -2,146 +2,128 @@ import React from "react";
 import {
   Select,
 } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../_redux/actionFiles/ItemGroupMasterRedux";
 import { ItemUnitMasterActions } from "./../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
 
-export const TaxDropdown = (props) => {
+export const TaxDropdown = ({ filterForOptions, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
-  const triggerChange = (changedValue) => {
-    if (props.onChange) {
-      props.onChange(changedValue);
-    }
-  };
+  const isLoading = useSelector(s => s.TaxMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    dispatch(TaxMasterActions.getAll()).then((res) => {
-      setOptions(res);
-    });
+    if (!props.options)
+      dispatch(TaxMasterActions.getAll()).then((res) => {
+        setOptions(res);
+      });
   }, []);
-
 
   return (
     <Select
-      value={props.value}
-      showSearch
-      optionFilterProp="label"
-      options={(props.filter ? props.filter(options) : options).map((x) => {
+      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
         return {
           label: x.name,
           value: x.id,
         };
-      })
-      }
-      tabIndex="6"
+      })}
+      {...props}
+      showSearch
+      optionFilterProp="label"
       showAction="focus"
-      onChange={triggerChange}
       allowClear={true}
+      loading={isLoading}
     />
   )
 }
 
-export const ItemGroupDropdown = (props) => {
+export const ItemGroupDropdown = ({ filterForOptions, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
-  const triggerChange = (changedValue) => {
-    if (props.onChange) {
-      props.onChange(changedValue);
-    }
-  };
+  const isLoading = useSelector(s => s.ItemGroupMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    dispatch(ItemGroupMasterActions.getAll()).then((res) => {
-      setOptions(res);
-    });
+    if (!props.options)
+      dispatch(ItemGroupMasterActions.getAll()).then((res) => {
+        setOptions(res);
+      });
   }, []);
 
   return (
     <Select
-      value={props.value}
-      showSearch
-      optionFilterProp="label"
-      options={(props.filter ? props.filter(options) : options).map((x) => {
+      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
         return {
           label: x.name,
           value: x.id,
         };
-      })
-      }      tabIndex="6"
+      })}
+      {...props}
+      showSearch
+      optionFilterProp="label"
       showAction="focus"
-      onChange={triggerChange}
       allowClear={true}
+      loading={isLoading}
     />
   )
 }
 
-export const ItemUnitDropdown = (props) => {
+export const ItemUnitDropdown = ({ filterForOptions, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
-  const triggerChange = (changedValue) => {
-    if (props.onChange) {
-      props.onChange(changedValue);
-    }
-  };
+  const isLoading = useSelector(s => s.ItemUnitMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    dispatch(ItemUnitMasterActions.getAll()).then((res) => {
-      setOptions(res );
-    });
+    if (!props.options)
+      dispatch(ItemUnitMasterActions.getAll()).then((res) => {
+        setOptions(res);
+      });
   }, []);
 
   return (
     <Select
-      value={props.value}
-      showSearch
-      optionFilterProp="label"
-      options={(props.filter ? props.filter(options) : options).map((x) => {
+      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
         return {
           label: x.name,
           value: x.id,
         };
-      })
-      }      tabIndex="6"
+      })}
+      {...props}
+      showSearch
+      optionFilterProp="label"
       showAction="focus"
-      onChange={triggerChange}
       allowClear={true}
+      loading={isLoading}
     />
   )
 }
 
-export const ItemDropdown = (props) => {
+export const ItemDropdown = ({ filterForOptions, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
-  const triggerChange = (changedValue) => {
-    if (props.onChange) {
-      props.onChange(changedValue);
-    }
-  };
+  const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    dispatch(ItemMasterActions.getAll()).then((res) => {
-      setOptions(res);
-    });
+    if (!props.options)
+      dispatch(ItemMasterActions.getAll()).then((res) => {
+        setOptions(res);
+      });
   }, []);
 
   return (
     <Select
-      value={props.value}
-      showSearch
-      optionFilterProp="label"
-      options={(props.filter ? props.filter(options) : options).map((x) => {
+      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
         return {
           label: x.name,
           value: x.id,
         };
-      })
-      }      tabIndex="6"
+      })}
+      {...props}
+      showSearch
+      optionFilterProp="label"
       showAction="focus"
-      onChange={triggerChange}
       allowClear={true}
+      loading={isLoading}
     />
   )
 }
