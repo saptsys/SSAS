@@ -15,7 +15,6 @@ class ItemMasterService extends __BaseService {
 
   // overriding to send extra fields
   getAll() {
-    super.getAll().then(console.table).catch(console.log)
     return this.repository
       .createQueryBuilder("item")
       .leftJoin(Models.TaxMaster, "tax", "item.taxMasterId=tax.id")

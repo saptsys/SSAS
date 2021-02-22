@@ -6,7 +6,8 @@ class __BaseService {
    */
   constructor(model) {
     this.ModelClass = model;
-    this.repository = getConnection().getRepository(model);
+    this.connection = getConnection();
+    this.repository = this.connection.getRepository(model);
   }
   /**
    *

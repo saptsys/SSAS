@@ -3,7 +3,6 @@ const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
-
 class ItemGroupMasterService extends __BaseService {
   constructor() {
     super(Models.ItemGroupMaster)
@@ -27,5 +26,29 @@ class ItemGroupMasterService extends __BaseService {
     return super.save(entity, ["code"])
   }
 
+  delete(id) {
+    this.hasItems(id).then(console.log).catch(console.log)
+    return this.hasItems(id).then(contains => {
+      if(contains.items){
+        return Promise.reject({message:"This Group Contains items so can't be deleted!"});
+      }else{
+        return super.delete(id);
+      }
+    })
+  }
+
+  /**
+   * 
+   * @param {Integer} id
+   * @returns {Promise} 
+   */
+  hasItems(id){
+    const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
+    .where("item.isActive = true")
+    .andWhere("item.deletedAt IS NULL")
+    .andWhere("item.itemGroupMasterId = :id", { id: id })
+    .select("count(item.id) as items");
+    return stmt.getRawOne();
+  }
 }
 module.exports = ItemGroupMasterService;
