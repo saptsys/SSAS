@@ -25,6 +25,12 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true,
     },
+    date: {
+      name: "date",
+      type: "date",
+      nullable: true,
+
+    },
     salePrice: {
       name: "sale_price",
       type: "double",

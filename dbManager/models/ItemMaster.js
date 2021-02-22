@@ -10,6 +10,7 @@ class ItemMaster extends _BaseModel {
     name,
     code,
     description,
+    date,
     salePrice,
     purchasePrice,
     itemTaxable,
@@ -34,6 +35,7 @@ class ItemMaster extends _BaseModel {
     this.name = name;
     this.code = code;
     this.description = description;
+    this.date = date;
     this.salePrice = salePrice;
     this.purchasePrice = purchasePrice;
     this.itemTaxable = itemTaxable;
