@@ -20,7 +20,7 @@ class __BaseService {
    * @returns  Promise
    */
   getById(id) {
-    return this.repository.findOne(id);
+    return this.repository.findOneOrFail(id)
   }
   /**
    *
