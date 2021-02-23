@@ -8,7 +8,6 @@ const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 class ItemMasterService extends __BaseService {
   constructor() {
     super(Models.ItemMaster);
-    this.getAll();
   }
 
 

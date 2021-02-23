@@ -27,7 +27,6 @@ class ItemGroupMasterService extends __BaseService {
   }
 
   delete(id) {
-    this.hasItems(id).then(console.log).catch(console.log)
     return this.hasItems(id).then(contains => {
       if(contains.items){
         return Promise.reject({message:"This Group Contains items so can't be deleted!"});
