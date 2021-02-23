@@ -5,7 +5,6 @@ import {
   Switch,
   Row,
   Col,
-  DatePicker,
   InputNumber,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
@@ -13,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRedux";
 
 import moment from "moment";
-import { dateFormat } from "./../../../../../Constants/Formats";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
 import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_common/CommonDropdowns"
@@ -21,9 +19,6 @@ import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_commo
 function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
   const onFinish = (values) => {
-    if (values.date) {
-      values.date = values.date.format(dateFormat);
-    }
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
   };
 
@@ -57,21 +52,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
     <Form
       {...layout}
       name="basic"
-      initialValues={(function () {
-        if (entityForEdit) {
-          if (entityForEdit.date) {
-            var date = moment(entityForEdit.date, dateFormat);
-            if (!date.isValid()) {
-              date = null;
-            }
-            return {
-              ...entityForEdit,
-              date: date,
-            };
-          }
-        }
-        return entityForEdit ?? {};
-      })()}
+      initialValues={entityForEdit}
       form={form}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
@@ -103,11 +84,14 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             <TextArea rows={4} tabIndex="2" />
           </Form.Item>
         </Col>
+        
         <Col span={11} offset={2}>
-          <Form.Item name="date" label="Date">
-            <DatePicker format={dateFormat} tabIndex="3" />
+          <Form.Item name="HSNCode" label="HSN code">
+            <Input tabIndex="7" />
           </Form.Item>
+          <ItemGroupDropdown name="itemGroupMasterId" label="Group"  propsForSelect={{ tabIndex: 12 }}  />
         </Col>
+
       </Row>
 
       <Row>
@@ -121,7 +105,13 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             <InputNumber tabIndex="4" />
           </Form.Item>
         </Col>
+        
         <Col span={11} offset={2}>
+          <ItemUnitDropdown name="itemUnitMasterId" label="Unit" propsForSelect={{ tabIndex: 10 }} />
+        </Col>
+      </Row>
+      <Row>
+      <Col span={11} >
           <Form.Item
             name="purchasePrice"
             label="Purchase rate"
@@ -131,81 +121,53 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             <InputNumber tabIndex="5" />
           </Form.Item>
         </Col>
+        <Col span={11} offset={2}>
+          <TaxDropdown
+            name="taxMasterId"
+            label="Tax"
+            rules={[
+              {
+                required: form.getFieldValue("itemTaxable"),
+                message: "Please select tax",
+              },
+            ]}
+            propsForSelect={{
+              tabIndex: 6
+            }}
+          />
+        </Col>
       </Row>
       <Row>
         <Col span={11}>
-          <Form.Item shouldUpdate noStyle>
-            {() => (
-              <Form.Item
-                name="taxMasterId"
-                label="Tax"
-                shouldUpdate
-                rules={[
-                  {
-                    required: form.getFieldValue("itemTaxable"),
-                    message: "Please select tax",
-                  },
-                ]}
-              >
-                <TaxDropdown tabIndex="6"/>
-                {/* <TaxDropdown filter={(options) => {
-                   return options.filter((x) => {
-                     return x.tax_percentage > parseInt(form.getFieldValue("HSNCode")??0)
-                   });
-                 }} /> */}
-              </Form.Item>
-            )}
-              </Form.Item>
+          <Form.Item name="VATRate" label="VAT rate">
+            <Input tabIndex="8" />
+          </Form.Item>
         </Col>
-          <Col span={11} offset={2}>
-            <Form.Item name="HSNCode" label="HSN code">
-              <Input tabIndex="7" />
-            </Form.Item>
-          </Col>
+        <Col span={11} offset={2}>
+          <Form.Item name="additionalTax" label="Additional tax">
+            <Input tabIndex="9" />
+          </Form.Item>
+        </Col>
       </Row>
-        <Row>
-          <Col span={11}>
-            <Form.Item name="VATRate" label="VAT rate">
-              <Input tabIndex="8" />
-            </Form.Item>
-          </Col>
-          <Col span={11} offset={2}>
-            <Form.Item name="additionalTax" label="Additional tax">
-              <Input tabIndex="9" />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={11}>
-            <Form.Item name="itemUnitMasterId" label="Unit">
-              <ItemUnitDropdown />
-            </Form.Item>
-          </Col>
-          <Col span={11} offset={2}>
-            <Form.Item name="itemGroupMasterId" label="Group">
-              <ItemGroupDropdown />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={11}>
-            <Form.Item
-              name="itemTaxable"
-              valuePropName="checked"
-              label="Taxable?"
-            >
-              <Switch
-                tabIndex="12"
-                defaultChecked={true}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={11} offset={2}>
-            <Form.Item name="isActive" valuePropName="checked" label="Active?">
-              <Switch tabIndex="13" defaultChecked={true} />
-            </Form.Item>
-          </Col>
-        </Row>
+      <Row>
+        <Col span={11}>
+          <Form.Item
+            name="itemTaxable"
+            valuePropName="checked"
+            label="Taxable?"
+          >
+            <Switch
+              tabIndex="12"
+              defaultChecked={true}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={11} offset={2}>
+          <Form.Item name="isActive" valuePropName="checked" label="Active?">
+            <Switch tabIndex="13" defaultChecked={true} />
+          </Form.Item>
+        </Col>
+      </Row>
     </Form>
   );
 }

@@ -32,7 +32,7 @@ export default class _BaseIpcActions {
     dispatch(this.startCall(this.callTypes.list, from));
     return this.sendIPC("getAll")
       .then((res) => {
-        console.table(res)
+        console.log(`getAll ${this.reducerName} => `, res)
         dispatch(this.stopCall(this.callTypes.list));
         return Promise.resolve(res);
       })

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Form,
   Select,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,122 +9,135 @@ import { ItemUnitMasterActions } from "./../../../_redux/actionFiles/ItemUnitMas
 import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
 
-export const TaxDropdown = ({ filterForOptions, ...props }) => {
+export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.TaxMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    if (!props.options)
+    if (!propsForSelect.options) {
       dispatch(TaxMasterActions.getAll()).then((res) => {
         setOptions(res);
       });
+    }
+    return () => setOptions([])
   }, []);
-
   return (
-    <Select
-      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
-        return {
-          label: x.name,
-          value: x.id,
-        };
-      })}
-      {...props}
-      showSearch
-      optionFilterProp="label"
-      showAction="focus"
-      allowClear={true}
-      loading={isLoading}
-    />
+    <Form.Item {...props}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+      />
+    </Form.Item>
   )
 }
 
-export const ItemGroupDropdown = ({ filterForOptions, ...props }) => {
+export const ItemGroupDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemGroupMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    if (!props.options)
+    if (!propsForSelect.options)
       dispatch(ItemGroupMasterActions.getAll()).then((res) => {
         setOptions(res);
       });
+    return () => setOptions([])
   }, []);
 
   return (
-    <Select
-      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
-        return {
-          label: x.name,
-          value: x.id,
-        };
-      })}
-      {...props}
-      showSearch
-      optionFilterProp="label"
-      showAction="focus"
-      allowClear={true}
-      loading={isLoading}
-    />
+    <Form.Item {...props}>
+
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+      />
+    </Form.Item>
   )
 }
 
-export const ItemUnitDropdown = ({ filterForOptions, ...props }) => {
+export const ItemUnitDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemUnitMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    if (!props.options)
+    if (!propsForSelect.options)
       dispatch(ItemUnitMasterActions.getAll()).then((res) => {
         setOptions(res);
       });
+    return () => setOptions([])
   }, []);
 
   return (
-    <Select
-      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
-        return {
-          label: x.name,
-          value: x.id,
-        };
-      })}
-      {...props}
-      showSearch
-      optionFilterProp="label"
-      showAction="focus"
-      allowClear={true}
-      loading={isLoading}
-    />
+    <Form.Item {...props}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+      />
+    </Form.Item>
   )
 }
 
-export const ItemDropdown = ({ filterForOptions, ...props }) => {
+export const ItemDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
 
   React.useEffect(() => {
-    if (!props.options)
+    if (!propsForSelect.options)
       dispatch(ItemMasterActions.getAll()).then((res) => {
         setOptions(res);
       });
+    return () => setOptions([])
   }, []);
 
   return (
-    <Select
-      options={(filterForOptions ? filterForOptions(options) : options).map((x) => {
-        return {
-          label: x.name,
-          value: x.id,
-        };
-      })}
-      {...props}
-      showSearch
-      optionFilterProp="label"
-      showAction="focus"
-      allowClear={true}
-      loading={isLoading}
-    />
+    <Form.Item {...props}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+      />
+    </Form.Item>
   )
 }
