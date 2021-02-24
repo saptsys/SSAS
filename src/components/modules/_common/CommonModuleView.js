@@ -117,18 +117,18 @@ function CommonModuleView({
             key: "Escape",
             title: 'Esc to Cancel ',
             method: () => { cancelEditBtnHandler(); return true; }
-          }, {
-            key: "ctrl+s",
-            title: 'CTRL+S to Save ',
-            method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
-          }],
+          },
           ...(editMode.editId ? [
             {
               key: 'ctrl+d|Delete',
               title: "CTRL+D/Del to Delete",
               method: () => deleteBtnRef && deleteBtnRef.current && deleteBtnRef.current.click()
             }
-          ] : [])
+          ] : []), {
+            key: "ctrl+s",
+            title: 'CTRL+S to Save ',
+            method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
+          }],
         ]} />)
       }
       {
@@ -151,7 +151,7 @@ function CommonModuleView({
             key: "F5",
             title: 'F5 to Refresh ',
             method: () => {
-              getTableData().then(() => message.info("Table Refreshed.",1))
+              getTableData().then(() => message.info("Table Refreshed.", 1))
             }
           },
         ]} />)
