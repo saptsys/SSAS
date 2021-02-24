@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Input, Button, Switch } from "antd";
+import { Form, Input } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
 import { stringNormalize } from "./../../../../Helpers/utils"
+import BorderedSwitch from "../../../form/BorderedSwitch";
 
 
 function ItemGroupMasterTable({
@@ -72,9 +73,8 @@ function ItemGroupMasterTable({
         name="isActive"
         valuePropName="checked"
         label="Active"
-        className="form-item-bordered-switch"
       >
-        <Switch tabIndex="3" defaultChecked={true} />
+        <BorderedSwitch tabIndex="3" defaultChecked={true} />
       </Form.Item>
     </Form>
   );

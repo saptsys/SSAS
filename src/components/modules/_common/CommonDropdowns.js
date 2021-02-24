@@ -9,6 +9,7 @@ import { ItemUnitMasterActions } from "./../../../_redux/actionFiles/ItemUnitMas
 import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
 import AccountTypes from "../../../../Constants/AccountTypes";
+import States from "../../../../Constants/States";
 
 const propsKeyToskip = ["propsForSelect"]
 const propsNotToCall = ["shouldUpdate", "onReset"]
@@ -193,6 +194,34 @@ export const AccountTypesDropdown = ({ propsForSelect = {}, ...props }) => {
         optionFilterProp="label"
         showAction="focus"
         allowClear={true}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>)
+  return (
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {props.shouldUpdate ? subItem : subItem()}
+    </Form.Item>
+  )
+}
+
+export const StatesDropdown = ({ propsForSelect = {}, ...props }) => {
+  const [options, setOptions] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!propsForSelect.options)
+      setOptions(States)
+    return () => setOptions([])
+  }, []);
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={options.map(x => ({ label: x.stateName + ` (${x.code})`, value: x.tin }))}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        defaultActiveFirstOption={false}
       />
     </Form.Item>)
   return (

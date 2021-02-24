@@ -1,12 +1,10 @@
 import React from "react";
-import { Form, Input, Select, Switch, Row, Col } from "antd";
+import { Form, Input, Row, Col } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import States from "../../../../../Constants/States";
 import Regex from "../../../../../Constants/Regex";
 import validateMsgs from "../../../../helpers/validateMesseges";
-import AccountTypes from "../../../../../Constants/AccountTypes";
-import { AccountTypesDropdown } from "../../_common/CommonDropdowns";
-
+import { AccountTypesDropdown, StatesDropdown } from "../../_common/CommonDropdowns";
+import BorderedSwitch from "../../../form/BorderedSwitch";
 function PartyMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
   const generateId = (text) => "basic_" + text
@@ -62,8 +60,9 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, form }) {
             name="type"
             label="Type"
             required
-            tooltip="Account Type"
+            // tooltip="Account Type"
             rules={[{ required: true }]}
+            propsForSelect={{ tabIndex: 1 }}
           />
         </Col>
       </Row>
@@ -111,20 +110,13 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
       <Row>
         <Col span={11}>
-          <Form.Item
+          <StatesDropdown
             name="stateCode"
             label="State"
             required
             rules={[{ required: true }]}
-          >
-            <Select
-              showSearch
-              optionFilterProp="label"
-              showAction="focus"
-              options={States.map(x => ({ label: x.stateName + ` (${x.code})`, value: x.tin }))}
-              tabIndex="6"
-            />
-          </Form.Item>
+            propsForSelect={{ tabIndex: "6" }}
+          />
         </Col>
         <Col span={11} offset={2}>
           <Form.Item
@@ -138,8 +130,8 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
       <Row>
         <Col span={11} >
-          <Form.Item name="isActive" valuePropName="checked" label="Active" className="form-item-bordered-switch">
-            <Switch tabIndex="10" />
+          <Form.Item name="isActive" valuePropName="checked" label="Active">
+            <BorderedSwitch tabIndex="10" defaultChecked />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>

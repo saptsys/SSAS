@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Input, Button, Switch } from "antd";
+import { Form, Input } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { ItemUnitMasterActions } from "./../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { stringNormalize } from "./../../../../Helpers/utils"
+import BorderedSwitch from "../../../form/BorderedSwitch";
 
 function ItemUnitMasterForm({
   entityForEdit,
@@ -71,10 +72,8 @@ function ItemUnitMasterForm({
         name="isActive"
         valuePropName="checked"
         label="Active"
-        className="form-item-bordered-switch"
-        tabIndex="3"
       >
-        <Switch defaultChecked={true} />
+        <BorderedSwitch defaultChecked={true} tabIndex="3"/>
       </Form.Item>
     </Form>
   );

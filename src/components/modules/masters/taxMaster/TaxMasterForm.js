@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Input, Button, Switch, InputNumber } from "antd";
+import { Form, Input, InputNumber } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
 import { stringNormalize } from "./../../../../Helpers/utils"
+import BorderedSwitch from "../../../form/BorderedSwitch";
 
 function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch();
@@ -80,9 +81,8 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
         name="isActive"
         valuePropName="checked"
         label="Active"
-        className="form-item-bordered-switch"
       >
-        <Switch tabIndex="4" defaultChecked={true} />
+        <BorderedSwitch tabIndex="4" defaultChecked={true} />
       </Form.Item>
     </Form>
   );
