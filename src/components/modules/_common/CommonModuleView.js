@@ -46,7 +46,7 @@ function CommonModuleView({
   const cancelEditBtnHandler = () => {
     setEditMode({ mode: false, editId: null })
   }
-  
+
   const deleteBtnHandler = (param) => {
     confirm({
       title: 'Do you want to delete this record?',
@@ -145,6 +145,14 @@ function CommonModuleView({
               const el = document.getElementById("toolbar-search")
               if (el)
                 el.focus()
+            }
+          },
+          {
+            key: "F5",
+            title: 'F5 to Refresh ',
+            method: () => {
+              getTableData().then(() => message.info("Table Refreshed.", 1))
+
             }
           },
         ]} />)
