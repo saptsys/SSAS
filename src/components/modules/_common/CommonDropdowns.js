@@ -37,26 +37,30 @@ export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
     }
     return () => setOptions([])
   }, []);
+
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>
+  )
+
   return (
     <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
-      {() => (
-        <Form.Item {...formItemPropGenerator(props)}>
-          <Select
-            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-              return {
-                label: x.name,
-                value: x.id,
-              };
-            })}
-            {...propsForSelect}
-            showSearch
-            optionFilterProp="label"
-            showAction="focus"
-            allowClear={true}
-            loading={isLoading}
-          />
-        </Form.Item>
-      )}
+      {props.shouldUpdate ? subItem : subItem()}
     </Form.Item>
   )
 }
@@ -73,26 +77,27 @@ export const ItemGroupDropdown = ({ propsForSelect = {}, ...props }) => {
       });
     return () => setOptions([])
   }, []);
-
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>)
   return (
     <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
-      {() => (
-        <Form.Item {...formItemPropGenerator(props)}>
-          <Select
-            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-              return {
-                label: x.name,
-                value: x.id,
-              };
-            })}
-            {...propsForSelect}
-            showSearch
-            optionFilterProp="label"
-            showAction="focus"
-            allowClear={true}
-            loading={isLoading}
-          />
-        </Form.Item>)}
+      {props.shouldUpdate ? subItem : subItem()}
     </Form.Item>
   )
 }
@@ -109,26 +114,27 @@ export const ItemUnitDropdown = ({ propsForSelect = {}, ...props }) => {
       });
     return () => setOptions([])
   }, []);
-
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>)
   return (
     <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
-      {() => (
-        <Form.Item {...formItemPropGenerator(props)}>
-          <Select
-            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-              return {
-                label: x.name,
-                value: x.id,
-              };
-            })}
-            {...propsForSelect}
-            showSearch
-            optionFilterProp="label"
-            showAction="focus"
-            allowClear={true}
-            loading={isLoading}
-          />
-        </Form.Item>)}
+      {props.shouldUpdate ? subItem : subItem()}
     </Form.Item>
   )
 }
@@ -145,26 +151,27 @@ export const ItemDropdown = ({ propsForSelect = {}, ...props }) => {
       });
     return () => setOptions([])
   }, []);
-
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+          return {
+            label: x.name,
+            value: x.id,
+          };
+        })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>)
   return (
     <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
-      {() => (
-        <Form.Item {...formItemPropGenerator(props)}>
-          <Select
-            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-              return {
-                label: x.name,
-                value: x.id,
-              };
-            })}
-            {...propsForSelect}
-            showSearch
-            optionFilterProp="label"
-            showAction="focus"
-            allowClear={true}
-            loading={isLoading}
-          />
-        </Form.Item>)}
+      {props.shouldUpdate ? subItem : subItem()}
     </Form.Item>
   )
 }
@@ -177,20 +184,20 @@ export const AccountTypesDropdown = ({ propsForSelect = {}, ...props }) => {
       setOptions(AccountTypes)
     return () => setOptions([])
   }, []);
-
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={options}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+      />
+    </Form.Item>)
   return (
     <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
-      {() => (
-        <Form.Item {...formItemPropGenerator(props)}>
-          <Select
-            options={options}
-            {...propsForSelect}
-            showSearch
-            optionFilterProp="label"
-            showAction="focus"
-            allowClear={true}
-          />
-        </Form.Item>)}
+      {props.shouldUpdate ? subItem : subItem()}
     </Form.Item>
   )
 }
