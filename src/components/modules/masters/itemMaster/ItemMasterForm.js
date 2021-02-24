@@ -2,10 +2,10 @@ import React, { } from "react";
 import {
   Form,
   Input,
-  Switch,
   Row,
   Col,
   InputNumber,
+  Switch,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useDispatch } from "react-redux";
@@ -14,6 +14,7 @@ import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRe
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
 import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_common/CommonDropdowns"
+import BorderedSwitch from "../../../form/BorderedSwitch";
 
 function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
@@ -72,7 +73,7 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             rules={[{ validator: validateCode }, { required: true }]}
             required
           >
-            <Input tabIndex="1" />
+            <Input tabIndex="2" />
           </Form.Item>
         </Col>
       </Row>
@@ -80,19 +81,37 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
       <Row>
         <Col span={11}>
           <Form.Item name="description" label="Description">
-            <TextArea rows={4} tabIndex="2" />
+            <TextArea rows={3} tabIndex="1" />
           </Form.Item>
         </Col>
-        
+
         <Col span={11} offset={2}>
           <Form.Item name="HSNCode" label="HSN code">
-            <Input tabIndex="7" />
+            <Input tabIndex="3" />
           </Form.Item>
-          <ItemGroupDropdown name="itemGroupMasterId" label="Group"  propsForSelect={{ tabIndex: 12 }}  />
+          <ItemGroupDropdown name="itemGroupMasterId" label="Group" propsForSelect={{ tabIndex: "4" }} />
         </Col>
 
       </Row>
 
+      <Row>
+
+        <Col span={11}>
+          <Form.Item
+            name="itemTaxable"
+            valuePropName="checked"
+            label="Taxable?"
+          >
+            <BorderedSwitch
+              tabIndex="6"
+            />
+          </Form.Item>
+        </Col>
+
+        <Col span={11} offset={2}>
+          <ItemUnitDropdown name="itemUnitMasterId" label="Unit" propsForSelect={{ tabIndex: "5" }} />
+        </Col>
+      </Row>
       <Row>
         <Col span={11}>
           <Form.Item
@@ -100,68 +119,56 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             label="Sale rate"
             rules={[{ type: "number", message: "not a valid number" }]}
           >
-            <InputNumber tabIndex="4" />
+            <InputNumber tabIndex="7" style={{ width: '100%' }} />
           </Form.Item>
         </Col>
-        
+
         <Col span={11} offset={2}>
-          <ItemUnitDropdown name="itemUnitMasterId" label="Unit" propsForSelect={{ tabIndex: 10 }} />
-        </Col>
-      </Row>
-      <Row>
-      <Col span={11} >
-          <Form.Item
-            name="purchasePrice"
-            label="Purchase rate"
-            rules={[{ type: "number", message: "not a valid number" }]}
-          >
-            <InputNumber tabIndex="5" />
-          </Form.Item>
-        </Col>
-        <Col span={11} offset={2}>
+
           <TaxDropdown
-            name="taxMasterId"
+            shouldUpdate={(o, n) => {
+              return o?.itemTaxable !== n?.itemTaxable;
+            }}
+            name={() => "taxMasterId"}
             label="Tax"
-            rules={[
+            rules={() => [
               {
                 required: form.getFieldValue("itemTaxable"),
                 message: "Please select tax",
               },
             ]}
             propsForSelect={{
-              tabIndex: 6
+              tabIndex: "10",
             }}
           />
         </Col>
       </Row>
       <Row>
-        <Col span={11}>
-          <Form.Item name="VATRate" label="VAT rate">
-            <Input tabIndex="8" />
+        <Col span={11} >
+          <Form.Item
+            name="purchasePrice"
+            label="Purchase rate"
+            rules={[{ type: "number", message: "not a valid number" }]}
+          >
+            <InputNumber tabIndex="8" style={{ width: '100%' }} />
           </Form.Item>
         </Col>
+
         <Col span={11} offset={2}>
           <Form.Item name="additionalTax" label="Additional tax">
-            <Input tabIndex="9" />
+            <Input tabIndex="11" />
           </Form.Item>
         </Col>
       </Row>
       <Row>
         <Col span={11}>
-          <Form.Item
-            name="itemTaxable"
-            valuePropName="checked"
-            label="Taxable?"
-          >
-            <Switch
-              tabIndex="12"
-              defaultChecked={true}
-            />
+          <Form.Item name="VATRate" label="VAT rate">
+            <Input tabIndex="9" />
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
           <Form.Item name="isActive" valuePropName="checked" label="Active?">
-            <Switch tabIndex="13" defaultChecked={true} />
+            <BorderedSwitch tabIndex="12" defaultChecked={true} />
           </Form.Item>
         </Col>
       </Row>

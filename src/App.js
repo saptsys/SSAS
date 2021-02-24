@@ -5,6 +5,7 @@ import ModuleRoutes from "./ModuleRoutes";
 import MainLayout from "./components/layout/MainLayout";
 import { Store } from "./_redux/store";
 import { Spin } from "antd";
+import './app.less'
 
 const App = () => {
   return (

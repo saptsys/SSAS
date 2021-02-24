@@ -10,6 +10,20 @@ import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
 import AccountTypes from "../../../../Constants/AccountTypes";
 
+const propsKeyToskip = ["propsForSelect"]
+const propsNotToCall = ["shouldUpdate", "onReset"]
+const formItemPropGenerator = (props) => {
+  return Object.keys(props)
+    .filter(x => !propsKeyToskip.includes(x)) //skip property which we reserved for sub elm select
+    .reduce((occ, cur) => (
+      {
+        ...occ,
+        [cur]: (typeof props[cur] === "function" && !propsNotToCall.includes(cur) //properties which is we are not call when assigning ex. onReset etc.
+          ? props[cur]()
+          : props[cur])
+      }), {})
+}
+
 export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
@@ -24,21 +38,25 @@ export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
     return () => setOptions([])
   }, []);
   return (
-    <Form.Item {...props}>
-      <Select
-        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })}
-        {...propsForSelect}
-        showSearch
-        optionFilterProp="label"
-        showAction="focus"
-        allowClear={true}
-        loading={isLoading}
-      />
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {() => (
+        <Form.Item {...formItemPropGenerator(props)}>
+          <Select
+            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+              return {
+                label: x.name,
+                value: x.id,
+              };
+            })}
+            {...propsForSelect}
+            showSearch
+            optionFilterProp="label"
+            showAction="focus"
+            allowClear={true}
+            loading={isLoading}
+          />
+        </Form.Item>
+      )}
     </Form.Item>
   )
 }
@@ -57,22 +75,24 @@ export const ItemGroupDropdown = ({ propsForSelect = {}, ...props }) => {
   }, []);
 
   return (
-    <Form.Item {...props}>
-
-      <Select
-        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })}
-        {...propsForSelect}
-        showSearch
-        optionFilterProp="label"
-        showAction="focus"
-        allowClear={true}
-        loading={isLoading}
-      />
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {() => (
+        <Form.Item {...formItemPropGenerator(props)}>
+          <Select
+            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+              return {
+                label: x.name,
+                value: x.id,
+              };
+            })}
+            {...propsForSelect}
+            showSearch
+            optionFilterProp="label"
+            showAction="focus"
+            allowClear={true}
+            loading={isLoading}
+          />
+        </Form.Item>)}
     </Form.Item>
   )
 }
@@ -91,21 +111,24 @@ export const ItemUnitDropdown = ({ propsForSelect = {}, ...props }) => {
   }, []);
 
   return (
-    <Form.Item {...props}>
-      <Select
-        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })}
-        {...propsForSelect}
-        showSearch
-        optionFilterProp="label"
-        showAction="focus"
-        allowClear={true}
-        loading={isLoading}
-      />
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {() => (
+        <Form.Item {...formItemPropGenerator(props)}>
+          <Select
+            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+              return {
+                label: x.name,
+                value: x.id,
+              };
+            })}
+            {...propsForSelect}
+            showSearch
+            optionFilterProp="label"
+            showAction="focus"
+            allowClear={true}
+            loading={isLoading}
+          />
+        </Form.Item>)}
     </Form.Item>
   )
 }
@@ -124,21 +147,24 @@ export const ItemDropdown = ({ propsForSelect = {}, ...props }) => {
   }, []);
 
   return (
-    <Form.Item {...props}>
-      <Select
-        options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
-          return {
-            label: x.name,
-            value: x.id,
-          };
-        })}
-        {...propsForSelect}
-        showSearch
-        optionFilterProp="label"
-        showAction="focus"
-        allowClear={true}
-        loading={isLoading}
-      />
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {() => (
+        <Form.Item {...formItemPropGenerator(props)}>
+          <Select
+            options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
+              return {
+                label: x.name,
+                value: x.id,
+              };
+            })}
+            {...propsForSelect}
+            showSearch
+            optionFilterProp="label"
+            showAction="focus"
+            allowClear={true}
+            loading={isLoading}
+          />
+        </Form.Item>)}
     </Form.Item>
   )
 }
@@ -153,15 +179,18 @@ export const AccountTypesDropdown = ({ propsForSelect = {}, ...props }) => {
   }, []);
 
   return (
-    <Form.Item {...props}>
-      <Select
-        options={options}
-        {...propsForSelect}
-        showSearch
-        optionFilterProp="label"
-        showAction="focus"
-        allowClear={true}
-      />
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {() => (
+        <Form.Item {...formItemPropGenerator(props)}>
+          <Select
+            options={options}
+            {...propsForSelect}
+            showSearch
+            optionFilterProp="label"
+            showAction="focus"
+            allowClear={true}
+          />
+        </Form.Item>)}
     </Form.Item>
   )
 }
