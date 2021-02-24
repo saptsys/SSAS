@@ -11,7 +11,6 @@ import TextArea from "antd/lib/input/TextArea";
 import { useDispatch } from "react-redux";
 import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRedux";
 
-import moment from "moment";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { stringNormalize } from "./../../../../Helpers/utils"
 import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_common/CommonDropdowns"
@@ -100,7 +99,6 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             name="salePrice"
             label="Sale rate"
             rules={[{ type: "number", message: "not a valid number" }]}
-            hasFeedback
           >
             <InputNumber tabIndex="4" />
           </Form.Item>
@@ -116,7 +114,6 @@ function ItemMasterForm({ entityForEdit, saveBtnHandler, form }) {
             name="purchasePrice"
             label="Purchase rate"
             rules={[{ type: "number", message: "not a valid number" }]}
-            hasFeedback
           >
             <InputNumber tabIndex="5" />
           </Form.Item>
