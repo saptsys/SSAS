@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
-import { Form, Input, Button, Select, Switch, Tooltip, Row, Col, Space, Table } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import React from "react";
+import { Form, Input, Select, Switch, Row, Col } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import States from "../../../../../Constants/States";
 import Regex from "../../../../../Constants/Regex";
-import { useForm } from "antd/lib/form/Form";
 import validateMsgs from "../../../../helpers/validateMesseges";
-import AutoFocuser from "../../../form/AutoFocuser";
+import AccountTypes from "../../../../../Constants/AccountTypes";
+import { AccountTypesDropdown } from "../../_common/CommonDropdowns";
 
-const { Option } = Select
-function PartyMasterForm({ entityForEdit, saveBtnHandler,  form }) {
+function PartyMasterForm({ entityForEdit, saveBtnHandler, form }) {
 
   const generateId = (text) => "basic_" + text
 
@@ -60,26 +58,13 @@ function PartyMasterForm({ entityForEdit, saveBtnHandler,  form }) {
           </Form.Item>
         </Col>
         <Col span={11} offset={2}>
-          <Form.Item
+          <AccountTypesDropdown
             name="type"
             label="Type"
             required
             tooltip="Account Type"
             rules={[{ required: true }]}
-          >
-            <Select
-              showSearch
-              optionFilterProp="label"
-              placeholder="Select account type"
-              showAction="focus"
-              options={[
-                { label: 'Sundry Debtors', value: "CUSTOMER" },
-                { label: 'Sundry Creditors', value: "SUPPLIER" },
-                { label: 'Both', value: "BOTH" }
-              ]}
-              tabIndex="1"
-            />
-          </Form.Item>
+          />
         </Col>
       </Row>
 

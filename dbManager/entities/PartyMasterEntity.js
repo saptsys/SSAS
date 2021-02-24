@@ -1,5 +1,6 @@
 const EntitySchema = require("typeorm").EntitySchema;
 const __BaseEntity = require("./__BaseEntity");
+const AccountTypes = require('../../Constants/AccountTypes')
 
 const NAME = "PartyMaster";
 const TABLE_NAME = "party_mst";
@@ -18,7 +19,7 @@ module.exports = new EntitySchema({
     },
     type: {
       type: "simple-enum",
-      enum: ["CUSTOMER", "SUPPLIER", "BOTH"],
+      enum: AccountTypes.map(x => x.value),
       nullable: false,
     },
     phone: {

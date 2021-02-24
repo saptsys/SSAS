@@ -1,4 +1,5 @@
 import React from "react";
+import AccountTypes from "../../../../../Constants/AccountTypes";
 import States from "../../../../../Constants/States";
 import CommonTable from "../../_common/CommonTable";
 
@@ -18,7 +19,7 @@ function PartyMasterTable(props) {
       title: "Type",
       dataIndex: "type",
       width: '15%',
-      render: (text) => ({ 'SUPPLIER': 'Sundry Creditors', 'CUSTOMER': 'Sundry Debtors', 'BOTH': 'Both' }[text])
+      render: (text) => AccountTypes.find(x=>x.value === text).label
     },
     {
       title: "City",

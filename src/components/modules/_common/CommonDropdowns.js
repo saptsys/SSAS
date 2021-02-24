@@ -8,6 +8,7 @@ import { ItemGroupMasterActions } from "./../../../_redux/actionFiles/ItemGroupM
 import { ItemUnitMasterActions } from "./../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
+import AccountTypes from "../../../../Constants/AccountTypes";
 
 export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
   const dispatch = useDispatch();
@@ -137,6 +138,29 @@ export const ItemDropdown = ({ propsForSelect = {}, ...props }) => {
         showAction="focus"
         allowClear={true}
         loading={isLoading}
+      />
+    </Form.Item>
+  )
+}
+
+export const AccountTypesDropdown = ({ propsForSelect = {}, ...props }) => {
+  const [options, setOptions] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!propsForSelect.options)
+      setOptions(AccountTypes)
+    return () => setOptions([])
+  }, []);
+
+  return (
+    <Form.Item {...props}>
+      <Select
+        options={options}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
       />
     </Form.Item>
   )
