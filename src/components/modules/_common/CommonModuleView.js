@@ -151,8 +151,7 @@ function CommonModuleView({
             key: "F5",
             title: 'F5 to Refresh ',
             method: () => {
-              getTableData().then(() => message.info("Table Refreshed.", 1))
-
+              getTableData().then(() => message.info("Table Refreshed.",1))
             }
           },
         ]} />)
