@@ -9,5 +9,4 @@ module.exports = merge(base, {
     path: path.resolve(__dirname, "../", "build"),
     publicPath: "./",
   },
-  devtool: "nosources-source-map",
 });

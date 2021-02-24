@@ -7,9 +7,9 @@
   "scripts": {
     "start": "electron-forge start",
     "start-prod": "SET NODE_ENV=production& electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "package": "SET NODE_ENV=production& electron-forge package",
+    "make": "SET NODE_ENV=production& electron-forge make",
+    "publish": "SET NODE_ENV=production& electron-forge publish",
     "lint": "echo \"No linting configured\"",
     "build": "webpack --mode=production --config ./webpack/webpack.production.js",
     "watch": "webpack --mode=development --config ./webpack/webpack.common.js --watch",
@@ -24,7 +24,28 @@
   "private": true,
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "packageManager": "npm",
+        "asar": true,
+        "overwrite": true,
+        "ignore": [
+          "/src/",
+          "/package-lock.json"
+        ],
+        "prune": false
+      },
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -48,6 +69,10 @@
         }
       ]
     }
+  },
+  "build": {
+    "productName": "SSAS",
+    "appId": "com.saptsys.ssas"
   },
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
@@ -91,6 +116,7 @@
     "mini-css-extract-plugin": "^0.9.0",
     "moment-locales-webpack-plugin": "^1.2.0",
     "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.1.1",
     "url-loader": "^4.1.1",
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.8.0",

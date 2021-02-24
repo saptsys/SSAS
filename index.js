@@ -3,12 +3,11 @@ const path = require("path");
 const glob = require("glob");
 const url = require("url");
 const { createConnection } = require("typeorm");
-const reloader = require("electron-reloader");
 
 function init() {
   // TODO: in produciton remove this
   try {
-    reloader(module, {
+    require("electron-reloader")(module, {
       debug: true,
       watchRenderer: true,
       ignore: [

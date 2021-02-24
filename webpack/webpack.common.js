@@ -3,14 +3,13 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CspHtmlWebpackPlugin = require("csp-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: "development",
   entry: path.resolve(__dirname, "../", "src", "index.js"),
-  devtool: "inline-source-map",
   target: "web",
   module: {
     rules: [
@@ -120,4 +119,14 @@ module.exports = {
       analyzerMode: "static",
     }),
   ],
+  optimization: {
+    usedExports: true,
+    minimize: true,
+    minimizer:
+      [
+        new TerserPlugin({
+          parallel: true,
+        }),
+      ],
+  },
 };
