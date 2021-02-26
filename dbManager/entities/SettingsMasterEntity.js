@@ -19,7 +19,7 @@ module.exports = new EntitySchema({
     },
     type: {
       type: "simple-enum",
-      enum: ["STRING", "NUMBER", "SELECT", "MULTI_SELECT", "FILE"],
+      enum: ["STRING", "NUMBER", "SELECT", "MULTI_SELECT", "FILE","SECRET"],
       nullable: false,
     },
     options: {

@@ -57,12 +57,12 @@ const MODULE_ROUTES = {
     },
   },
   utility: {
-    _path: "utility",
+    _path: "/utility",
     firmInfo: {
-      _path: "firm-info",
+      _path: "/firm-info",
     },
     settings: {
-      _path: "settings",
+      _path: "/settings",
     },
   },
 };
