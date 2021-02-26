@@ -5,6 +5,7 @@ import SettingsMasterTable from "./SettingsMasterTable"
 import CommonModuleView from "./../../_common/CommonModuleView"
 import {SettingsMasterActions , reducerInfo} from "./../../../../_redux/actionFiles/SettingsMasterRedux"
 function SettingsMasterPage() {
+  // const dispatch = useDispatch()
   return (
     <div>
       <CommonModuleView

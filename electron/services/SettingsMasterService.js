@@ -6,6 +6,7 @@ class SettingsMasterService extends __BaseService {
   constructor() {
     super(Models.SettingsMaster)
   }
+
 }
 module.exports = SettingsMasterService;
         

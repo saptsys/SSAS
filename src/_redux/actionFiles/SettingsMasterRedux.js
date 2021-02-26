@@ -8,5 +8,15 @@ export const reducerInfo = {
     model: SettingsMaster
 }
 
+class Actions extends _BaseIpcActions{
+    constructor(info , slice){
+        super(info , slice);
+    }
+
+    saveSetting(row){
+        console.log(row)
+    }
+}
+
 export const SettingsMasterSlice = new _BaseSlice(reducerInfo.name)
-export const SettingsMasterActions = new _BaseIpcActions(reducerInfo.name, SettingsMasterSlice)
+export const SettingsMasterActions = new Actions(reducerInfo.name, SettingsMasterSlice)
