@@ -1,4 +1,4 @@
-export const ROUTES = {
+const MODULE_ROUTES = {
   dashboard: {
     _path: "/dashboard",
     _title: "Dashboard",
@@ -67,7 +67,14 @@ export const ROUTES = {
   },
 };
 
-export function generateUrlChain(objPath) {
+const MODAL_ROUTES = {
+  firmInfoModal: {
+    _path: "/modal/firm-info",
+    _title: "Firm Info"
+  }
+}
+
+function generateUrlChain(objPath) {
   let final = [];
   let last = [];
   objPath
@@ -80,7 +87,7 @@ export function generateUrlChain(objPath) {
   return final;
 }
 
-export function getTitleByUrl(url, routeObj = ROUTES) {
+function getTitleByUrl(url, routeObj = MODULE_ROUTES) {
   let title = "";
   const keys = Object.keys(routeObj).filter(
     (x) => !(x === "_path" || x === "_title")
@@ -94,4 +101,12 @@ export function getTitleByUrl(url, routeObj = ROUTES) {
     }
     if (title) return title;
   }
+}
+
+
+module.exports = {
+  MODULE_ROUTES,
+  MODAL_ROUTES,
+  generateUrlChain,
+  getTitleByUrl
 }

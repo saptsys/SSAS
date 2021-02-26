@@ -3,6 +3,10 @@ const path = require("path");
 const glob = require("glob");
 const url = require("url");
 const { createConnection } = require("typeorm");
+const typeOrmConf = require("./ormconfig");
+const { FirmInfoService } = require("./electron/services/FirmInfoService");
+const { MODAL_ROUTES } = require("./src/helpers/routes");
+
 
 function init() {
   // TODO: in produciton remove this
@@ -25,16 +29,31 @@ function init() {
   }
 
   // load main processes only after we created database connection
+  const firmInfo = new FirmInfoService()
+  if (firmInfo.isValid.status === false) {
+    const { reason } = firmInfo.isValid
+    if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
+      firmInfo.createNew({
+        ssasId: "TESTING-PHASE",
+        firms: [{ id: 1, name: "ABC Photo Ltd.", default: true }],
+        databases: [{ id: 1, year: '2020-21', active: true }],
+        expiryDate: function () { const d = new Date(); d.setDate(d.getDate() + 1); return d }(),
+        renewedDate: new Date()
+      })
+      console.log("\n\nnew dummy firm info created please restart")
+      // app.relaunch()
+    }
+    console.error(`-*-*-*-*-*-*-*-*-* Existing... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
+    app.exit()
+  }
   console.log("database connecting ");
-  setDatabaseConnection()
+  setDatabaseConnection(firmInfo.activeDBPath)
     .then(() => {
       console.log("database connected ");
-
       loadMainProcess();
     })
     .catch((e) => {
       console.log(e);
-
       console.log("database connection failed");
       app.quit();
     });
@@ -71,6 +90,7 @@ function init() {
         host: "localhost:8080",
         pathname: "index.html",
         slashes: true,
+        // hash: MODAL_ROUTES.firmInfoModal._path
       });
     } else {
       console.log("-------- PRODUCTION MODE --------");
@@ -154,9 +174,10 @@ function loadMainProcess() {
 /**
  * @returns Promise<Connection>
  */
-function setDatabaseConnection() {
-  connectionPromise = createConnection();
+function setDatabaseConnection(dbName) {
+  connectionPromise = createConnection({ ...typeOrmConf, database: dbName });
   connectionPromise.then((connection) => {
+    connection
     syncTypeORM(connection);
   });
   return connectionPromise;

@@ -1,6 +1,6 @@
 const fs = require('fs');
-
-const FILE_PATH = "../../ssas-info"
+const path = require("path")
+const FILE_PATH = path.join(__dirname, "../../firm-data")
 
 const bluePrintData = {
     /**
@@ -48,13 +48,18 @@ class FirmInfoService {
      * @type {bluePrintData}
      */
     data = null
+    /**
+     * @type {{status:boolean,reason:string}}
+     */
+    isValid = null
+    /**
+     * @type {string}
+     */
+    activeDBPath = null
 
     constructor() {
-        if (fs.existsSync(FILE_PATH)) {
-            this.load()
-        } else {
-            this.data = null
-        }
+        console.log(__dirname);
+        this.load()
     }
 
     encode(content) {
@@ -73,13 +78,19 @@ class FirmInfoService {
      */
     async createNew(data) {
         const dataToWrite = this.encode(JSON.stringify(data))
-        await fs.writeFileSync(FILE_PATH, dataToWrite, { encoding: 'utf8', flag: 'w' })
-        this.load()
+        fs.writeFileSync(FILE_PATH, dataToWrite, { encoding: 'utf8', flag: 'w' })
+        await this.load()
     }
     async load() {
-        let fromFile = await fs.readFileSync(FILE_PATH, { encoding: 'utf8', flag: 'r' });
-        let dataToRead = this.decode(fromFile)
-        this.data = JSON.parse(dataToRead)
+        if (fs.existsSync(FILE_PATH)) {
+            let fromFile = fs.readFileSync(FILE_PATH, { encoding: 'utf8', flag: 'r' });
+            let dataToRead = this.decode(fromFile)
+            this.data = JSON.parse(dataToRead)
+            const dbYear = this.getActiveDB()
+            if (dbYear)
+                this.activeDBPath = path.join(__dirname, '../../databases', `FY${dbYear.year}.db`)
+        }
+        this.checkIsValid()
     }
     trialLeftDays() {
         const trialEnd = new Date(this.data.trialStart)
@@ -94,8 +105,8 @@ class FirmInfoService {
         const left = (expiry - new Date()) / (1000 * 60 * 60 * 24)
         return left > 0 ? left : 0
     }
-    isValid() {
-        let res = { status: false, reason: null, data: null }
+    checkIsValid() {
+        let res = { status: false, reason: null }
         if (!this.data)
             res.reason = INVALID_REASONS.DATA_NOT_FOUND
         else if (this.expiryLeftDays() === 0 && !this.data.trialStart)
@@ -106,32 +117,19 @@ class FirmInfoService {
             res.reason = INVALID_REASONS.CUSTOMER_INVALID
         else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
             res.reason = INVALID_REASONS.FIRM_NOT_FOUND
-        else if (!this.data?.databases?.length || !this.data.databases.some(x => x.id && x.year && x.active))
+        else if (!this.data?.databases?.length || !this.getActiveDB())
             res.reason = INVALID_REASONS.DATABASE_NOT_FOUND
         else
             res.status = true
-        return res
+        this.isValid = res
+    }
+    getActiveDB() {
+        return this.data.databases.find(x => x.id && x.year && x.active === true)
     }
 }
 
-async function main() {
-    const a = new FirmInfoService()
-    await a.createNew({
-        expiryDate: new Date("2021-02-15"),
-        trialStart: new Date("2021-02-20"),
-        trialDuration: 10,
-        ssasId: "45GDF65SDS",
-        firms: [
-            {
-                id: 1,
-                name: 'VB Pvt Ltd',
-                default: true
-            }
-        ],
-        databases: [
-            
-        ]
-    })
-    console.log(a.isValid())
+
+module.exports = {
+    INVALID_REASONS,
+    FirmInfoService
 }
-main()

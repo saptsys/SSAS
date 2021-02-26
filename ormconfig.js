@@ -1,9 +1,7 @@
 const DB_FILES_FOLDER = "dbManager"
-const DB_PATH = "databases/sass.db"
 
 module.exports = {
     "type": "sqlite",
-    "database": DB_PATH,
     'folder': DB_FILES_FOLDER,
     "synchronize": false,
     "logging": false,
