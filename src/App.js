@@ -14,9 +14,9 @@ const App = () => {
       {/* <Suspense fallback={<Spin size="large" spinning={true} style={{ minHeight: '100%', minWidth: '100%' }} />}> */}
       <HashRouter hashType="slash">
         <Switch>
-          {/* <Route exact path="/modal/firm-info">
+          <Route path="/modal/">
             <ModalRoutes />
-          </Route> */}
+          </Route>
           <Route path="/">
             <MainLayout>
               <ModuleRoutes />
