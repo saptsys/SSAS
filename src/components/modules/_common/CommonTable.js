@@ -14,7 +14,8 @@ const CommonTable = ({
     deleteBtnHandler,
     rowKey = "id",
     style,
-    rowSelection = undefined
+    rowSelection = undefined,
+    tableProps
 }) => {
     const filteredData = useMemo(() => {
         let rederes = {}
@@ -73,9 +74,10 @@ const CommonTable = ({
                 size="small"
                 loading={!!loading}
                 bordered
-                pagination={{ showQuickJumper: true, showSizeChanger: true }}
+                pagination={{ showQuickJumper: true, showSizeChanger: true, }}
                 sticky={true}
                 tableLayout='auto'
+                {...tableProps}
             />
         </div>
 

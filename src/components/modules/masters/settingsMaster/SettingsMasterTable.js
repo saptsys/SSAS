@@ -1,7 +1,7 @@
 
 import React from "react";
 import CommonTable from "../../_common/CommonTable";
-import { Select, Input ,Button} from "antd";
+import { Select, Input, Button, Table, Space, message } from "antd";
 import { useDispatch, useSelector } from 'react-redux';
 import { SettingsMasterActions, reducerInfo } from "./../../../../_redux/actionFiles/SettingsMasterRedux"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -23,13 +23,19 @@ function SettingsMasterTable() {
 
   React.useEffect(() => {
     dispatch(LayoutActions.setToolbar(
-      <span>
-        <CommonToolbar searchBar={setFilterText} />
-        <Button type="primary" onClick={console.log}>Reset</Button>
-
-      </span>
+      <Space>
+        {
+          <CommonToolbar searchBar={setFilterText} />
+        },
+        {
+          <Button type="primary" onClick={() => resetHandler()}>Reset</Button>
+        }
+      </Space>
     ))
 
+  }, [tableData])
+
+  React.useEffect(() => {
     getTableData()
   }, [])
 
@@ -45,30 +51,27 @@ function SettingsMasterTable() {
     })
 
   const saveSetting = (evt, row) => {
-    let currentValue;
+    let currentValue = row.currentValue;
     let newValue;
     if (typeof (evt) == "string") {
       newValue = evt
     } else {
       newValue = evt.target.value;
     }
+    if (row.type === "SELECT") {
+      let options = stringToJson(row.options, true)
+      let selectedOption = options.find(x => x.value === newValue);
+      if (!selectedOption) {
+        return false;
+      }
+      newValue = jsonToString(selectedOption)
+    }
     if (currentValue === newValue) {
       return
     }
-    if (row.type === "SELECT") {
-      let options = stringToJson(row.options, true)
-      let selectedOption = options.filter(x => x.value === newValue);
-      if (selectedOption[0]) {
-        selectedOption = selectedOption[0]
-      } else {
-        return false;
-      }
-      row.currentValue = jsonToString(selectedOption)
-    } else {
-      row.currentValue = newValue;
-    }
+    row.currentValue = newValue;
     dispatch(SettingsMasterActions.save(row)).then((res) => {
-      console.log(res)
+      message.success("Setting Changed!", 4)
     });
   }
   const renderDefaultValue = (value, row) => {
@@ -103,6 +106,7 @@ function SettingsMasterTable() {
           options={stringToJson(row.options)}
           showSearch
           defaultValue={value.label ? value.label : value}
+          value={value.label ? value.label : value}
           onChange={(e) => saveSetting(e, row)}
           style={{ width: "100%" }}
         />
@@ -114,8 +118,22 @@ function SettingsMasterTable() {
         return value;
     }
   }
-  const resetHandler = (value, row) => {
-    console.log(value, row)
+
+  const resetHandler = (value) => {
+    let changed = false;
+    setTableData(tableData.map(x => {
+      if ((!value || value === x.id) && (x.currentValue !== x.defaultValue)) {
+        x.currentValue = x.defaultValue
+        dispatch(SettingsMasterActions.save(x)).then((res) => {
+          console.log(res)
+        });
+        changed = true;
+      }
+      return { ...x }
+    }))
+    if (changed) {
+      message.success("Setting Reset To Default !", 4)
+    }
   }
 
   const columns = [
@@ -153,8 +171,12 @@ function SettingsMasterTable() {
     <CommonTable
       columns={columns}
       dataSource={tableData ?? []}
+      rowKey="id"
       loading={currentState.list.loading}
       filterText={filterText}
+      tableProps={{
+        pagination:{ disabled:true }
+      }}
     />
   )
 }
