@@ -29,7 +29,7 @@ const CommonTable = ({
             })
         })
     }, [filterText, dataSource])
-    const finalColumns = [
+    let finalColumns = [
         {
             title: '#',
             dataIndex: rowKey,
@@ -44,19 +44,26 @@ const CommonTable = ({
                 ...col,
             }
         }),
-        {
+    ]
+
+    if (deleteBtnHandler) {
+        finalColumns.push({
             title: '',
             dataIndex: rowKey,
             render: (text, row, index) => deleteColumnRenderer(text, row, index, deleteBtnHandler),
             width: '35px',
-        },
-        {
+        })
+    }
+    
+    if (editBtnHandler) {
+        finalColumns.push({
             title: '',
             dataIndex: rowKey,
             render: (text, row, index) => editColumnRenderer(text, row, index, editBtnHandler),
             width: '35px'
-        }
-    ]
+        })
+    }
+
     return (
         <div id="common-table" style={style}>
             <Table

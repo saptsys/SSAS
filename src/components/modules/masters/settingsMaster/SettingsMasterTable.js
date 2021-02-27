@@ -1,15 +1,48 @@
 
 import React from "react";
 import CommonTable from "../../_common/CommonTable";
-import { Select, Input } from "antd";
-import { useDispatch } from 'react-redux';
-import { SettingsMasterActions } from "./../../../../_redux/actionFiles/SettingsMasterRedux"
+import { Select, Input ,Button} from "antd";
+import { useDispatch, useSelector } from 'react-redux';
+import { SettingsMasterActions, reducerInfo } from "./../../../../_redux/actionFiles/SettingsMasterRedux"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { stringToJson, jsonToString } from "./../../../../Helpers/utils";
-import { options } from "less";
+import { errorDialog } from "../../../../helpers/dialogs";
+import { CommonToolbar } from './../../_common/CommonToolbar';
+import { LayoutActions } from '../../../../_redux/actionFiles/LayoutRedux';
+import { resetColumnRenderer } from '../../../table/columnRenderers';
 
-function SettingsMasterTable(props) {
+function SettingsMasterTable() {
   const dispatch = useDispatch();
+  const [tableData, setTableData] = React.useState([]);
+  const [filterText, setFilterText] = React.useState("")
+
+  const { currentState, title } = useSelector(state => ({
+    currentState: state[reducerInfo.name],
+    title: state.Layout.title
+  }));
+
+  React.useEffect(() => {
+    dispatch(LayoutActions.setToolbar(
+      <span>
+        <CommonToolbar searchBar={setFilterText} />
+        <Button type="primary" onClick={console.log}>Reset</Button>
+
+      </span>
+    ))
+
+    getTableData()
+  }, [])
+
+  const getTableData = () => dispatch(SettingsMasterActions.getAll())
+    .then(setTableData)
+    .catch(err => {
+      errorDialog(
+        "Error while getting data !",
+        <span>{err.message}<br /><br />Please retry or close</span>,
+        () => { },
+        () => getTableData()
+      )
+    })
 
   const saveSetting = (evt, row) => {
     let currentValue;
@@ -81,6 +114,10 @@ function SettingsMasterTable(props) {
         return value;
     }
   }
+  const resetHandler = (value, row) => {
+    console.log(value, row)
+  }
+
   const columns = [
     {
       title: "Key",
@@ -96,7 +133,7 @@ function SettingsMasterTable(props) {
       title: "Default",
       dataIndex: "defaultValue",
       width: '20%',
-      render: (value, row) => renderDefaultValue(value, row)
+      render: (value, row) => renderDefaultValue(value, row),
     },
     {
       title: "Value",
@@ -104,9 +141,21 @@ function SettingsMasterTable(props) {
       width: '20%',
       render: (value, row) => renderSettingComponent(value, row)
     },
+    {
+      title: "",
+      dataIndex: "id",
+      render: (text, row, index) => resetColumnRenderer(text, row, index, resetHandler),
+      width: '35px',
+    }
   ];
+
   return (
-    <CommonTable columns={columns} {...props} />
+    <CommonTable
+      columns={columns}
+      dataSource={tableData ?? []}
+      loading={currentState.list.loading}
+      filterText={filterText}
+    />
   )
 }
 
