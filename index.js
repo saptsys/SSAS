@@ -4,7 +4,7 @@ const glob = require("glob");
 const url = require("url");
 const { createConnection } = require("typeorm");
 const typeOrmConf = require("./ormconfig");
-const { FirmInfoService } = require("./electron/services/FirmInfoService");
+const { FirmInfoService, INVALID_REASONS } = require("./electron/services/FirmInfoService");
 const { MODAL_ROUTES } = require("./src/helpers/routes");
 
 
@@ -34,7 +34,7 @@ function init() {
     const { reason } = firmInfo.isValid
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
       firmInfo.createNew({
-        ssasId: "TESTING-PHASE",
+        machineIds: ["54f5sd-sdfgdshdf-sdfhg-sdf234"],
         firms: [{ id: 1, name: "ABC Photo Ltd.", default: true }],
         databases: [{ id: 1, year: '2020-21', active: true }],
         expiryDate: function () { const d = new Date(); d.setDate(d.getDate() + 1); return d }(),
@@ -43,10 +43,10 @@ function init() {
       console.log("\n\nnew dummy firm info created please restart")
       // app.relaunch()
     }
-    console.error(`-*-*-*-*-*-*-*-*-* Existing... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
+    console.error(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     app.exit()
   }
-  console.log("database connecting ");
+  console.log("database connecting: "+firmInfo.activeDBPath);
   setDatabaseConnection(firmInfo.activeDBPath)
     .then(() => {
       console.log("database connected ");

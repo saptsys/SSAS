@@ -7,22 +7,26 @@ import { Store } from "./_redux/store";
 import { Spin } from "antd";
 import './app.less'
 import ModalRoutes from "./ModalRoutes";
+import InitialLoader from "./InitialLoader";
 
 const App = () => {
   return (
     <Provider store={Store}>
-      {/* <Suspense fallback={<Spin size="large" spinning={true} style={{ minHeight: '100%', minWidth: '100%' }} />}> */}
+      {/* <Suspense fallback={<Spin size="large" spinning={true} style={{ minHeight: '100%', minWidth: '100%', position: 'relative', top: '45%' }} />}> */}
       <HashRouter hashType="slash">
-        <Switch>
-          <Route path="/modal/">
-            <ModalRoutes />
-          </Route>
-          <Route path="/">
-            <MainLayout>
-              <ModuleRoutes />
-            </MainLayout>
-          </Route>
-        </Switch>
+        <InitialLoader>
+          <Switch>
+            <Route path="/modal/">
+              <ModalRoutes />
+            </Route>
+            <Route path="/">
+              <MainLayout>
+                <ModuleRoutes />
+              </MainLayout>
+            </Route>
+          </Switch>
+        </InitialLoader>
+
       </HashRouter>
       {/* </Suspense> */}
     </Provider>

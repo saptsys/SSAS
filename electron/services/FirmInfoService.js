@@ -2,11 +2,13 @@ const fs = require('fs');
 const path = require("path")
 const FILE_PATH = path.join(__dirname, "../../firm-data")
 
+const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
+
 const bluePrintData = {
     /**
-     * @type {String}
+     * @type {Array.<string>}
      */
-    ssasId: "",
+    machineIds: [],
     /**
      * @type {Array.<{id: BigInt, name: String, gstin: String, pan: String, address: String, city: String, state: String, mobile: String, phone: String, email: String, default: Boolean}>}
      */
@@ -38,7 +40,8 @@ const INVALID_REASONS = {
     TRIAL_OVER: "Software trial period is over.",
     CUSTOMER_INVALID: "Customer is invalid.",
     FIRM_NOT_FOUND: "There are no any valid firm found.",
-    DATABASE_NOT_FOUND: "There is no active database found."
+    DATABASE_NOT_FOUND: "There is no active database found.",
+    MACHINE_ID_NOT_MATCHED: "This software is copy of another machine/coputer's software",
 }
 
 
@@ -58,7 +61,6 @@ class FirmInfoService {
     activeDBPath = null
 
     constructor() {
-        console.log(__dirname);
         this.load()
     }
 
@@ -88,7 +90,7 @@ class FirmInfoService {
             this.data = JSON.parse(dataToRead)
             const dbYear = this.getActiveDB()
             if (dbYear)
-                this.activeDBPath = path.join(__dirname, '../../databases', `FY${dbYear.year}.db`)
+                this.activeDBPath = dbYear.path
         }
         this.checkIsValid()
     }
@@ -109,12 +111,12 @@ class FirmInfoService {
         let res = { status: false, reason: null }
         if (!this.data)
             res.reason = INVALID_REASONS.DATA_NOT_FOUND
-        else if (this.expiryLeftDays() === 0 && !this.data.trialStart)
-            res.reason = INVALID_REASONS.SOFTWARE_EXPIRED
+        else if ((this.data.machineIds?.length ?? 0) === 0)
+            res.reason = INVALID_REASONS.CUSTOMER_INVALID
+        else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
+            res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
         else if (this.expiryLeftDays() === 0 && this.data.trialStart && this.trialLeftDays() === 0)
             res.reason = INVALID_REASONS.TRIAL_OVER
-        else if (!this.data.ssasId)
-            res.reason = INVALID_REASONS.CUSTOMER_INVALID
         else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
             res.reason = INVALID_REASONS.FIRM_NOT_FOUND
         else if (!this.data?.databases?.length || !this.getActiveDB())
@@ -124,7 +126,10 @@ class FirmInfoService {
         this.isValid = res
     }
     getActiveDB() {
-        return this.data.databases.find(x => x.id && x.year && x.active === true)
+        return this.data.databases.map(x => ({ ...x, path: path.join(__dirname, '../../databases', `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
+    }
+    getData() {
+        return this.data
     }
 }
 

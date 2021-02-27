@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Image, Layout, Menu, Row, Space } from 'antd';
+import { Button, Col, Image, Layout, Menu, Row, Space, Tooltip } from 'antd';
 const { Sider, Header, Content, Footer } = Layout
 import './MainLayout.less'
 import SubMenu from 'antd/lib/menu/SubMenu';
@@ -11,7 +11,15 @@ import MainMenu from './MainMenu';
 
 const MainLayout = ({ children }) => {
     const dispatch = useDispatch()
-    const LayoutState = useSelector(state => state.Layout)
+    const { LayoutState, FirmInfoState } = useSelector(state => ({
+        LayoutState: state.Layout,
+        FirmInfoState: {
+            dbYear: state.FirmInfo.data?.databases?.find(x => x.id && x.active)?.year,
+            firmName: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.name,
+            gstin: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.gstin,
+            address: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.address
+        }
+    }))
 
     const getFormattedTime = () => moment(new Date()).format("hh:mm A DD/MM/yyyy")
 
@@ -29,10 +37,12 @@ const MainLayout = ({ children }) => {
             <Content className="main-content">
                 <Layout className="sub-layout">
                     <Sider className="sider" id="aside-menu">
-                        <div className="sider-header">
-                            <Image src={logoSrc} />
-                            <b>Saptsys</b>
-                        </div>
+                        <Tooltip placement="right" title={<span>GSTIN: {FirmInfoState.gstin ?? "Not Available"}<br />Address: {FirmInfoState.address ?? "Not Available"}</span>}>
+                            <div className="sider-header">
+                                <Image src={logoSrc} />
+                                <b>{FirmInfoState.firmName}</b>
+                            </div>
+                        </Tooltip>
                         <MainMenu />
                     </Sider>
                     <Layout>
@@ -61,6 +71,11 @@ const MainLayout = ({ children }) => {
                     </Col>
                     <Col flex="auto" style={{ padding: "0 20px", textAlign: 'center' }}>
                         {LayoutState.message}
+                    </Col>
+                    <Col flex="none" style={{ padding: "0 5px" }}>
+                        <Tooltip title="Financial year of loaded database" placement="top">
+                            FY {FirmInfoState.dbYear}
+                        </Tooltip>
                     </Col>
                     <Col flex="none" style={{ padding: "0 5px" }}>
                         {currentDateTime}
