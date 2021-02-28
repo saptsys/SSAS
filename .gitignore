@@ -95,3 +95,4 @@ out/
 dist/
 SSAS-win32-ia32/
 firm-data
+release/

@@ -56,6 +56,7 @@ function SettingsMasterTable() {
     if (typeof (evt) == "string") {
       newValue = evt
     } else {
+      evt.preventDefault();
       newValue = evt.target.value;
     }
     if (row.type === "SELECT") {
@@ -65,15 +66,29 @@ function SettingsMasterTable() {
         return false;
       }
       newValue = jsonToString(selectedOption)
+      if (currentValue === newValue) {
+        return
+      }
     }
-    if (currentValue === newValue) {
-      return
-    }
+  
     row.currentValue = newValue;
+
     dispatch(SettingsMasterActions.save(row)).then((res) => {
       message.success("Setting Changed!", 4)
     });
   }
+
+  const inputValueChanged = (e , row) => {
+    e.preventDefault();
+
+    setTableData(tableData.map(x => {
+      if(x.id === row.id){
+        x.currentValue = e.target.value;
+      }
+      return {...x}
+    }))
+  }
+
   const renderDefaultValue = (value, row) => {
     try {
       if (row.type === "SELECT") {
@@ -96,7 +111,8 @@ function SettingsMasterTable() {
           iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
         />
       case "NUMBER":
-        return <Input defaultValue={value} type="number" onBlur={(e) => saveSetting(e, row)} />
+        console.log("asd" , value)
+        return <Input value={value} type="number" onBlur={(e) => saveSetting(e, row)} onChange={e => inputValueChanged(e , row)}/>
       case "SELECT":
         value = stringToJson(value)
         if (!value) {
