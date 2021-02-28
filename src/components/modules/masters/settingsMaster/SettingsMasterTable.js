@@ -1,7 +1,7 @@
 
 import React from "react";
 import CommonTable from "../../_common/CommonTable";
-import { Select, Input, Button, Table, Space, message } from "antd";
+import { Select, Input, Button, Space, message } from "antd";
 import { useDispatch, useSelector } from 'react-redux';
 import { SettingsMasterActions, reducerInfo } from "./../../../../_redux/actionFiles/SettingsMasterRedux"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -13,15 +13,26 @@ import { resetColumnRenderer } from '../../../table/columnRenderers';
 
 function SettingsMasterTable() {
   const dispatch = useDispatch();
-  const [tableData, setTableData] = React.useState([]);
-  const [filterText, setFilterText] = React.useState("")
-
   const { currentState, title } = useSelector(state => ({
     currentState: state[reducerInfo.name],
     title: state.Layout.title
   }));
 
+  const [tableData, setTableData] = React.useState();
+  const [filterText, setFilterText] = React.useState("")
+
+
+
+  // const tableData = () => { tableData }
+
+
+  // const setTableData = (data) => {
+  //   dispatch(SettingsMasterActions.setAll(data))
+  // }
+
   React.useEffect(() => {
+
+    console.log(currentState)
     dispatch(LayoutActions.setToolbar(
       <Space>
         {
@@ -39,19 +50,10 @@ function SettingsMasterTable() {
     getTableData()
   }, [])
 
-  const getTableData = () => dispatch(SettingsMasterActions.getAll())
-    .then(setTableData)
-    .catch(err => {
-      errorDialog(
-        "Error while getting data !",
-        <span>{err.message}<br /><br />Please retry or close</span>,
-        () => { },
-        () => getTableData()
-      )
-    })
-
+  const getTableData = () => {setTableData(currentState.list)}
   const saveSetting = (evt, row) => {
-    let currentValue = row.currentValue;
+    let rowClone = {...row}
+    let currentValue = rowClone.currentValue;
     let newValue;
     if (typeof (evt) == "string") {
       newValue = evt
@@ -59,8 +61,8 @@ function SettingsMasterTable() {
       evt.preventDefault();
       newValue = evt.target.value;
     }
-    if (row.type === "SELECT") {
-      let options = stringToJson(row.options, true)
+    if (rowClone.type === "SELECT") {
+      let options = stringToJson(rowClone.options, true)
       let selectedOption = options.find(x => x.value === newValue);
       if (!selectedOption) {
         return false;
@@ -70,22 +72,24 @@ function SettingsMasterTable() {
         return
       }
     }
-  
-    row.currentValue = newValue;
 
-    dispatch(SettingsMasterActions.save(row)).then((res) => {
+    rowClone.currentValue = newValue;
+
+    dispatch(SettingsMasterActions.save(rowClone)).then((res) => {
       message.success("Setting Changed!", 4)
     });
   }
 
-  const inputValueChanged = (e , row) => {
+  const inputValueChanged = (e, row) => {
     e.preventDefault();
 
-    setTableData(tableData.map(x => {
-      if(x.id === row.id){
+    let clone = stringToJson(jsonToString(tableData));
+
+    setTableData(clone.map(x => {
+      if (x.id === row.id) {
         x.currentValue = e.target.value;
       }
-      return {...x}
+      return { ...x }
     }))
   }
 
@@ -107,12 +111,12 @@ function SettingsMasterTable() {
       case "SECRET":
         return <Input.Password
           defaultValue={value}
-          onBlur={(e) => saveSetting(e, row)}
+          onBlur={(e) => saveSetting(e, row)} onChange={e => inputValueChanged(e, row)}
           iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
         />
       case "NUMBER":
-        console.log("asd" , value)
-        return <Input value={value} type="number" onBlur={(e) => saveSetting(e, row)} onChange={e => inputValueChanged(e , row)}/>
+        console.log("asd", value)
+        return <Input value={value} type="number" onBlur={(e) => saveSetting(e, row)} onChange={e => inputValueChanged(e, row)} />
       case "SELECT":
         value = stringToJson(value)
         if (!value) {
@@ -137,7 +141,9 @@ function SettingsMasterTable() {
 
   const resetHandler = (value) => {
     let changed = false;
-    setTableData(tableData.map(x => {
+    let clone = stringToJson(jsonToString(tableData));
+
+    setTableData(clone.map(x => {
       if ((!value || value === x.id) && (x.currentValue !== x.defaultValue)) {
         x.currentValue = x.defaultValue
         dispatch(SettingsMasterActions.save(x)).then((res) => {
@@ -182,16 +188,16 @@ function SettingsMasterTable() {
       width: '35px',
     }
   ];
-
+console.log(654,currentState)
   return (
     <CommonTable
       columns={columns}
       dataSource={tableData ?? []}
       rowKey="id"
-      loading={currentState.list.loading}
+      loading={currentState.loading}
       filterText={filterText}
       tableProps={{
-        pagination:{ disabled:true }
+        pagination: { disabled: true }
       }}
     />
   )

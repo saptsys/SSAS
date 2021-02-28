@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { matchPath, useLocation } from 'react-router-dom';
 import { MODULE_ROUTES } from './helpers/routes';
 import { FirmInfoActions } from './_redux/actionFiles/FirmInfoRedux';
+import { SettingsMasterActions } from './_redux/actionFiles/SettingsMasterRedux';
 
 const InitialLoader = ({ children }) => {
     const dispatch = useDispatch()
@@ -22,6 +23,7 @@ const InitialLoader = ({ children }) => {
     useEffect(() => {
         if (!skipLoad) {
             dispatch(FirmInfoActions.getData())
+            dispatch(SettingsMasterActions.getAll())
         }
     }, [])
 
