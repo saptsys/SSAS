@@ -9,25 +9,20 @@ module.exports = new EntitySchema({
   target: TARGET_MODEL,
   columns: {
     ...__BaseEntity,
-    name: {
-      name: "name",
-      type: "text",
-      nullable: false,
-    },
     voucherNumber: {
       name: "voucher_number",
       type: "bigint",
       unique: true,
       nullable: false,
     },
-    chalanNumber: {
-      name: "chalan_number",
+    challanNumber: {
+      name: "challan_number",
       type: "bigint",
       unique: true,
       nullable: false,
     },
-    chalanDate: {
-      name: "chalan_date",
+    challanDate: {
+      name: "challan_date",
       type: "date",
       nullable: false,
     },

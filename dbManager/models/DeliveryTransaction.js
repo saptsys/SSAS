@@ -7,10 +7,9 @@ class DeliveryTransaction extends _BaseModel {
     createdBy,
     modifiedAt,
     modifiedBy,
-    name,
     voucherNumber,
-    chalanNumber,
-    chalanDate,
+    challanNumber,
+    challanDateDate,
     grossAmount,
     netAmount,
     remarks,
@@ -22,10 +21,9 @@ class DeliveryTransaction extends _BaseModel {
     this.createdBy = createdBy;
     this.modifiedAt = modifiedAt;
     this.modifiedBy = modifiedBy;
-    this.name = name;
     this.voucherNumber = voucherNumber;
-    this.chalanNumber = chalanNumber;
-    this.chalanDate = chalanDate;
+    this.challanNumber = challanNumber;
+    this.challanDateDate = challanDateDate;
     this.grossAmount = grossAmount;
     this.netAmount = netAmount;
     this.remarks = remarks;

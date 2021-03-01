@@ -1,3 +1,4 @@
+const dateFormat = "MM-DD-YYYY"
 module.exports = {
-  dateFormat : "MM-DD-YYYY"
+  dateFormat
 }

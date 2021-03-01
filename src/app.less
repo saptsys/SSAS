@@ -1,31 +1,39 @@
 @import './index.less';
 
+
+.copact-form {
+  .ant-form-item {
+    margin-bottom: 5px;
+  }
+}
+
 .ant-form-item-label>label.ant-form-item-required:before {
-    content: "" !important;
+  content: "" !important;
 }
 
 .ant-form-item-label>label.ant-form-item-required::after {
-    content: "*" !important;
-    color: red;
+  content: "*" !important;
+  color: red;
 }
 
 .form-item-bordered-switch {
-    margin-bottom: 0 !important;
-    .ant-form-item-control {
-        border: 1px solid @border-color-base;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  margin-bottom: 0 !important;
 
-    .ant-form-item-control:hover {
-        border-color: @primary-5;
-    }
+  .ant-form-item-control {
+    border: 1px solid @border-color-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .ant-form-item-control:focus-within {
-        border-color: @primary-5;
-        border-right-width: 1px !important;
-        outline: 0;
-        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-    }
+  .ant-form-item-control:hover {
+    border-color: @primary-5;
+  }
+
+  .ant-form-item-control:focus-within {
+    border-color: @primary-5;
+    border-right-width: 1px !important;
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
 }

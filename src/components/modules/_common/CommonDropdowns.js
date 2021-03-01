@@ -10,6 +10,7 @@ import { TaxMasterActions } from "./../../../_redux/actionFiles/TaxMasterRedux";
 import { ItemMasterActions } from "./../../../_redux/actionFiles/ItemMasterRedux";
 import AccountTypes from "../../../../Constants/AccountTypes";
 import States from "../../../../Constants/States";
+import { PartyMasterActions } from "../../../_redux/actionFiles/PartyMasterRedux";
 
 const propsKeyToskip = ["propsForSelect"]
 const propsNotToCall = ["shouldUpdate", "onReset"]
@@ -221,6 +222,47 @@ export const StatesDropdown = ({ propsForSelect = {}, ...props }) => {
         optionFilterProp="label"
         showAction="focus"
         allowClear={true}
+        defaultActiveFirstOption={false}
+      />
+    </Form.Item>)
+  return (
+    <Form.Item noStyle shouldUpdate={props.shouldUpdate}>
+      {props.shouldUpdate ? subItem : subItem()}
+    </Form.Item>
+  )
+}
+
+
+export const PartyDropdown = ({ propsForSelect = {}, ...props }) => {
+  const dispatch = useDispatch();
+  const [options, setOptions] = React.useState([]);
+  const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
+
+  React.useEffect(() => {
+    if (!propsForSelect.options)
+      dispatch(PartyMasterActions.getAll()).then((res) => {
+        setOptions(res);
+      });
+    return () => setOptions([])
+  }, []);
+  const subItem = () => (
+    <Form.Item {...formItemPropGenerator(props)}>
+      <Select
+        options={
+          (propsForSelect.filterForOptions
+            ? propsForSelect.filterForOptions(options)
+            : options).map((x) => {
+              return {
+                label: x.name,
+                value: x.id,
+              };
+            })}
+        {...propsForSelect}
+        showSearch
+        optionFilterProp="label"
+        showAction="focus"
+        allowClear={true}
+        loading={isLoading}
         defaultActiveFirstOption={false}
       />
     </Form.Item>)

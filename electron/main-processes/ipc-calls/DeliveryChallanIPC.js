@@ -1,9 +1,9 @@
 
 const promiseIpc = require("electron-promise-ipc");
-const DeliveryTransactionService = require("../../services/DeliveryTransactionService");
-const createPath = (endpoint) => "DeliveryTransaction/" + endpoint;
+const DeliveryChallanService = require("../../services/DeliveryChallanService");
+const createPath = (endpoint) => "DeliveryChallan/" + endpoint;
 
-const service = new DeliveryTransactionService();
+const service = new DeliveryChallanService();
 
 promiseIpc.on(createPath("getAll"), () => {
   return service.getAll();

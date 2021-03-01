@@ -11,18 +11,27 @@ const ItemUnitMaster = lazy(() => import("./components/modules/masters/ItemUnitM
 const PartyMaster = lazy(() => import("./components/modules/masters/PartyMaster/PartyMasterPage"))
 const TaxMaster = lazy(() => import("./components/modules/masters/TaxMaster/TaxMasterPage"))
 const SettingsMaster = lazy(() => import("./components/modules/masters/settingsMaster/SettingsMasterPage"))
+const DeliveryChallan = lazy(() => import("./components/modules/transactions/deliveryChallan/DeliveryChallanPage"))
 
 const ModuleRoutes = () => {
     return (
         <Suspense fallback={<Spin size="large" spinning={true} style={{ minHeight: '100%', minWidth: '100%', position: 'relative', top: '45%' }} />}>
             <Switch>
-             <Redirect exact to="/dashboard" from="/" />
+                {/* Dashboard */}
+                <Redirect exact to={MODULE_ROUTES.dashboard._path} from="/" />
                 <Route exact path={MODULE_ROUTES.dashboard._path} component={Dashboard} />
+
+                {/* Masters */}
                 <Route exact path={MODULE_ROUTES.masters.partyMaster._path} component={PartyMaster} />
                 <Route exact path={MODULE_ROUTES.masters.item.itemGroupMaster._path} component={ItemGroupMaster} />
                 <Route exact path={MODULE_ROUTES.masters.item.itemMaster._path} component={ItemMaster} />
                 <Route exact path={MODULE_ROUTES.masters.item.unitMaster._path} component={ItemUnitMaster} />
                 <Route exact path={MODULE_ROUTES.masters.taxMaster._path} component={TaxMaster} />
+
+                {/* Transactions */}
+                <Route exact path={MODULE_ROUTES.transactions.deliveryChallan._path} component={DeliveryChallan} />
+                
+                {/* Utilities */}
                 <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
             </Switch>
         </Suspense>
