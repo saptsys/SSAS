@@ -27,7 +27,7 @@ function init() {
       ],
     });
   } catch (_) {
-    console.log("electron-preloader-notfound");
+    log("electron-preloader-notfound");
   }
 
   // load main processes only after we created database connection
@@ -42,21 +42,21 @@ function init() {
         expiryDate: function () { const d = new Date(); d.setDate(d.getDate() + 1); return d }(),
         renewedDate: new Date()
       })
-      console.log("\n\nnew dummy firm info created please restart")
+      log("\n\nnew dummy firm info created please restart")
       // app.relaunch()
     }
-    console.error(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
+    log(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     app.exit()
   }
-  console.log("database connecting: "+firmInfo.activeDBPath);
+  log("database connecting: "+firmInfo.activeDBPath);
   setDatabaseConnection(firmInfo.activeDBPath)
     .then(() => {
-      console.log("database connected ");
+      log("database connected ");
       loadMainProcess();
     })
     .catch((e) => {
-      console.log(e);
-      console.log("database connection failed");
+      log(e);
+      log("database connection failed");
       app.quit();
     });
 
@@ -83,7 +83,7 @@ function init() {
     let mainWindow = new BrowserWindow(windowOptions);
     mainWindow.setMenu(null);
     if (isDev()) {
-      console.log("-------- DEVELOPER MODE --------");
+      log("-------- DEVELOPER MODE --------");
       installExtensions();
       installIpcLogger();
       // if we are in dev mode load up 'http://localhost:8080/index.html'
@@ -95,7 +95,7 @@ function init() {
         // hash: MODAL_ROUTES.firmInfoModal._path
       });
     } else {
-      console.log("-------- PRODUCTION MODE --------");
+      log("-------- PRODUCTION MODE --------");
       indexPath = url.format({
         // if we are not in dev mode load production build file
         protocol: "file:",
@@ -140,10 +140,10 @@ const installIpcLogger = () => {
       var args = [sent ? "⬆️" : "⬇️", channel, ...data];
       if (sync) args.unshift("ipc:sync");
       else args.unshift("ipc");
-      console.log(...args);
+      log(...args);
     });
   } catch (e) {
-    console.log("ipc logger not loaded.");
+    log("ipc logger not loaded.");
   }
 };
 const installExtensions = async () => {
@@ -157,9 +157,9 @@ const installExtensions = async () => {
   for (const extension of extensions) {
     try {
       const name = await installExtension(extension);
-      console.log(`Added Extension:  ${name}`);
+      log(`Added Extension:  ${name}`);
     } catch (e) {
-      console.log("An error occurred: ", err);
+      log("An error occurred: ", err);
     }
   }
 };
@@ -255,6 +255,12 @@ function handleSquirrelEvent(application) {
           return true;
   }
 };
+
+function log(log){
+  let line =  "/n" + new Date() + " || " + log + "\n\n";
+  log(line)
+  require("fs").appendFileSync("log.txt" ,line);
+}
 
 init();
 

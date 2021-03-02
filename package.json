@@ -10,7 +10,7 @@
     "build": "webpack --mode=production --config ./webpack/webpack.production.js",
     "watch": "webpack --mode=development --config ./webpack/webpack.common.js --watch",
     "live": "webpack-dev-server --mode=development --config ./webpack/webpack.development.js",
-    "package":"SET NODE_ENV=production& SET DEBUG=electron-windows-installer:main& electron-packager . ssas --overwrite --platform=win32 --arch=ia32 --prune=true --out=release/package --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ssas\" --ignore=\\./src "
+    "package": "SET NODE_ENV=production& SET DEBUG=electron-windows-installer:main& electron-packager . ssas --overwrite --platform=win32 --arch=ia32 --prune=true --out=release/package --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ssas\""
   },
   "author": {
     "name": "saptsys",
