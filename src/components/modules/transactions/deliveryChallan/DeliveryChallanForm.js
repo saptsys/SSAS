@@ -25,7 +25,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   return (
     <Form
       name="basic"
-      initialValues={{ ...(entityForEdit ?? {}) }}
+      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ item: 1, name: 'Vaitul', age: 21 }, { item: 1, name: 'BHayani', age: 20 }, { item: 1, name: 'John', age: 16 },] }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -76,7 +76,28 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       </Row>
       <Row>
         <Col span={24}>
-          <EditableTable />
+          <EditableTable name="tableData" form={form} columns={[
+            {
+              title: "Item",
+              dataIndex: "item",
+              editor: {
+                type: 'select',
+                getOptions: () => [{ label: 'AAA', value: 1 }, { label: 'BBB', value: 2 }]
+              }
+            }, {
+              title: "Name",
+              dataIndex: "name",
+              editor: {
+                type: 'text'
+              }
+            }, {
+              title: "Age",
+              dataIndex: "age",
+              editor: {
+                type: 'number'
+              }
+            },
+          ]} />
         </Col>
       </Row>
     </Form>

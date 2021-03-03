@@ -1,0 +1,36 @@
+/nTue Mar 02 2021 10:04:07 GMT+0530 (India Standard Time) || database connecting: D:\Libraries\Desktop\saptsys\SSAS\SSAS\databases\FY2020-21.db
+
+/nTue Mar 02 2021 10:04:22 GMT+0530 (India Standard Time) || -------- DEVELOPER MODE --------
+
+/nTue Mar 02 2021 10:04:30 GMT+0530 (India Standard Time) || ipc logger not loaded.
+
+/nTue Mar 02 2021 10:04:37 GMT+0530 (India Standard Time) || database connected 
+
+/nTue Mar 02 2021 10:04:43 GMT+0530 (India Standard Time) || Added Extension:  React Developer Tools
+
+/nTue Mar 02 2021 10:04:48 GMT+0530 (India Standard Time) || Added Extension:  Redux DevTools
+
+/nTue Mar 02 2021 18:49:26 GMT+0530 (India Standard Time) || database connecting: D:\Libraries\Desktop\saptsys\SSAS\SSAS\databases\FY2020-21.db
+
+/nTue Mar 02 2021 18:49:37 GMT+0530 (India Standard Time) || -------- DEVELOPER MODE --------
+
+/nTue Mar 02 2021 18:49:43 GMT+0530 (India Standard Time) || ipc logger not loaded.
+
+/nTue Mar 02 2021 18:49:45 GMT+0530 (India Standard Time) || Added Extension:  React Developer Tools
+
+/nTue Mar 02 2021 18:49:46 GMT+0530 (India Standard Time) || Added Extension:  Redux DevTools
+
+/nTue Mar 02 2021 18:49:49 GMT+0530 (India Standard Time) || database connected 
+
+/nWed Mar 03 2021 06:30:15 GMT+0530 (India Standard Time) || database connecting: D:\Libraries\Desktop\saptsys\SSAS\SSAS\databases\FY2020-21.db
+
+/nWed Mar 03 2021 06:30:24 GMT+0530 (India Standard Time) || -------- DEVELOPER MODE --------
+
+/nWed Mar 03 2021 06:30:27 GMT+0530 (India Standard Time) || ipc logger not loaded.
+
+/nWed Mar 03 2021 06:30:28 GMT+0530 (India Standard Time) || Added Extension:  React Developer Tools
+
+/nWed Mar 03 2021 06:30:28 GMT+0530 (India Standard Time) || Added Extension:  Redux DevTools
+
+/nWed Mar 03 2021 06:30:30 GMT+0530 (India Standard Time) || database connected 
+

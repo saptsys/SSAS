@@ -6,6 +6,11 @@ const { createConnection } = require("typeorm");
 const typeOrmConf = require("./ormconfig");
 const { FirmInfoService, INVALID_REASONS } = require("./electron/services/FirmInfoService");
 
+function log(log){
+  let line =  "/n" + new Date() + " || " + log + "\n\n";
+  console.log(line)
+  require("fs").appendFileSync("log.txt" ,line);
+}
 
 function init() {
     if (handleSquirrelEvent(app)) {
@@ -256,11 +261,6 @@ function handleSquirrelEvent(application) {
   }
 };
 
-function log(log){
-  let line =  "/n" + new Date() + " || " + log + "\n\n";
-  log(line)
-  require("fs").appendFileSync("log.txt" ,line);
-}
 
 init();
 
