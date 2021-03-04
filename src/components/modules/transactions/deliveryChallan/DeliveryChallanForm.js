@@ -3,7 +3,7 @@ import { Form, Input, Row, Col, InputNumber, DatePicker, Table } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { PartyDropdown } from "../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../Constants/Formats";
-import EditableTable from "../../_common/EditableTable";
+import EditableTable, { getFirstFocusableCell } from "../../_common/EditableTable";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
@@ -52,7 +52,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} readOnly />
+            <InputNumber tabIndex="1" style={{ width: '100%' }} readOnly />
           </Form.Item>
           <Form.Item
             labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
@@ -61,7 +61,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <InputNumber tabIndex="2" style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
@@ -70,7 +70,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <DatePicker format={dateFormat} style={{ width: '100%' }} />
+            <DatePicker autoComplete="focus" format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"tableData"} />
           </Form.Item>
         </Col>
       </Row>

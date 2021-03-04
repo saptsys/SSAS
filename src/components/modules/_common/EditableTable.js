@@ -3,6 +3,9 @@ import { Table, Input, InputNumber, Popconfirm, Form, Typography, Select } from 
 
 import './editableTable.less'
 
+export const getFirstFocusableCell = (tableId, rowIndex = 0, cellIndex = 0) => {
+  return `.focus-index-${rowIndex}-${cellIndex} input`
+}
 
 const EditableCell = ({
   saveData,
@@ -71,11 +74,13 @@ const EditableCell = ({
               nextColIndex = 0
             } else {
               nextColIndex = colIndex + 1
+              nextRowIndex = rowIndex
             }
           }
           const next = table.querySelector(`.focus-index-${nextRowIndex}-${nextColIndex}`).querySelector('input')
           if (next) {
-            e.target.blur()
+            // e.target.blur()
+            saveData()
             setTimeout(() => {
               next.focus()
             }, 1)
@@ -88,12 +93,16 @@ const EditableCell = ({
   )
 }
 
-const EditableTable = ({ name, columns, form }) => {
+const EditableTable = ({ name, columns, form, beforeSave = (newRow, oldRow) => newRow }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
   const saveRow = () => {
     if (currentCellValue) {
       let tmp = [...form.getFieldValue(name)]
-      Object.keys(currentCellValue).forEach(r => tmp[r] = currentCellValue[r])
+      Object.keys(currentCellValue).forEach(r => {
+        const beforeSaveRes = beforeSave(currentCellValue[r], tmp[r])
+        if (beforeSaveRes)
+          tmp[r] = beforeSaveRes
+      })
       form.setFieldsValue({
         [name]: tmp
       })
@@ -103,7 +112,7 @@ const EditableTable = ({ name, columns, form }) => {
   return (
     <Form.Item name={name} shouldUpdate={true}>
       <Table
-        id={"table-" + name}
+        id={name}
         components={{ body: { cell: EditableCell } }}
         bordered
         dataSource={form.getFieldValue(name)}
@@ -121,7 +130,7 @@ const EditableTable = ({ name, columns, form }) => {
                 colIndex,
                 colsLength: columns.length,
                 rowsLength: form.getFieldValue(name)?.length ?? 0,
-                tableId: "table-" + name,
+                tableId: name,
                 editor: col.editor,
                 ...(col?.onCell ? col.onCell(record, rowIndex) : {})
               }
