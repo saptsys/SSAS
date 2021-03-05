@@ -26,7 +26,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   return (
     <Form
       name="basic"
-      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ item: 1, name: 'Vaitul', age: 21 }, { item: 1, name: 'BHayani', age: 20 }, { item: 1, name: 'John', age: 16 },] }}
+      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ id:1,item: 1, name: 'Vaitul', age: 21 }, { id:2,item: 1, name: 'BHayani', age: 20 }, { id:3,item: 1, name: 'John', age: 16 },] }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -102,7 +102,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               }
             },
             ]}
-            autoAddRow={{ item: 3, name: '', age: '' }}
+            autoAddRow={{ id:3,item:1, name: 'Last row', age: 18 }}
           />
         </Col>
       </Row>
