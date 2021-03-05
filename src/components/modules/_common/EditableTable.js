@@ -9,6 +9,7 @@ export const getFirstFocusableCell = (tableId, rowIndex = 0, cellIndex = 0) => {
 
 const EditableCell = ({
   saveData,
+  addRow,
   currentCellValue,
   setCurrentCellValue,
   dataIndex,
@@ -70,6 +71,10 @@ const EditableCell = ({
           let nextColIndex = 0
           if (rowIndex < rowsLength) {
             if (colIndex === colsLength - 1) {
+              // if (rowIndex === rowsLength - 1) {
+              //   addRow();
+              //   return;
+              // }
               nextRowIndex = rowIndex + 1
               nextColIndex = 0
             } else {
@@ -93,7 +98,7 @@ const EditableCell = ({
   )
 }
 
-const EditableTable = ({ name, columns, form, beforeSave = (newRow, oldRow) => newRow }) => {
+const EditableTable = ({ name, columns, form, autoAddRow = null, beforeSave = (newRow, oldRow) => newRow }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
   const saveRow = () => {
     if (currentCellValue) {
@@ -109,8 +114,18 @@ const EditableTable = ({ name, columns, form, beforeSave = (newRow, oldRow) => n
       setCurrentCellValue(null)
     }
   }
+  const addRow = () => {
+    const tmp = [
+      ...form.getFieldValue(name),
+      { ...autoAddRow }
+    ]
+    form.setFieldsValue({
+      [name]: tmp
+    })
+  }
   return (
-    <Form.Item name={name} shouldUpdate={true}>
+    <Form.Item name={name} shouldUpdate={(a, b) => true}>
+      {console.table(form.getFieldValue(name))}
       <Table
         id={name}
         components={{ body: { cell: EditableCell } }}
@@ -122,6 +137,7 @@ const EditableTable = ({ name, columns, form, beforeSave = (newRow, oldRow) => n
             onCell: (record, rowIndex) => {
               return {
                 saveData: saveRow,
+                addRow: addRow,
                 currentCellValue,
                 setCurrentCellValue,
                 dataIndex: col.dataIndex,
@@ -144,7 +160,7 @@ const EditableTable = ({ name, columns, form, beforeSave = (newRow, oldRow) => n
         rowClassName="editable-row"
         size="small"
         pagination={false}
-        rowKey="index"
+        rowKey="item"
       />
     </Form.Item>
   );

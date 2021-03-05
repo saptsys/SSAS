@@ -77,28 +77,33 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       </Row>
       <Row>
         <Col span={24}>
-          <EditableTable name="tableData" form={form} columns={[{
-            title: "Name",
-            dataIndex: "name",
-            editor: {
-              type: 'text'
-            }
-          },
-          {
-            title: "Item",
-            dataIndex: "item",
-            editor: {
-              type: 'select',
-              getOptions: () => [{ label: 'AAA', value: 1 }, { label: 'BBB', value: 2 }]
-            }
-          }, {
-            title: "Age",
-            dataIndex: "age",
-            editor: {
-              type: 'number'
-            }
-          },
-          ]} />
+          <EditableTable
+            name="tableData"
+            form={form}
+            columns={[{
+              title: "Name",
+              dataIndex: "name",
+              editor: {
+                type: 'text'
+              }
+            },
+            {
+              title: "Item",
+              dataIndex: "item",
+              editor: {
+                type: 'select',
+                getOptions: () => [{ label: 'AAA', value: 1 }, { label: 'BBB', value: 2 }]
+              }
+            }, {
+              title: "Age",
+              dataIndex: "age",
+              editor: {
+                type: 'number'
+              }
+            },
+            ]}
+            autoAddRow={{ item: 3, name: '', age: '' }}
+          />
         </Col>
       </Row>
     </Form>
