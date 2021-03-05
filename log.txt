@@ -38,3 +38,157 @@
     at Function.Module._load (internal/modules/cjs/loader.js:510:25)
     at Module.require (internal/modules/cjs/loader.js:640:17)
     at require (internal/modules/cjs/helpers.js:20:18)
+/nThu Mar 04 2021 10:38:31 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nThu Mar 04 2021 10:38:34 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 10:38:34 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 10:38:34 GMT+0530 (India Standard Time) || {"code":"MODULE_NOT_FOUND"}
+
+/nThu Mar 04 2021 21:10:21 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 21:10:27 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 21:10:27 GMT+0530 (India Standard Time) || {"name":"DriverPackageNotInstalledError","message":"SQLite package has not been found installed. Try to install it: npm install sqlite3 --save"}
+
+/nThu Mar 04 2021 22:10:46 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:11:13 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:11:20 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:11:20 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:26:04 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:26:30 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:26:37 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:26:37 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:32:11 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:33:32 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:33:41 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:33:42 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:37:52 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:38:40 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:38:47 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:38:47 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:42:19 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:43:23 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:43:28 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:43:28 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:52:12 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:53:20 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:53:24 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:53:24 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 22:58:06 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nThu Mar 04 2021 22:59:22 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 22:59:28 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 22:59:28 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nThu Mar 04 2021 23:04:08 GMT+0530 (India Standard Time) || database connecting: h:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nThu Mar 04 2021 23:04:11 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 23:04:11 GMT+0530 (India Standard Time) || database connection failed
+
+/nThu Mar 04 2021 23:04:11 GMT+0530 (India Standard Time) || {"code":"MODULE_NOT_FOUND"}
+
+/nThu Mar 04 2021 23:17:31 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nThu Mar 04 2021 23:17:38 GMT+0530 (India Standard Time) || database connected 
+
+/nThu Mar 04 2021 23:37:37 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nThu Mar 04 2021 23:37:42 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 07:27:39 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 07:27:48 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 07:29:22 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 07:29:28 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 07:34:21 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 07:34:29 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 07:40:32 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 07:40:42 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 07:40:44 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 07:40:44 GMT+0530 (India Standard Time) || {"name":"EntityMetadataNotFound","message":"No metadata for \"undefined\" was found."}
+
+/nFri Mar 05 2021 07:58:16 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 07:58:30 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 07:58:30 GMT+0530 (India Standard Time) || {}
+
+/nFri Mar 05 2021 08:54:33 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 08:54:45 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 08:54:45 GMT+0530 (India Standard Time) || {}
+
+/nFri Mar 05 2021 09:45:09 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 09:45:24 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 09:45:24 GMT+0530 (India Standard Time) || {}
+
+/nFri Mar 05 2021 09:52:30 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\databases\FY2020-21.db
+
+/nFri Mar 05 2021 09:52:40 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 09:52:40 GMT+0530 (India Standard Time) || {}
+
+/nFri Mar 05 2021 09:59:34 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nFri Mar 05 2021 10:00:22 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 10:00:31 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 10:00:31 GMT+0530 (India Standard Time) || {"name":"EntityMetadataNotFound","message":"No metadata for \"undefined\" was found."}
+
+/nFri Mar 05 2021 10:04:55 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nFri Mar 05 2021 10:06:19 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 10:06:34 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 10:06:34 GMT+0530 (India Standard Time) || {"name":"RepositoryNotFoundError","message":"No repository for \"BillsDetail\" was found. Looks like this entity is not registered in current \"default\" connection?"}
+
+/nFri Mar 05 2021 10:17:03 GMT+0530 (India Standard Time) || database connecting: H:\SAPTSYS\SASS\App\app\databases\FY2020-21.db
+
+/nFri Mar 05 2021 10:20:25 GMT+0530 (India Standard Time) || database connected 
+
+/nFri Mar 05 2021 10:20:39 GMT+0530 (India Standard Time) || database connection failed
+
+/nFri Mar 05 2021 10:20:39 GMT+0530 (India Standard Time) || {}
+

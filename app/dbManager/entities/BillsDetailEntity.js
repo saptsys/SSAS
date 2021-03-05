@@ -1,9 +1,11 @@
-const EntitySchema = require("typeorm").EntitySchema;
-const __BaseEntity = require("./__BaseEntity");
+import { EntitySchema } from "typeorm";
+import __BaseEntity from "./__BaseEntity";
 const NAME = "BillsDetail";
 const TABLE_NAME = "bills_dtl";
-const TARGET_MODEL = require(`../models/${NAME}`);
-module.exports = new EntitySchema({
+const TARGET_MODEL = import(`../models/${NAME}`);
+console.log("BILLS CALLES////")
+import BillsTransactionEntity from "./BillsTransactionEntity";
+export default new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
   target: TARGET_MODEL,

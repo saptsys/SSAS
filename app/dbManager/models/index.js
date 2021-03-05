@@ -1,15 +1,15 @@
-const BillsDetail = require("./BillsDetail");
-const BillsTransaction = require("./BillsTransaction");
-const DeliveryDetail = require("./DeliveryDetail");
-const DeliveryTransaction = require("./DeliveryTransaction");
-const ItemGroupMaster = require("./ItemGroupMaster");
-const ItemMaster = require("./ItemMaster");
-const ItemUnitMaster = require("./ItemUnitMaster");
-const PartyMaster = require("./PartyMaster");
-const SettingsMaster = require("./SettingsMaster");
-const TaxMaster = require("./TaxMaster");
+import BillsDetail from "./BillsDetail";
+import BillsTransaction from "./BillsTransaction";
+import DeliveryDetail from "./DeliveryDetail";
+import DeliveryTransaction from "./DeliveryTransaction";
+import ItemGroupMaster from "./ItemGroupMaster";
+import ItemMaster from "./ItemMaster";
+import ItemUnitMaster from "./ItemUnitMaster";
+import PartyMaster from "./PartyMaster";
+import SettingsMaster from "./SettingsMaster";
+import TaxMaster from "./TaxMaster";
 
-module.exports = {
+export default {
   BillsDetail,
   BillsTransaction,
   DeliveryDetail,

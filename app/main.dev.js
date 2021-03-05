@@ -10,16 +10,25 @@
  *
  * @flow
  */
-import { app, BrowserWindow } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import {
+  app,
+  BrowserWindow
+} from 'electron';
+import {
+  autoUpdater
+} from 'electron-updater';
 import log from 'electron-log';
-import { createConnection } from "typeorm";
+import {
+  createConnection
+} from "typeorm";
 import typeOrmConf from "./ormconfig";
-import { FirmInfoService, INVALID_REASONS } from "./electron/services/FirmInfoService";
+import {
+  FirmInfoService,
+  INVALID_REASONS
+} from "./electron/services/FirmInfoService";
 import * as glob from "glob";
 import * as path from "path";
-import * as url from "url";
-require("sqlite3").verbose();
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -28,18 +37,32 @@ export default class AppUpdater {
   }
 }
 
-function init(){
+function init() {
 
 
   const firmInfo = new FirmInfoService()
   if (firmInfo.isValid.status === false) {
-    const { reason } = firmInfo.isValid
+    const {
+      reason
+    } = firmInfo.isValid
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
       firmInfo.createNew({
         machineIds: ["54f5sd-sdfgdshdf-sdfhg-sdf234"],
-        firms: [{ id: 1, name: "ABC Photo Ltd.", default: true }],
-        databases: [{ id: 1, year: '2020-21', active: true }],
-        expiryDate: function () { const d = new Date(); d.setDate(d.getDate() + 1); return d }(),
+        firms: [{
+          id: 1,
+          name: "ABC Photo Ltd.",
+          default: true
+        }],
+        databases: [{
+          id: 1,
+          year: '2020-21',
+          active: true
+        }],
+        expiryDate: function () {
+          const d = new Date();
+          d.setDate(d.getDate() + 1);
+          return d
+        }(),
         renewedDate: new Date()
       })
       sout("\n\nnew dummy firm info created please restart")
@@ -48,13 +71,14 @@ function init(){
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     app.exit()
   }
-  sout("database connecting: "+firmInfo.activeDBPath);
+  sout("database connecting: " + firmInfo.activeDBPath);
   setDatabaseConnection(firmInfo.activeDBPath)
     .then(() => {
       sout("database connected ");
       loadMainProcess();
     })
     .catch((e) => {
+      console.log(e)
       sout("database connection failed");
       sout(JSON.stringify(e))
       app.quit();
@@ -146,13 +170,20 @@ function loadMainProcess() {
   const files = glob.sync(
     path.join(__dirname, "electron/main-processes/**/*.js")
   );
-  files.forEach((file) => require(file));
+  files.forEach((file) => {
+    file = file.split("/").pop()
+    console.log(file)
+    require(`./electron/main-processes/ipc-calls/${file}`)
+  });
 }
 /**
  * @returns Promise<Connection>
  */
 function setDatabaseConnection(dbName) {
-  let connectionPromise = createConnection({ ...typeOrmConf, database: dbName });
+  let connectionPromise = createConnection({
+    ...typeOrmConf,
+    database: dbName
+  });
   connectionPromise.then((connection) => {
     connection
     syncTypeORM(connection);
@@ -166,9 +197,9 @@ async function syncTypeORM(connection) {
   await connection.query("PRAGMA foreign_keys=ON");
 }
 
-function sout(log){
-  let line =  "/n" + new Date() + " || " + log + "\n\n";
+function sout(log) {
+  let line = "/n" + new Date() + " || " + log + "\n\n";
   console.log(line)
-  require("fs").appendFileSync("log.txt" ,line);
+  require("fs").appendFileSync("log.txt", line);
 }
 init()
