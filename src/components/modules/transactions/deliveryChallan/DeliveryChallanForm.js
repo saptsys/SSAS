@@ -4,6 +4,7 @@ import validateMsgs from "../../../../helpers/validateMesseges";
 import { PartyDropdown } from "../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../Constants/Formats";
 import EditableTable, { getFirstFocusableCell } from "../../_common/EditableTable";
+import CustomDatePicker from "../../../form/CustomDatePicker";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
@@ -70,7 +71,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <DatePicker autoComplete="focus" format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"tableData"} />
+            <CustomDatePicker format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"tableData"} />
           </Form.Item>
         </Col>
       </Row>

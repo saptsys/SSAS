@@ -6,7 +6,7 @@ const AutoFocuser = ({ children, lastElement }) => {
 
     const keyUpEvent = (event) => {
       if (event.key === "Enter") {
-        event.target.blur()
+        event.preventDefault()
         if (event.target.tagName === "TEXTAREA" && (event.target.innerHTML !== "" && event.target.innerHTML.substr(-1) !== "\n"))
           return;
         if (event.target.dataset.focustable) {
