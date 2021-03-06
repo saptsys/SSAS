@@ -1,4 +1,4 @@
-import _BaseModel from "./_BaseModel";
+const _BaseModel = require("./_BaseModel");
 
 class ItemGroupMaster extends _BaseModel {
   constructor({
@@ -27,4 +27,4 @@ class ItemGroupMaster extends _BaseModel {
     this.system = system;
   }
 }
-export default ItemGroupMaster;
+module.exports = ItemGroupMaster;

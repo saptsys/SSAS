@@ -1,6 +1,6 @@
 
-import promiseIpc from "electron-promise-ipc";
-import TaxMasterService from "../../services/TaxMasterService";
+const promiseIpc = require("electron-promise-ipc");
+const TaxMasterService = require("../../services/TaxMasterService");
 const createPath = (endpoint) => "TaxMaster/" + endpoint;
 
 const service = new TaxMasterService();
@@ -16,7 +16,7 @@ promiseIpc.on(createPath("save"), (payload) => {
 promiseIpc.on(createPath("getById"), (payload) => {
   return service.getById(payload);
 });
-
+        
 promiseIpc.on(createPath("delete"), (payload) => {
   return service.delete(payload);
 });

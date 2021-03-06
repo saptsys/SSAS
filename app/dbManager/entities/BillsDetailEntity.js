@@ -2,7 +2,9 @@ import { EntitySchema } from "typeorm";
 import __BaseEntity from "./__BaseEntity";
 const NAME = "BillsDetail";
 const TABLE_NAME = "bills_dtl";
-const TARGET_MODEL = import(`../models/BillsDetail`);
+const TARGET_MODEL = import(`../models/${NAME}`);
+console.log("BILLS CALLES////")
+import BillsTransactionEntity from "./BillsTransactionEntity";
 export default new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,

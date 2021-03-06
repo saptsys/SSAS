@@ -1,49 +1,49 @@
-import { resolve, join } from "path";
-import glob from "glob";
-import { existsSync, mkdirSync, writeFile as _writeFile } from "fs";
+const path = require("path");
+const glob = require("glob");
+const fs = require("fs");
 
-const rootDir = resolve(__dirname, "../");
+const rootDir = path.resolve(__dirname, "../");
 
-const ormconfig = require(join(rootDir, "ormconfig.js"));
-const dbFolderDir = join(rootDir, ormconfig.folder);
+const ormconfig = require(path.join(rootDir, "ormconfig.js"));
+const dbFolderDir = path.join(rootDir, ormconfig.folder);
 
-const reduxActionFiles = join(rootDir, "./src/_redux/actionFiles");
-const mastersFolder = join(rootDir, "./src/components/modules/masters");
+const reduxActionFiles = path.join(rootDir, "./src/_redux/actionFiles");
+const mastersFolder = path.join(rootDir, "./src/components/modules/masters");
 
-glob(join(dbFolderDir, "entities/*.js"), (er, files) => {
+glob(path.join(dbFolderDir, "entities/*.js"), (er, files) => {
   files.forEach((file) => {
     if (!file.includes("__BaseEntity")) {
       const entitySchema = require(file);
       const entiryName = entitySchema.options.name;
 
-      const reduxPath = join(reduxActionFiles, `/${entiryName}Redux.js`);
+      const reduxPath = path.join(reduxActionFiles, `/${entiryName}Redux.js`);
 
       const dataToWrite = reducerTemplate(entiryName);
       writeFile(reduxPath, dataToWrite);
 
-      const mastersFolderPath = join(
+      const mastersFolderPath = path.join(
         mastersFolder,
         `/${firstLatterSmall(entiryName)}`
       );
-      if (!existsSync(mastersFolderPath)) {
+      if (!fs.existsSync(mastersFolderPath)) {
         console.log(
           `====>'${entiryName}'  Masters Folder Not Exists. Creating... <====\n`
         );
-        mkdirSync(mastersFolderPath);
+        fs.mkdirSync(mastersFolderPath);
       }
 
-      let mastersFormFile = join(
+      let mastersFormFile = path.join(
         mastersFolderPath,
         `/${entiryName}Form.js`
       );
       writeFile(mastersFormFile, mastersFormTemplate(entiryName));
-      let mastersPageFile = join(
+      let mastersPageFile = path.join(
         mastersFolderPath,
         `/${entiryName}Page.js`
       );
       writeFile(mastersPageFile, mastersPageTemplate(entiryName));
 
-      let mastersTableFile = join(
+      let mastersTableFile = path.join(
         mastersFolderPath,
         `/${entiryName}Table.js`
       );
@@ -53,9 +53,9 @@ glob(join(dbFolderDir, "entities/*.js"), (er, files) => {
 });
 
 function writeFile(path, data) {
-  if (!existsSync(path)) {
+  if (!fs.existsSync(path)) {
     const dataToWrite = data;
-    _writeFile(path, dataToWrite, (err) =>
+    fs.writeFile(path, dataToWrite, (err) =>
       err ? console.error(err) : console.log(`\n\n====> Created ${path}`)
     );
   } else {
@@ -94,7 +94,7 @@ function ${entiryName}Form({ entityForEdit, saveBtnHandler, saveBtnRef }) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-
+      
       <Form.Item hidden>
         <Button type="primary" htmlType="submit" ref={saveBtnRef}>
           Submit
@@ -139,7 +139,7 @@ import CommonTable from "../../_common/CommonTable";
 
 function ${entiryName}Table(props) {
   const columns = [
-
+    
   ];
 
   return <CommonTable columns={columns} {...props} />;

@@ -1,4 +1,4 @@
-import _BaseModel from "./_BaseModel";
+const _BaseModel = require("./_BaseModel");
 
 class ItemMaster extends _BaseModel {
   constructor({
@@ -47,4 +47,4 @@ class ItemMaster extends _BaseModel {
     this.taxMasterId = taxMasterId;
   }
 }
-export default ItemMaster;
+module.exports = ItemMaster;

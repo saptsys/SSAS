@@ -1,6 +1,6 @@
 
-import promiseIpc  from "electron-promise-ipc";
-import ItemGroupMasterService from "../../services/ItemGroupMasterService";
+const promiseIpc = require("electron-promise-ipc");
+const ItemGroupMasterService = require("../../services/ItemGroupMasterService");
 const createPath = (endpoint) => "ItemGroupMaster/" + endpoint;
 
 const service = new ItemGroupMasterService();
@@ -20,7 +20,7 @@ promiseIpc.on(createPath("getById"), (payload) => {
 promiseIpc.on(createPath("delete"), (payload) => {
   return service.delete(payload);
 });
-
+        
 promiseIpc.on(createPath("checkUnique"), (payload) => {
   return service.doCheckUnique(payload);
 });

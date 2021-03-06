@@ -1,4 +1,4 @@
-export default [
+module.exports = [
     {
         "stateName": "Jammu and Kashmir",
         "tin": 1,

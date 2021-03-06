@@ -1,4 +1,4 @@
-import _BaseModel from "./_BaseModel";
+const _BaseModel = require("./_BaseModel");
 
 class PartyMaster extends _BaseModel {
 	constructor({
@@ -32,4 +32,4 @@ class PartyMaster extends _BaseModel {
 		this.system = system;
 	}
 }
-export default PartyMaster
+module.exports = PartyMaster 

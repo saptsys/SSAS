@@ -1,6 +1,6 @@
-import { writeFileSync, existsSync, readFileSync } from 'fs';
-import { join } from "path";
-const FILE_PATH = join(__dirname, "../../firm-data")
+const fs = require('fs');
+const path = require("path")
+const FILE_PATH = path.join(__dirname, "../../firm-data")
 
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
 
@@ -76,16 +76,16 @@ class FirmInfoService {
     }
 
     /**
-     * @param {bluePrintData} data
+     * @param {bluePrintData} data 
      */
     async createNew(data) {
         const dataToWrite = this.encode(JSON.stringify(data))
-        writeFileSync(FILE_PATH, dataToWrite, { encoding: 'utf8', flag: 'w' })
+        fs.writeFileSync(FILE_PATH, dataToWrite, { encoding: 'utf8', flag: 'w' })
         await this.load()
     }
     async load() {
-        if (existsSync(FILE_PATH)) {
-            let fromFile = readFileSync(FILE_PATH, { encoding: 'utf8', flag: 'r' });
+        if (fs.existsSync(FILE_PATH)) {
+            let fromFile = fs.readFileSync(FILE_PATH, { encoding: 'utf8', flag: 'r' });
             let dataToRead = this.decode(fromFile)
             this.data = JSON.parse(dataToRead)
             const dbYear = this.getActiveDB()
@@ -126,7 +126,7 @@ class FirmInfoService {
         this.isValid = res
     }
     getActiveDB() {
-        return this.data.databases.map(x => ({ ...x, path: join(__dirname, '../../databases', `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
+        return this.data.databases.map(x => ({ ...x, path: path.join(__dirname, '../../databases', `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
     }
     getData() {
         return this.data
@@ -134,5 +134,7 @@ class FirmInfoService {
 }
 
 
-export {INVALID_REASONS}
-export {FirmInfoService}
+module.exports = {
+    INVALID_REASONS,
+    FirmInfoService
+}

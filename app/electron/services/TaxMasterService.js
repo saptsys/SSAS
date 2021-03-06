@@ -1,7 +1,7 @@
 
-import __BaseService from "./__BaseService";
-import Models from "../../dbManager/models/index";
-import rowToModelPropertyMapper from "../../dbManager/dbUtils";
+const __BaseService = require("./__BaseService");
+const Models = require("../../dbManager/models/index");
+const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class TaxMasterService extends __BaseService {
   constructor() {
@@ -37,9 +37,9 @@ class TaxMasterService extends __BaseService {
   }
 
   /**
-   *
+   * 
    * @param {Integer} id
-   * @returns {Promise}
+   * @returns {Promise} 
    */
   hasItems(id){
     const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
@@ -50,4 +50,4 @@ class TaxMasterService extends __BaseService {
     return stmt.getRawOne();
   }
 }
-export default TaxMasterService;
+module.exports = TaxMasterService;
