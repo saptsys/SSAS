@@ -6,16 +6,19 @@ const AutoFocuser = ({ children, lastElement }) => {
 
     const keyUpEvent = (event) => {
       if (event.key === "Enter") {
-        event.preventDefault()
         if (event.target.tagName === "TEXTAREA" && (event.target.innerHTML !== "" && event.target.innerHTML.substr(-1) !== "\n"))
           return;
         if (event.target.dataset.focustable) {
           const [tableId, cellIndex = 0] = event.target.dataset.focustable.split(":")
-          const rowsLen = mainDiv.querySelectorAll(`#${tableId} tbody tr`).length
-          if (rowsLen > 0) {
-            const selector = `#${tableId} tbody tr .focus-index-${rowsLen - 1}-${cellIndex} input,select,textarea`
-            const nxt = mainDiv.querySelector(selector)
-            nxt.focus()
+          const rows = mainDiv.querySelectorAll(`#${tableId} tbody .editable-row`)
+          if (rows.length > 0) {
+            const selector = `.focus-index-${rows.length - 1}-${cellIndex} input,select,textarea`
+            const nxt = rows[rows.length - 1].querySelector(selector)
+            if (nxt) {
+              nxt.focus()
+              event.preventDefault()
+            }
+
           }
           return;
         }

@@ -5,6 +5,8 @@ import { PartyDropdown } from "../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../Constants/Formats";
 import EditableTable, { getFirstFocusableCell } from "../../_common/EditableTable";
 import CustomDatePicker from "../../../form/CustomDatePicker";
+import './deliveryChallanForm.less'
+import TextArea from "antd/lib/input/TextArea";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
@@ -25,8 +27,8 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
   return (
     <Form
-      name="basic"
-      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ id:1,item: 1, name: 'Vaitul', age: 21 }, { id:2,item: 1, name: 'BHayani', age: 20 }, { id:3,item: 1, name: 'John', age: 16 },] }}
+      name="delivery-challan-form"
+      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },] }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -34,7 +36,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       colon={false}
       className="copact-form"
     >
-      <Row>
+      <Row className="header-row">
         <Col md={{ span: 12 }} xs={{ span: 14 }}>
           <PartyDropdown
             propsForSelect={{ tabIndex: "0", autoFocus: true }}
@@ -53,7 +55,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <InputNumber tabIndex="1" style={{ width: '100%' }} readOnly />
+            <InputNumber style={{ width: '100%' }} readOnly />
           </Form.Item>
           <Form.Item
             labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
@@ -62,7 +64,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <InputNumber tabIndex="2" style={{ width: '100%' }} />
+            <InputNumber tabIndex="1" style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
@@ -71,14 +73,15 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <CustomDatePicker format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"tableData"} />
+            <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"tableData"} />
           </Form.Item>
         </Col>
       </Row>
-      <Row>
+      <Row className="table-row">
         <Col span={24}>
           <EditableTable
             name="tableData"
+            nextTabIndex="3"
             form={form}
             columns={[{
               title: "Name",
@@ -102,8 +105,41 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               }
             },
             ]}
-            autoAddRow={{ id:3,item:1, name: 'Last row', age: 18 }}
+            autoAddRow={{ id: 0, item: 0, name: '', age: null }}
           />
+        </Col>
+      </Row>
+      <Row className="footer-row">
+        <Col span={11}>
+          <Form.Item
+            labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}
+            name="remarks"
+            label="Remarks"
+            required
+            rules={[{ required: true }]}
+          >
+            <TextArea style={{ width: '100%' }} rows={3} tabIndex="3"/>
+          </Form.Item>
+        </Col>
+        <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 5 }}>
+          <Form.Item
+            labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
+            name="grossAmount"
+            label="Gross Amount"
+            required
+            rules={[{ required: true }]}
+          >
+            <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
+          </Form.Item>
+          <Form.Item
+            labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
+            name="netAmount"
+            label="Net Amount"
+            required
+            rules={[{ required: true }]}
+          >
+            <InputNumber tabIndex="5" style={{ width: '100%' }} readOnly />
+          </Form.Item>
         </Col>
       </Row>
     </Form>

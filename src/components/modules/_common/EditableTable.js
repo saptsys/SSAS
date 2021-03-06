@@ -20,6 +20,7 @@ const EditableCell = ({
   rowsLength,
   tableId,
   editor,
+  nextTabIndex,
   children,
   ...props }) => {
   const setVal = val => setCurrentCellValue({ [rowIndex]: { ...record, [dataIndex]: val } })
@@ -35,6 +36,7 @@ const EditableCell = ({
               type="number"
               value={curCellVal()}
               onChange={e => setVal(e.target.value) && onChange && onChange(e)}
+              size="small"
               {...elmProps}
             />
           case "select":
@@ -43,6 +45,7 @@ const EditableCell = ({
               onChange={val => setVal(val) && onChange && onChange(val)}
               options={getOptions(record, rowIndex, colIndex)}
               showAction="focus"
+              size="small"
               {...elmProps}
             />
           case "custom":
@@ -57,6 +60,7 @@ const EditableCell = ({
             return <Input
               value={curCellVal()}
               onChange={e => setVal(e.target.value) && onChange && onChange(e)}
+              size="small"
               {...elmProps}
             />
         }
@@ -66,7 +70,7 @@ const EditableCell = ({
   const focusCell = (rowIndex, colIndex) => {
     const table = document.getElementById(tableId)
     if (table) {
-      const next = table.querySelector(`.focus-index-${rowIndex}-${colIndex}`).querySelector('input')
+      let next = table.querySelector(`.focus-index-${rowIndex}-${colIndex}`).querySelector('input')
       if (next) {
         // e.target.blur()
         saveData()
@@ -80,7 +84,7 @@ const EditableCell = ({
   return (
     <td {...props} className={`${props.className} focus-index-${rowIndex}-${colIndex}`} onKeyDown={function (e) {
       if (e.key === "Enter") {
-
+        e.preventDefault()
         let nextRowIndex = 0
         let nextColIndex = 0
         if (rowIndex < rowsLength) {
@@ -100,7 +104,13 @@ const EditableCell = ({
             nextRowIndex = rowIndex
           }
         }
-        focusCell(nextRowIndex, nextColIndex)
+
+        if (rowIndex === rowsLength - 1 && colIndex === 0 && !((currentCellValue ? currentCellValue[rowIndex] : record)[dataIndex])) {
+          const next = document.querySelector(`[tabindex='${nextTabIndex}']`)
+          next.focus()
+        }
+        else
+          focusCell(nextRowIndex, nextColIndex)
       }
     }}>
       {elmToReturn}
@@ -108,7 +118,7 @@ const EditableCell = ({
   )
 }
 
-const EditableTable = ({ name, columns, form, autoAddRow = null, beforeSave = (newRow, oldRow) => newRow }) => {
+const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, beforeSave = (newRow, oldRow) => newRow }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
   const saveRow = () => {
     if (currentCellValue) {
@@ -141,7 +151,6 @@ const EditableTable = ({ name, columns, form, autoAddRow = null, beforeSave = (n
             className="editable-table"
             id={name}
             components={{ body: { cell: EditableCell } }}
-            bordered
             dataSource={form.getFieldValue(name)}
             columns={columns.map((col, colIndex) => {
               return {
@@ -159,6 +168,7 @@ const EditableTable = ({ name, columns, form, autoAddRow = null, beforeSave = (n
                     colsLength: columns.length,
                     rowsLength: form.getFieldValue(name)?.length ?? 0,
                     tableId: name,
+                    nextTabIndex,
                     editor: col.editor,
                     ...(col?.onCell ? col.onCell(record, rowIndex) : {})
                   }
@@ -172,7 +182,8 @@ const EditableTable = ({ name, columns, form, autoAddRow = null, beforeSave = (n
             rowClassName="editable-row"
             size="small"
             pagination={false}
-            rowKey="item"
+            sticky
+            bordered
           />
           {autoAddRow && <Button onClick={() => addRow()} className="add-row-btn" type="dashed" size="small" icon={<PlusCircleTwoTone />}>Add New Row</Button>}
         </Form.Item>
