@@ -1,4 +1,4 @@
-const _BaseModel = require("./_BaseModel");
+import _BaseModel from "./_BaseModel";
 
 class SettingsMaster extends _BaseModel {
   constructor({
@@ -30,4 +30,4 @@ class SettingsMaster extends _BaseModel {
     this.system = system;
   }
 }
-module.exports = SettingsMaster;
+export default SettingsMaster;

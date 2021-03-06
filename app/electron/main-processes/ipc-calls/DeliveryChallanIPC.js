@@ -1,6 +1,6 @@
 
-const promiseIpc = require("electron-promise-ipc");
-const DeliveryChallanService = require("../../services/DeliveryChallanService");
+import promiseIpc  from "electron-promise-ipc";
+import DeliveryChallanService from "../../services/DeliveryChallanService";
 const createPath = (endpoint) => "DeliveryChallan/" + endpoint;
 
 const service = new DeliveryChallanService();
@@ -16,7 +16,7 @@ promiseIpc.on(createPath("save"), (payload) => {
 promiseIpc.on(createPath("getById"), (payload) => {
   return service.getById(payload);
 });
-        
+
 promiseIpc.on(createPath("delete"), (payload) => {
   return service.delete(payload);
 });

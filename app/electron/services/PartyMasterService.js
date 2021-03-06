@@ -1,11 +1,10 @@
 
-const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
-const { getConnection } = require("typeorm");
+import __BaseService from "./__BaseService";
+import Models from "../../dbManager/models/index";
+import { getConnection } from "typeorm";
 class PartyMasterService extends __BaseService {
   constructor() {
     super(Models.PartyMaster)
   }
 }
-module.exports = PartyMasterService;
-        
+export default PartyMasterService;

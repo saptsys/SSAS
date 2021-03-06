@@ -1,9 +1,9 @@
 
 import __BaseService from "./__BaseService";
-import  BillsDetail from "../../dbManager/models/index";
+import Models from "../../dbManager/models/index";
 class BillsDetailService extends __BaseService {
   constructor() {
-    super(    BillsDetail.BillsDetail      )
+    super(Models.BillsDetail)
   }
 }
 export default BillsDetailService;

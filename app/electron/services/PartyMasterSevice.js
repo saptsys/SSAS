@@ -1,6 +1,6 @@
-const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
-const { Connection, getConnection, createConnection } = require("typeorm");
+import __BaseService from "./__BaseService";
+import Models from "../../dbManager/models/index";
+import { Connection, getConnection, createConnection } from "typeorm";
 class PartyMasterService extends __BaseService {
 
   //You can access this.repository which targets current repository.
@@ -13,4 +13,4 @@ class PartyMasterService extends __BaseService {
 }
 
 
-module.exports = PartyMasterService;
+export default PartyMasterService;

@@ -1,4 +1,1 @@
-const dateFormat = "MM-DD-YYYY"
-module.exports = {
-  dateFormat
-}
+export const dateFormat = "MM-DD-YYYY"

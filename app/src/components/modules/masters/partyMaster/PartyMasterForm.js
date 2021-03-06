@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Row, Col } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import Regex from "../../../../../Constants/Regex";
+import * as Regex from "../../../../../Constants/Regex";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { AccountTypesDropdown, StatesDropdown } from "../../_common/CommonDropdowns";
 import BorderedSwitch from "../../../form/BorderedSwitch";

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     id: {
         name: 'id',
         type: 'integer',

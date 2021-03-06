@@ -1,4 +1,4 @@
-const { getConnection } = require('typeorm')
+import { getConnection } from 'typeorm'
 
 function rowToModelPropertyMapper(alias, modelClass) {
     const entitySchema = getConnection().getMetadata(modelClass)
@@ -6,4 +6,4 @@ function rowToModelPropertyMapper(alias, modelClass) {
         return `${alias}.${col.databaseName} AS ${col.propertyName}`
     })
 }
-module.exports = rowToModelPropertyMapper
+export default rowToModelPropertyMapper

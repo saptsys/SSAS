@@ -1,7 +1,7 @@
-const promiseIpc = require("electron-promise-ipc");
-const PartyMasterService = require("../../services/PartyMasterSevice");
+import promiseIpc  from "electron-promise-ipc";
+import PartyMasterService from "../../services/PartyMasterSevice";
 // const { webContents } = require("electron");
-const { reverseIpc } = require("./../ReverseIPC")
+import { reverseIpc } from "./../ReverseIPC";
 const createPath = (endpoint) => "PartyMaster/" + endpoint;
 
 const service = new PartyMasterService();

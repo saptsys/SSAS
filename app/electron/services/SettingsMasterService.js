@@ -1,12 +1,11 @@
 
-const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
-const { getConnection } = require("typeorm");
+import __BaseService from "./__BaseService";
+import Models from "../../dbManager/models/index";
+import { getConnection } from "typeorm";
 class SettingsMasterService extends __BaseService {
   constructor() {
     super(Models.SettingsMaster)
   }
 
 }
-module.exports = SettingsMasterService;
-        
+export default SettingsMasterService;

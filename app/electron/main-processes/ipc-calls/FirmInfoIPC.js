@@ -1,5 +1,5 @@
-const promiseIpc = require("electron-promise-ipc");
-const { FirmInfoService } = require("../../services/FirmInfoService");
+import promiseIpc  from "electron-promise-ipc";
+import { FirmInfoService } from "../../services/FirmInfoService";
 
 const createPath = (endpoint) => "FirmInfo/" + endpoint;
 

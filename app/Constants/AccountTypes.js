@@ -3,4 +3,4 @@ const AccountTypes = [
     { label: "Sundry Creditor", value: "SUPPLIER" },
     { label: "Both", value: "BOTH" },
 ]
-module.exports = AccountTypes
+export default AccountTypes

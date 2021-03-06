@@ -1,7 +1,7 @@
 
-const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
-const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
+import __BaseService from "./__BaseService";
+import Models from "../../dbManager/models/index";
+import rowToModelPropertyMapper from "../../dbManager/dbUtils";
 
 class ItemGroupMasterService extends __BaseService {
   constructor() {
@@ -37,12 +37,12 @@ class ItemGroupMasterService extends __BaseService {
   }
 
   /**
-   * 
+   *
    * @param {Integer} id
-   * @returns {Promise} 
+   * @returns {Promise}
    */
   hasItems(id){
-    const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
+    const stmt =  this.connection.manager.createQueryBuilder(ItemMaster, "item")
     .where("item.isActive = true")
     .andWhere("item.deletedAt IS NULL")
     .andWhere("item.itemGroupMasterId = :id", { id: id })
@@ -50,4 +50,4 @@ class ItemGroupMasterService extends __BaseService {
     return stmt.getRawOne();
   }
 }
-module.exports = ItemGroupMasterService;
+export default ItemGroupMasterService;

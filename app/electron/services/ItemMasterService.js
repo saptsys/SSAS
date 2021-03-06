@@ -1,7 +1,7 @@
-const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
-const { getConnection, Repository } = require("typeorm");
-const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
+import __BaseService from "./__BaseService";
+import Models from "../../dbManager/models/index";
+import { getConnection, Repository } from "typeorm";
+import rowToModelPropertyMapper from "../../dbManager/dbUtils";
 
 
 
@@ -31,4 +31,4 @@ class ItemMasterService extends __BaseService {
     return super.save(entity, ["code"]);
   }
 }
-module.exports = ItemMasterService;
+export default ItemMasterService;

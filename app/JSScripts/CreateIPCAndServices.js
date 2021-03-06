@@ -1,30 +1,30 @@
-const path = require("path");
-const glob = require("glob");
-const fs = require("fs");
+import { resolve, join } from "path";
+import glob from "glob";
+import { existsSync, writeFile } from "fs";
 
-const rootDir = path.resolve(__dirname, "../");
+const rootDir = resolve(__dirname, "../");
 
-const ormconfig = require(path.join(rootDir, "ormconfig.js"));
-const dbFolderDir = path.join(rootDir, ormconfig.folder)
+const ormconfig = require(join(rootDir, "ormconfig.js"));
+const dbFolderDir = join(rootDir, ormconfig.folder)
 
-const mainProcessPath = path.join(rootDir, "./electron");
+const mainProcessPath = join(rootDir, "./electron");
 
-glob(path.join(dbFolderDir, "entities/*.js"), (er, files) => {
+glob(join(dbFolderDir, "entities/*.js"), (er, files) => {
   files.forEach((file) => {
     if (!file.includes("__BaseEntity")) {
       const entitySchema = require(file);
       const entiryName = entitySchema.options.name;
 
-      const servicePath = path.join(
+      const servicePath = join(
         mainProcessPath,
         `services/${entiryName}Service.js`
       );
-      const ipcPath = path.join(
+      const ipcPath = join(
         mainProcessPath,
         `main-processes/ipc-calls/${entiryName}IPC.js`
       );
 
-      if (!fs.existsSync(servicePath)) {
+      if (!existsSync(servicePath)) {
         const dataToWrite = `
 const __BaseService = require("./__BaseService");
 const Models = require("../../dbManager/models/index");
@@ -37,7 +37,7 @@ class ${entiryName}Service extends __BaseService {
 }
 module.exports = ${entiryName}Service;
         `;
-        fs.writeFile(servicePath, dataToWrite, (err) =>
+        writeFile(servicePath, dataToWrite, (err) =>
           err
             ? console.error(err)
             : console.log(
@@ -50,7 +50,7 @@ module.exports = ${entiryName}Service;
         );
       }
 
-      if (!fs.existsSync(ipcPath)) {
+      if (!existsSync(ipcPath)) {
         const dataToWrite = `
 const promiseIpc = require("electron-promise-ipc");
 const ${entiryName}Service = require("../../services/${entiryName}Service");
@@ -70,7 +70,7 @@ promiseIpc.on(createPath("getById"), (payload) => {
   return service.getById(payload);
 });
         `;
-        fs.writeFile(ipcPath, dataToWrite, (err) =>
+        writeFile(ipcPath, dataToWrite, (err) =>
           err
             ? console.error(err)
             : console.log(

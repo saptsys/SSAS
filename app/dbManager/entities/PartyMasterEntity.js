@@ -1,12 +1,12 @@
-const EntitySchema = require("typeorm").EntitySchema;
-const __BaseEntity = require("./__BaseEntity");
-const AccountTypes = require('../../Constants/AccountTypes')
+import { EntitySchema } from "typeorm";
+import __BaseEntity from "./__BaseEntity";
+import AccountTypes from '../../Constants/AccountTypes';
 
 const NAME = "PartyMaster";
 const TABLE_NAME = "party_mst";
-const TARGET_MODEL = require(`../models/${NAME}`);
+const TARGET_MODEL = require(`../models/PartyMaster`);
 
-module.exports = new EntitySchema({
+export default new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
   target: TARGET_MODEL,

@@ -1,20 +1,20 @@
-const path = require('path')
-const glob = require('glob')
-const fs = require('fs');
+import { resolve, join } from 'path';
+import glob from 'glob';
+import { existsSync, writeFile } from 'fs';
 
-const rootDir = path.resolve(__dirname, '../')
+const rootDir = resolve(__dirname, '../')
 
-const ormconfig = require(path.join(rootDir, 'ormconfig.js'))
+const ormconfig = require(join(rootDir, 'ormconfig.js'))
 
-const dbFolderDir = path.join(rootDir, ormconfig.folder)
+const dbFolderDir = join(rootDir, ormconfig.folder)
 
 
-glob(path.join(dbFolderDir, 'entities/*.js'), (er, files) => {
+glob(join(dbFolderDir, 'entities/*.js'), (er, files) => {
     files.forEach(file => {
         if (!file.includes("__BaseEntity")) {
             const entitySchema = require(file)
-            const modelPath = path.join(dbFolderDir, `models/${entitySchema.options.name}.js`)
-            if (fs.existsSync(modelPath)) {
+            const modelPath = join(dbFolderDir, `models/${entitySchema.options.name}.js`)
+            if (existsSync(modelPath)) {
                 console.log(`====> MODEL '${entitySchema.options.name}' ALREADY EXIST <====\n`)
                 return;
             }
@@ -35,7 +35,7 @@ class ${entitySchema.options.name} extends _BaseModel {
     }
 }
 module.exports = ${entitySchema.options.name}`;
-            fs.writeFile(modelPath, dataToWrite, (err) => err ? console.error(err) : console.log(`\n\n====> MODEL '${entitySchema.options.name}' CREATED <====\n${modelPath}`))
+            writeFile(modelPath, dataToWrite, (err) => err ? console.error(err) : console.log(`\n\n====> MODEL '${entitySchema.options.name}' CREATED <====\n${modelPath}`))
         }
     })
 })

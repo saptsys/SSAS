@@ -1,4 +1,4 @@
-const { getConnection, Not } = require("typeorm");
+import { getConnection, Not } from "typeorm";
 
 class __BaseService {
   /**
@@ -131,4 +131,4 @@ class __BaseService {
   }
 }
 
-module.exports = __BaseService;
+export default __BaseService;
