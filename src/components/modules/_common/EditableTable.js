@@ -23,7 +23,10 @@ const EditableCell = ({
   nextTabIndex,
   children,
   ...props }) => {
-  const setVal = val => setCurrentCellValue({ [rowIndex]: { ...record, [dataIndex]: val } })
+  const setVal = val => {
+    currentCellValue = { [rowIndex]: { ...record, [dataIndex]: val } }
+    setCurrentCellValue(currentCellValue)
+  }
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
   const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
   const elmToReturn =
@@ -42,10 +45,13 @@ const EditableCell = ({
           case "select":
             return <Select
               value={curCellVal()}
-              onChange={val => setVal(val) && onChange && onChange(val)}
+              onChange={val => {
+                setVal(val) && onChange && onChange(val)
+              }}
               options={getOptions(record, rowIndex, colIndex)}
               showAction="focus"
               size="small"
+              defaultActiveFirstOption={false}
               {...elmProps}
             />
           case "custom":
@@ -70,7 +76,7 @@ const EditableCell = ({
   const focusCell = (rowIndex, colIndex) => {
     const table = document.getElementById(tableId)
     if (table) {
-      let next = table.querySelector(`.focus-index-${rowIndex}-${colIndex}`).querySelector('input')
+      let next = table.querySelector(`.focus-index-${rowIndex}-${colIndex}`)?.querySelector('input')
       if (next) {
         // e.target.blur()
         saveData()
@@ -118,16 +124,21 @@ const EditableCell = ({
   )
 }
 
-const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, beforeSave = (newRow, oldRow) => newRow }) => {
+const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, afterSave, beforeSave = (newRow, oldRow) => newRow }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
   const saveRow = () => {
     if (currentCellValue) {
       let tmp = [...form.getFieldValue(name)]
+      let newRow, oldRow;
       Object.keys(currentCellValue).forEach(r => {
-        const beforeSaveRes = beforeSave(currentCellValue[r], tmp[r])
+        oldRow = tmp[r]
+        const beforeSaveRes = beforeSave(currentCellValue[r], oldRow)
+        newRow = beforeSaveRes
         if (beforeSaveRes)
           tmp[r] = beforeSaveRes
       })
+      if (afterSave)
+        afterSave(newRow, oldRow, tmp)
       form.setFieldsValue({
         [name]: tmp
       })
@@ -150,6 +161,19 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, b
           <Table
             className="editable-table"
             id={name}
+            footer={columns.some(x => !!x.footer) ? () => (
+              <table className="ant-table ant-table-default ">
+                <thead className="ant-table-thead">
+                  <tr>
+                    {
+                      columns.map((col, i) => (
+                        <th style={{ textAlign: col.align ?? 'left' }} key={i} width={col.width}>{col.footer ? col.footer(form.getFieldValue(name)) : null}</th>
+                      ))
+                    }
+                  </tr>
+                </thead>
+              </table>
+            ) : undefined}
             components={{ body: { cell: EditableCell } }}
             dataSource={form.getFieldValue(name)}
             columns={columns.map((col, colIndex) => {
