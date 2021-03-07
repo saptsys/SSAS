@@ -3,6 +3,7 @@ const __BaseEntity = require("./__BaseEntity");
 const NAME = "DeliveryTransaction";
 const TABLE_NAME = "delivery_trx";
 const {DeliveryTransaction} = require(`../models/DeliveryTransaction`);
+
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
@@ -41,10 +42,10 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true,
     },
-    partyMaster:{
-      name:"party_mst_id",
-      type:"integer",
-      nullable:false
+    partyMaster: {
+      name: "party_mst_id",
+      type: "integer",
+      nullable: false
     }
   },
   relations: {
@@ -53,9 +54,18 @@ module.exports = new EntitySchema({
       type: "many-to-one",
       joinTable: true,
       cascade: true,
-      joinColumn:{
-        name:"party_mst_id",
+      joinColumn: {
+        name: "party_mst_id",
       },
     },
+    deliveryDetails: {
+      target: "DeliveryDetail",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'deliveryTransactionId'
+      },
+      inverseSide: 'deliveryTransactionId',
+      type: "one-to-many",
+    }
   },
 });

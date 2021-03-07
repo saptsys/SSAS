@@ -51,7 +51,7 @@ const CommonEditForm = ({
                 undefined
             ))
         else
-            setEntityForEdit(new reducerInfo.model)
+            setEntityForEdit(new reducerInfo.model())
     }, [editId])
 
 
@@ -100,7 +100,7 @@ const CommonEditForm = ({
     useEffect(() => formRef.resetFields(), [entityForEdit])
 
     return (
-        <Spin spinning={currentState.action.loading === methods.fetchEditData}>
+        <Spin spinning={currentState.action.loading === methods.fetchEditData} wrapperClassName="form-spinner">
             <AutoFocuser lastElement="#save">
                 <div className="form-header">
                     <Row justify="space-around" align="middle">

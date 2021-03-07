@@ -7,14 +7,14 @@ import App from "./src/App";
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 
-// render(
-//   <AppContainer>
-//     <App/>
-//   </AppContainer>,
-//   document.getElementById('root')
-// );
-
 render(
-    <App/>,
+  <AppContainer>
+    <App/>
+  </AppContainer>,
   document.getElementById('root')
 );
+
+// render(
+//     <App/>,
+//   document.getElementById('root')
+// );
