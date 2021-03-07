@@ -1,11 +1,11 @@
 
 const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
+const {TaxMaster} = require("../../dbManager/models/TaxMaster");
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class TaxMasterService extends __BaseService {
   constructor() {
-    super(Models.TaxMaster)
+    super(TaxMaster)
   }
 
   /**
@@ -37,12 +37,12 @@ class TaxMasterService extends __BaseService {
   }
 
   /**
-   * 
+   *
    * @param {Integer} id
-   * @returns {Promise} 
+   * @returns {Promise}
    */
   hasItems(id){
-    const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
+    const stmt =  this.connection.manager.createQueryBuilder(ItemMaster, "item")
     .where("item.isActive = true")
     .andWhere("item.deletedAt IS NULL")
     .andWhere("item.taxMasterId = :id", { id: id })

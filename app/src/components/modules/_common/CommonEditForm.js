@@ -51,7 +51,7 @@ const CommonEditForm = ({
                 undefined
             ))
         else
-            setEntityForEdit(new reducerInfo.model())
+            setEntityForEdit(new reducerInfo.model)
     }, [editId])
 
 

@@ -3,12 +3,12 @@ const __BaseEntity = require("./__BaseEntity");
 
 const NAME = "ItemGroupMaster";
 const TABLE_NAME = "item_group_mst";
-const TARGET_MODEL = require(`../models/${NAME}`)
+const {ItemGroupMaster} = require(`../models/ItemGroupMaster`)
 
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: ItemGroupMaster,
   columns: {
     ...__BaseEntity,
     name: {

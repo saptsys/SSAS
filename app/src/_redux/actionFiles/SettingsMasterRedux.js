@@ -1,5 +1,5 @@
 
-import SettingsMaster from "../../../dbManager/models/SettingsMaster";
+import {SettingsMaster} from "../../../dbManager/models/SettingsMaster";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 
@@ -11,9 +11,9 @@ export const reducerInfo = {
 
 class Actions {
   /**
-   * 
-   * @param {null} ipcCallMaster 
-   * @param {SettingsMasterSlice} sliceObj 
+   *
+   * @param {null} ipcCallMaster
+   * @param {SettingsMasterSlice} sliceObj
    */
   constructor(ipcCallMaster, sliceObj) {
     this.sendIPC = (endPoint, payload) => promiseIpc.send(ipcCallMaster + "/" + endPoint, payload);

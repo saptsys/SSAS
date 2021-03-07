@@ -1,11 +1,10 @@
 
 const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
+const {BillsTransaction} = require("../../dbManager/models/BillsTransaction");
 const { getConnection } = require("typeorm");
 class BillsTransactionService extends __BaseService {
   constructor() {
-    super(Models.BillsTransaction)
+    super(BillsTransaction)
   }
 }
 module.exports = BillsTransactionService;
-        

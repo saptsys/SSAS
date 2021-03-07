@@ -5,7 +5,7 @@
     <title>SSAS</title>
     <script>
       (function() {
-        if (!process.env.HOT) {
+        if (!window.theProcess.env.HOT) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = './dist/style.css';
@@ -22,15 +22,15 @@
         const scripts = [];
 
         // Dynamically insert the DLL script in development env in the
-        // renderer process
-        if (process.env.NODE_ENV === 'development') {
+        // renderer theProcess
+        if (window.theProcess.env.NODE_ENV === 'development') {
           scripts.push('../dll/renderer.dev.dll.js');
         }
 
-        // Dynamically insert the bundled app script in the renderer process
-        const port = process.env.PORT || 1212;
+        // Dynamically insert the bundled app script in the renderer theProcess
+        const port = window.theProcess.env.PORT || 1212;
         scripts.push(
-          process.env.HOT
+          window.theProcess.env.HOT
             ? 'http://localhost:' + port + '/dist/renderer.dev.js'
             : './dist/renderer.prod.js'
         );

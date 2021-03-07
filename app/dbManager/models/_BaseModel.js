@@ -15,4 +15,4 @@ class _BaseModel {
     }
 }
 
-module.exports = _BaseModel
+module.exports ={_BaseModel:_BaseModel}

@@ -1,4 +1,4 @@
-import DeliveryTransaction from "../../../dbManager/models/DeliveryTransaction";
+import {DeliveryTransaction} from "../../../dbManager/models/DeliveryTransaction";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 

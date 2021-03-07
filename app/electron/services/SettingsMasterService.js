@@ -1,12 +1,11 @@
 
 const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
+const {SettingsMaster} = require("../../dbManager/models/SettingsMaster");
 const { getConnection } = require("typeorm");
 class SettingsMasterService extends __BaseService {
   constructor() {
-    super(Models.SettingsMaster)
+    super(SettingsMaster)
   }
 
 }
 module.exports = SettingsMasterService;
-        

@@ -10,7 +10,6 @@ import PartyMasterEntity from "./dbManager/entities/PartyMasterEntity"
 import SettingsMasterEntity from "./dbManager/entities/SettingsMasterEntity"
 import TaxMasterEntity from "./dbManager/entities/TaxMasterEntity"
 
-
 const entities = [
   BillsDetailEntity,
   BillsTransactionEntity,
@@ -40,3 +39,4 @@ export default {
     "subscribersDir": subscribers
   }
 }
+

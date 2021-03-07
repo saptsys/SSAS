@@ -1,12 +1,12 @@
 
 const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
+const {ItemUnitMaster} = require("../../dbManager/models/ItemUnitMaster");
 const { getConnection } = require("typeorm");
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class ItemUnitMasterService extends __BaseService {
   constructor() {
-    super(Models.ItemUnitMaster)
+    super(ItemUnitMaster)
   }
 
   /**
@@ -17,7 +17,7 @@ class ItemUnitMasterService extends __BaseService {
     const query =  this.repository.createQueryBuilder('itemUnit');
     query.leftJoin("ItemMaster","items","itemUnit.id = items.itemUnitMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
     query.select([
-      ...rowToModelPropertyMapper("itemUnit", Models.ItemUnitMaster),
+      ...rowToModelPropertyMapper("itemUnit", ItemUnitMaster),
       "count(items.id) as containsItems"
     ]).groupBy("itemUnit.id")
     return query.getRawMany();
@@ -41,9 +41,9 @@ class ItemUnitMasterService extends __BaseService {
   }
 
   /**
-   * 
+   *
    * @param {Integer} id
-   * @returns {Promise} 
+   * @returns {Promise}
    */
   hasItems(id){
     const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")

@@ -1,5 +1,5 @@
 const __BaseService = require("./__BaseService");
-const Models = require("../../dbManager/models/index");
+const {ItemMaster} = require("../../dbManager/models/ItemMaster");
 const { getConnection, Repository } = require("typeorm");
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
@@ -7,7 +7,7 @@ const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class ItemMasterService extends __BaseService {
   constructor() {
-    super(Models.ItemMaster);
+    super(ItemMaster);
   }
 
 
@@ -20,7 +20,7 @@ class ItemMasterService extends __BaseService {
       .leftJoin(Models.ItemGroupMaster, "itemGroup", "item.itemGroupMasterId=itemGroup.id")
       .leftJoin(Models.ItemUnitMaster, "itemUnit", "item.itemUnitMasterId=itemUnit.id")
       .select([
-        ...rowToModelPropertyMapper("item", Models.ItemMaster),
+        ...rowToModelPropertyMapper("item", ItemMaster),
         "tax.name as taxMasterName",
         "itemGroup.name as itemGroupMasterName",
         "itemUnit.name as itemUnitMasterName",

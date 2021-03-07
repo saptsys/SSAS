@@ -1,4 +1,4 @@
-import PartyMaster from "../../../dbManager/models/PartyMaster";
+import {PartyMaster} from "../../../dbManager/models/PartyMaster";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 

@@ -3,12 +3,12 @@ const __BaseEntity = require("./__BaseEntity");
 
 const NAME = "SettingsMaster";
 const TABLE_NAME = "settings_mst";
-const TARGET_MODEL = require(`../models/${NAME}`);
+const {SettingsMaster} = require(`../models/SettingsMaster`);
 
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: SettingsMaster,
   columns: {
     ...__BaseEntity,
     key: {

@@ -4,12 +4,12 @@ const AccountTypes = require('../../Constants/AccountTypes')
 
 const NAME = "PartyMaster";
 const TABLE_NAME = "party_mst";
-const TARGET_MODEL = require(`../models/${NAME}`);
+const {PartyMaster} = require(`../models/PartyMaster`);
 
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: PartyMaster,
   columns: {
     ...__BaseEntity,
     name: {

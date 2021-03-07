@@ -4,12 +4,12 @@ const { ItemMaster } = require('../models/index')
 
 const NAME = "ItemUnitMaster";
 const TABLE_NAME = "item_unit_mst";
-const TARGET_MODEL = require(`../models/${NAME}`)
+const {ItemUnitMaster} = require(`../models/ItemUnitMaster`)
 
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: ItemUnitMaster,
   columns: {
     ...__BaseEntity,
     name: {

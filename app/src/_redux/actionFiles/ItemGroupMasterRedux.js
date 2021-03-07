@@ -1,4 +1,4 @@
-import ItemGroupMaster from "../../../dbManager/models/ItemGroupMaster";
+import {ItemGroupMaster} from "../../../dbManager/models/ItemGroupMaster";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 

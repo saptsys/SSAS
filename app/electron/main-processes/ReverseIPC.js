@@ -26,7 +26,7 @@ function dispatchToAllWindow(chanel, data) {
       promiseIpc.send(chanel, webc, data);
     });
   } catch (e) {
-    
+
   }
 }
 

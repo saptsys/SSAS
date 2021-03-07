@@ -2,11 +2,11 @@ const EntitySchema = require("typeorm").EntitySchema;
 const __BaseEntity = require("./__BaseEntity");
 const NAME = "DeliveryTransaction";
 const TABLE_NAME = "delivery_trx";
-const TARGET_MODEL = require(`../models/${NAME}`);
+const {DeliveryTransaction} = require(`../models/DeliveryTransaction`);
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: DeliveryTransaction,
   columns: {
     ...__BaseEntity,
     voucherNumber: {

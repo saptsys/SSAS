@@ -1,9 +1,10 @@
 
-import __BaseService from "./__BaseService";
-import  BillsDetail from "../../dbManager/models/index";
+const __BaseService = require("./__BaseService");
+const {BillsDetail} = require("../../dbManager/models/BillsDetail");
+const { getConnection } = require("typeorm");
 class BillsDetailService extends __BaseService {
   constructor() {
-    super(    BillsDetail.BillsDetail      )
+    super(BillsDetail)
   }
 }
-export default BillsDetailService;
+module.exports = BillsDetailService;

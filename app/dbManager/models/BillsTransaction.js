@@ -1,4 +1,4 @@
-const _BaseModel = require("./_BaseModel");
+const {_BaseModel} = require("./_BaseModel");
 
 class BillsTransaction extends _BaseModel {
   constructor({
@@ -66,4 +66,6 @@ class BillsTransaction extends _BaseModel {
     this.partyMasterId = partyMasterId;
   }
 }
-module.exports = BillsTransaction;
+module.exports = {
+  BillsTransaction: BillsTransaction
+};

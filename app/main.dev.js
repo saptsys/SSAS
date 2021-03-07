@@ -80,7 +80,6 @@ function init() {
     .catch((e) => {
       console.log(e)
       sout("database connection failed");
-      sout(JSON.stringify(e))
       app.quit();
     });
 
@@ -128,16 +127,24 @@ function init() {
     ) {
       await installExtensions();
     }
-
-    mainWindow = new BrowserWindow({
-      show: false,
-      width: 1024,
-      height: 728,
+     const windowOptions = {
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        webSecurity: true,
+        contextIsolation: false,
+        preload: __dirname + "/preload.js",
       },
-      preload: __dirname + "/preload.js",
-    });
+      backgroundColor: "-webkit-linear-gradient(top, #3dadc2 0%,#2f4858 100%)",
+
+      width: 1080,
+      height: 840,
+      // resizable: false,
+      show: false,
+
+      title: app.getName(),
+    };
+
+    mainWindow = new BrowserWindow(windowOptions);
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -171,9 +178,8 @@ function loadMainProcess() {
     path.join(__dirname, "electron/main-processes/**/*.js")
   );
   files.forEach((file) => {
-    file = file.split("/").pop()
-    console.log(file)
-    require(`./electron/main-processes/ipc-calls/${file}`)
+    file = file.split("electron/main-processes/")[1]
+    require(`./electron/main-processes/${file}`)
   });
 }
 /**

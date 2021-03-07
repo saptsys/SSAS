@@ -3,15 +3,15 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { MODULE_ROUTES } from "./helpers/routes";
 
-const Dashboard = lazy(() => import("./components/modules/dashboard/Dashboard"))
-
-const ItemGroupMaster = lazy(() => import("./components/modules/masters/ItemGroupMaster/ItemGroupMasterPage"))
-const ItemMaster = lazy(() => import("./components/modules/masters/ItemMaster/ItemMasterPage"))
-const ItemUnitMaster = lazy(() => import("./components/modules/masters/ItemUnitMaster/ItemUnitMasterPage"))
-const PartyMaster = lazy(() => import("./components/modules/masters/PartyMaster/PartyMasterPage"))
-const TaxMaster = lazy(() => import("./components/modules/masters/TaxMaster/TaxMasterPage"))
-const SettingsMaster = lazy(() => import("./components/modules/masters/settingsMaster/SettingsMasterPage"))
-const DeliveryChallan = lazy(() => import("./components/modules/transactions/deliveryChallan/DeliveryChallanPage"))
+// const Dashboard = lazy(() => import("./components/modules/dashboard/Dashboard"))
+import Dashboard from "./components/modules/dashboard/Dashboard"
+import ItemGroupMaster from "./components/modules/masters/ItemGroupMaster/ItemGroupMasterPage"
+import ItemMaster from "./components/modules/masters/ItemMaster/ItemMasterPage"
+import ItemUnitMaster from "./components/modules/masters/ItemUnitMaster/ItemUnitMasterPage"
+import PartyMaster from "./components/modules/masters/PartyMaster/PartyMasterPage"
+import TaxMaster from "./components/modules/masters/TaxMaster/TaxMasterPage"
+import SettingsMaster from "./components/modules/masters/settingsMaster/SettingsMasterPage"
+import DeliveryChallan from "./components/modules/transactions/deliveryChallan/DeliveryChallanPage"
 
 const ModuleRoutes = () => {
     return (
@@ -30,7 +30,7 @@ const ModuleRoutes = () => {
 
                 {/* Transactions */}
                 <Route exact path={MODULE_ROUTES.transactions.deliveryChallan._path} component={DeliveryChallan} />
-                
+
                 {/* Utilities */}
                 <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
             </Switch>

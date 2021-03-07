@@ -1,5 +1,5 @@
 
-import TaxMaster from "../../../dbManager/models/TaxMaster";
+import {TaxMaster} from "../../../dbManager/models/TaxMaster";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 

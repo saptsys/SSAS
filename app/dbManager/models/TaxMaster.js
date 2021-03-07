@@ -1,4 +1,4 @@
-const _BaseModel = require("./_BaseModel");
+const {_BaseModel} = require("./_BaseModel");
 
 class TaxMaster extends _BaseModel {
   constructor({
@@ -28,4 +28,4 @@ class TaxMaster extends _BaseModel {
     this.taxPercentage = taxPercentage;
   }
 }
-module.exports = TaxMaster;
+module.exports = {TaxMaster:TaxMaster};

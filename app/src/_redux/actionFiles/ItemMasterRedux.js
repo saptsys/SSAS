@@ -1,5 +1,5 @@
 
-import ItemMaster from "../../../dbManager/models/ItemMaster";
+import {ItemMaster} from "../../../dbManager/models/ItemMaster";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 

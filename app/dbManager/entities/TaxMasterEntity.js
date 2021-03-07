@@ -3,12 +3,12 @@ const __BaseEntity = require("./__BaseEntity");
 
 const NAME = "TaxMaster";
 const TABLE_NAME = "tax_mst";
-const TARGET_MODEL = require(`../models/${NAME}`)
+const {TaxMaster} = require(`../models/TaxMaster`)
 
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
-  target: TARGET_MODEL,
+  target: TaxMaster,
   columns: {
     ...__BaseEntity,
     name: {

@@ -20,7 +20,8 @@ const MainMenu = () => {
     }
 
     useEffect(() => {
-        const title = getTitleByUrl(location.pathname.replaceAll("#", "")) ?? document.getElementsByClassName("ant-menu-item-selected")?.item(0)?.innerText
+
+        const title = getTitleByUrl(location.pathname.split("#").join("")) ?? document.getElementsByClassName("ant-menu-item-selected")?.item(0)?.innerText
         dispatch(LayoutActions.setTitle(title))
     }, [])
     return (
@@ -28,8 +29,8 @@ const MainMenu = () => {
             theme="light"
             mode="inline"
             className="menu"
-            selectedKeys={generateUrlChain(location.pathname.replaceAll("#", ""))}
-            defaultOpenKeys={generateUrlChain(location.pathname.replaceAll("#", ""))}
+            selectedKeys={generateUrlChain(location.pathname.split("#").join(""))}
+            defaultOpenKeys={generateUrlChain(location.pathname.split("#").join(""))}
             onClick={handleMenuClicked}
         >
 
