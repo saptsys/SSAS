@@ -41,10 +41,10 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true,
     },
-    partyMaster:{
-      name:"party_mst_id",
-      type:"integer",
-      nullable:false
+    partyMaster: {
+      name: "party_mst_id",
+      type: "integer",
+      nullable: false
     }
   },
   relations: {
@@ -53,9 +53,18 @@ module.exports = new EntitySchema({
       type: "many-to-one",
       joinTable: true,
       cascade: true,
-      joinColumn:{
-        name:"party_mst_id",
+      joinColumn: {
+        name: "party_mst_id",
       },
     },
+    deliveryDetails: {
+      target: "DeliveryDetail",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'deliveryTransactionId'
+      },
+      inverseSide: 'deliveryTransactionId',
+      type: "one-to-many",
+    }
   },
 });

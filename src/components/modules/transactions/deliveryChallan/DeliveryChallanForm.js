@@ -28,7 +28,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   return (
     <Form
       name="delivery-challan-form"
-      initialValues={{ ...(entityForEdit ?? {}), tableData: [{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },{ id: 1, item: 1, name: 'Vaitul', age: 21 }, { id: 2, item: 1, name: 'BHayani', age: 20 }, { id: 3, item: 1, name: 'John', age: 16 },] }}
+      initialValues={{ ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -80,7 +80,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       <Row className="table-row">
         <Col span={24}>
           <EditableTable
-            name="tableData"
+            name="deliveryDetails"
             nextTabIndex="3"
             form={form}
             columns={[{
@@ -118,7 +118,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <TextArea style={{ width: '100%' }} rows={3} tabIndex="3"/>
+            <TextArea style={{ width: '100%' }} rows={3} tabIndex="3" />
           </Form.Item>
         </Col>
         <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 5 }}>
