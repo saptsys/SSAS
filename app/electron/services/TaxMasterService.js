@@ -16,7 +16,7 @@ class TaxMasterService extends __BaseService {
     const query =  this.repository.createQueryBuilder('tax');
     query.leftJoin("ItemMaster","items","tax.id = items.taxMaster AND (items.isActive = true AND items.deleted_at IS NULL)")
     query.select([
-      ...rowToModelPropertyMapper("tax", Models.TaxMaster),
+      ...rowToModelPropertyMapper("tax", TaxMaster),
       "count(items.id) as containsItems"
     ]).groupBy("tax.id")
     return query.getRawMany();
