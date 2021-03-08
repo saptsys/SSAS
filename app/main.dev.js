@@ -145,7 +145,7 @@ function init() {
     };
 
     mainWindow = new BrowserWindow(windowOptions);
-    mainWindow.setMenu(nulll)
+    mainWindow.setMenu(null)
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
     // @TODO: Use 'ready-to-show' event

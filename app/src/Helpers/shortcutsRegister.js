@@ -6,7 +6,7 @@ import { LayoutActions } from "../_redux/actionFiles/LayoutRedux"
 export function registerShortcuts(dispatch, shortcuts) {
     const handler = (event) => {
         shortcuts.forEach((shortcut) => {
-            shortcut.key.replaceAll(" ", "").split("|").forEach(possibleKey => {
+            shortcut.key.split(" ").join("").split("|").forEach(possibleKey => {
                 const keys = possibleKey.split('+')
                 if (keys.includes('ctrl') ? (event.ctrlKey && keys.includes(event.key)) : keys.includes(event.key)) {
                     if (!shortcut.method()) //if you do not want to prevent default return true in your method
