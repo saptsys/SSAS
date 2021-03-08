@@ -7,7 +7,6 @@ import EditableTable, { getFirstFocusableCell } from "../../_common/EditableTabl
 import CustomDatePicker from "../../../form/CustomDatePicker";
 import './deliveryChallanForm.less'
 import TextArea from "antd/lib/input/TextArea";
-import { DeliveryDetail } from "../../../../../dbManager/models";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
@@ -29,7 +28,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   return (
     <Form
       name="delivery-challan-form"
-      initialValues={{ deliveryDetails: [new DeliveryDetail()], ...(entityForEdit ?? {}), voucherNumber: 1234 }}
+      initialValues={{ ...(entityForEdit ?? {}) }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -74,7 +73,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             required
             rules={[{ required: true }]}
           >
-            <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"deliveryDetails"} />
+            <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"tableData"} />
           </Form.Item>
         </Col>
       </Row>
@@ -85,62 +84,28 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             nextTabIndex="3"
             form={form}
             columns={[{
-              title: "Item",
-              dataIndex: "itemMasterId",
+              title: "Name",
+              dataIndex: "name",
               editor: {
-                type: 'select',
-                getOptions: () => [{ label: 'Item 1', value: 1 }, { label: 'Item 2', value: 3 }]
-              },
-              width: '25%'
+                type: 'text'
+              }
             },
             {
-              title: "Description",
-              dataIndex: "description",
-              editor: {
-                type: 'text',
-              },
-              width: '20%'
-            }, {
-              title: "Unit",
-              dataIndex: "unitMasterId",
+              title: "Item",
+              dataIndex: "item",
               editor: {
                 type: 'select',
-                getOptions: () => [{ label: 'Unit 1', value: 1 }, { label: 'Unit 2', value: 3 }]
-              },
-              width: '15%'
+                getOptions: () => [{ label: 'AAA', value: 1 }, { label: 'BBB', value: 2 }]
+              }
             }, {
-              title: "Qty",
-              dataIndex: "quantity",
+              title: "Age",
+              dataIndex: "age",
               editor: {
-                type: 'number',
-              },
-              footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.quantity ?? 0), 0),
-              width: '10%'
-            }, {
-              title: "Rate",
-              dataIndex: "rate",
-              editor: {
-                type: 'number',
-              },
-              width: '10%'
-            }, {
-              title: "Amount",
-              dataIndex: "amount",
-              editor: {
-                type: 'number',
-              },
-              width: '10%'
-            }
+                type: 'number'
+              }
+            },
             ]}
-            autoAddRow={{ ...(new DeliveryDetail()) }}
-            beforeSave={(newRow, oldRow) => {
-              newRow.amount = (newRow.quantity ?? 0) * (newRow.rate ?? 0)
-              return newRow;
-            }}
-            afterSave={(newRow, oldRow, data) => {
-              form.setFieldsValue({ grossAmount: data?.reduce((a, b) => a + b.amount, 0) })
-              form.setFieldsValue({ netAmount: data?.reduce((a, b) => a + b.amount, 0) })
-            }}
+            autoAddRow={{ id: 0, item: 0, name: '', age: null }}
           />
         </Col>
       </Row>
@@ -157,22 +122,23 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
           </Form.Item>
         </Col>
         <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 5 }}>
-          <Form.Item noStyle shouldUpdate labelAlign>
-            {() => {
-              return (
-                <>
-                  <Form.Item
-                    name="grosAmounts"
-                    label="Gross Amount"
-                    required
-                    rules={[{ required: true }]}
-                    shouldUpdate
-                  >
-                    <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
-                  </Form.Item>
-                </>
-              )
-            }}
+          <Form.Item
+            labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
+            name="grossAmount"
+            label="Gross Amount"
+            required
+            rules={[{ required: true }]}
+          >
+            <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
+          </Form.Item>
+          <Form.Item
+            labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
+            name="netAmount"
+            label="Net Amount"
+            required
+            rules={[{ required: true }]}
+          >
+            <InputNumber tabIndex="5" style={{ width: '100%' }} readOnly />
           </Form.Item>
         </Col>
       </Row>
