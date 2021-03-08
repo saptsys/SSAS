@@ -34,7 +34,7 @@
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.js",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe-live electron:./app ./test/e2e/HomePage.e2e.js",
     "test-watch": "yarn test --watch",
-    "pb":"cross-env DEBUG_PROD=true yarn package-win"
+    "pb": "cross-env DEBUG_PROD=true yarn package-win"
   },
   "private": true,
   "lint-staged": {
@@ -191,7 +191,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "less": "^4.1.1",
-    "less-loader": "6",
+    "less-loader": "5",
     "lint-staged": "^9.4.3",
     "mini-css-extract-plugin": "^0.8.0",
     "opencollective-postinstall": "^2.0.2",
