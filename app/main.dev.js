@@ -174,13 +174,16 @@ function init() {
 }
 
 function loadMainProcess() {
-  const files = glob.sync(
-    path.join(__dirname, "electron/main-processes/**/*.js")
-  );
-  files.forEach((file) => {
-    file = file.split("electron/main-processes/")[1]
-    require(`./electron/main-processes/${file}`)
-  });
+  function requireAll(r) { r.keys().forEach(r); }
+  requireAll(require.context('./electron/', true, /\.js$/));
+  // const files = glob.sync(
+  //   path.join(__dirname, "electron/main-processes/**/*.js")
+  // );
+  // files.forEach((file) => {
+  //   file = file.split("electron/main-processes/")[1]
+  //   require(`./electron/main-processes/${file}`)
+  //   sout(`require(./electron/main-processes/${file})`)
+  // });
 }
 /**
  * @returns Promise<Connection>
