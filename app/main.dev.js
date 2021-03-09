@@ -1,15 +1,3 @@
-/* eslint global-require: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `yarn build` or `yarn build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- *
- * @flow
- */
 import {
   app,
   BrowserWindow
@@ -26,8 +14,6 @@ import {
   FirmInfoService,
   INVALID_REASONS
 } from "./electron/services/FirmInfoService";
-import * as glob from "glob";
-import * as path from "path";
 
 export default class AppUpdater {
   constructor() {
@@ -127,7 +113,7 @@ function init() {
     ) {
       await installExtensions();
     }
-     const windowOptions = {
+    const windowOptions = {
       webPreferences: {
         nodeIntegration: true,
         webSecurity: true,
@@ -147,6 +133,7 @@ function init() {
     mainWindow = new BrowserWindow(windowOptions);
     mainWindow.setMenu(null)
     mainWindow.loadURL(`file://${__dirname}/app.html`);
+    mainWindow.webContents.openDevTools({ mode: "detach" });
 
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -157,6 +144,7 @@ function init() {
       if (process.env.START_MINIMIZED) {
         mainWindow.minimize();
       } else {
+        mainWindow.maximize();
         mainWindow.show();
         mainWindow.focus();
       }
@@ -174,16 +162,10 @@ function init() {
 }
 
 function loadMainProcess() {
-  function requireAll(r) { r.keys().forEach(r); }
+  function requireAll(r) {
+    r.keys().forEach(r);
+  }
   requireAll(require.context('./electron/', true, /\.js$/));
-  // const files = glob.sync(
-  //   path.join(__dirname, "electron/main-processes/**/*.js")
-  // );
-  // files.forEach((file) => {
-  //   file = file.split("electron/main-processes/")[1]
-  //   require(`./electron/main-processes/${file}`)
-  //   sout(`require(./electron/main-processes/${file})`)
-  // });
 }
 /**
  * @returns Promise<Connection>
@@ -194,7 +176,6 @@ function setDatabaseConnection(dbName) {
     database: dbName
   });
   connectionPromise.then((connection) => {
-    connection
     syncTypeORM(connection);
   });
   return connectionPromise;
@@ -207,8 +188,13 @@ async function syncTypeORM(connection) {
 }
 
 function sout(log) {
-  let line = "/n" + new Date() + " || " + log + "\n\n";
-  console.log(line)
-  require("fs").appendFileSync("log.txt", line);
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.DEBUG_PROD === 'true'
+  ) {
+    let line = "/n" + new Date() + " || " + log + "\n\n";
+    console.log(line)
+    require("fs").appendFileSync("log.txt", line);
+  }
 }
 init()

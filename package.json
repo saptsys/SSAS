@@ -1,7 +1,7 @@
 {
-  "name": "ssas",
+  "name": "saptsys",
   "productName": "ssas",
-  "version": "0.18.0",
+  "version": "0.0.1",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -34,7 +34,11 @@
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.js",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe-live electron:./app ./test/e2e/HomePage.e2e.js",
     "test-watch": "yarn test --watch",
-    "pb": "cross-env DEBUG_PROD=true yarn package-win"
+    "pb": "cross-env DEBUG_PROD=true yarn package-win",
+    "a":"cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.babel.js --colors",
+    "b":"cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
+    "c":"SET NODE_ENV=production& electron ./app/main.prod.js",
+    "cb":"yarn b & yarn c"
   },
   "private": true,
   "lint-staged": {
@@ -68,33 +72,11 @@
       "package.json",
       "preload.js"
     ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
     "win": {
       "target": [
         "nsis",
         "msi"
       ]
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "AppImage"
-      ],
-      "category": "Development"
     },
     "directories": {
       "buildResources": "resources",

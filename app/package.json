@@ -1,19 +1,20 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "0.18.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "saptsys",
+  "productName": "ssas",
+  "version": "0.0.1",
+  "description": "Saptsys Simple Accounting Project, created specially for saree photo labs or saree modeling industry",
   "main": "./main.prod.js",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "saptsys",
+    "email": "hello@saptsys.com",
+    "url": "https://saptsys.com"
   },
+  "private":"true",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild"
   },
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "electron-promise-ipc": "2.2.4",
     "moment": "2.29.1",
