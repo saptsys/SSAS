@@ -31,10 +31,10 @@ promiseIpc.on(createPath("search"), (payload) => {
 
 
 promiseIpc.on(createPath("getByPartyAndDate"), (payload) => {
-  return service.search(payload);
+  return service.getByPartyAndDate(payload);
 });
 
 
 promiseIpc.on(createPath("getByPartyListAndDateInterval"), (payload) => {
-  return service.search(payload);
+  return service.getByPartyListAndDateInterval(payload);
 });

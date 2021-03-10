@@ -2,6 +2,12 @@
 const __BaseService = require("./__BaseService");
 const { DeliveryTransaction } = require("../../dbManager/models/DeliveryTransaction");
 const { PartyMaster } = require("../../dbManager/models/PartyMaster");
+const { DeliveryDetail } = require("../../dbManager/models/DeliveryDetail");
+const { ItemMaster } = require("../../dbManager/models/ItemMaster");
+const { ItemGroupMaster } = require("../../dbManager/models/ItemGroupMaster");
+const { ItemUnitMaster } = require("../../dbManager/models/ItemUnitMaster");
+const { TaxMaster } = require("../../dbManager/models/TaxMaster");
+
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class DeliveryChallanService extends __BaseService {
@@ -46,8 +52,20 @@ class DeliveryChallanService extends __BaseService {
     }
   }
 
+  // TODO : workling on this
   getById(id) {
-    return this.repository.findOneOrFail(id)
+    const stmt = this.repository.createQueryBuilder("chalan")
+        .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
+        .leftJoin(DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .leftJoin(ItemMaster , "item" , "detail.itemMasterId = item.id")
+        .leftJoin(ItemUnitMaster , "unit" , "detail.itemUnitMasterId = unit.id")
+        .select([
+          ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
+          ...rowToModelPropertyMapper("party", PartyMaster),
+        ])
+
+    return stmt.getRawMany();
+
   }
 
   getAll() {
@@ -59,7 +77,13 @@ class DeliveryChallanService extends __BaseService {
         "party.name as partyName",
       ]).getRawMany()
   }
-
+/**
+ *
+ * @param {Object} payload
+ * @param {Integer} payload.party
+ * @param {Date} payload.date
+ * @returns Promise
+ */
   getByPartyAndDate(payload) {
     try{
       const { party, date } = payload
@@ -74,21 +98,27 @@ class DeliveryChallanService extends __BaseService {
     }
   }
 
-
+/**
+ *
+ * @param {Object} payload
+ * @param {Array} payload.party
+ * @param {Date} payload.fromDate
+ * @param {Date} payload.toDate
+ * @returns Promise
+ */
   getByPartyListAndDateInterval(payload) {
     try{
       const { party, fromDate , toDate } = payload
       const stmt = this.repository
       .createQueryBuilder("chalan")
       .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-      .where("chalan.challanDate >= :date", { date: fromDate })
-      .andWhere("chalan.challanDate <= :date", { date: toDate })
-      .andWhere("chalan.partyMasterId IN :party", { party: party })
+      .where("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
+      .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
+      .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
       .select([
         ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
         "party.name as partyName",
       ])
-      console.log(stmt.getSql())
       return stmt.getRawMany()
     }catch(e){
       console.log(e)
