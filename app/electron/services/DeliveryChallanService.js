@@ -159,10 +159,10 @@ class DeliveryChallanService extends __BaseService {
       // delete paylaod['DeliveryDetails']
       const header = payload;
       if (await this.voucherNumberExists(header.voucherNumber)) {
-        return Promise.reject("Chalan With Voucher Number " + header.voucherNumber + " Already Exists!")
+        return Promise.reject("Challan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
       if (await this.chalanNumberExists(header.challanNumber)) {
-        return Promise.reject("Chalan With Chalan Number " + header.challanNumber + " Already Exists!")
+        return Promise.reject("Challan With Challan Number " + header.challanNumber + " Already Exists!")
       }
       const runner = this.connection.createQueryRunner();
 
@@ -197,20 +197,114 @@ class DeliveryChallanService extends __BaseService {
     }
   }
 
-  async voucherNumberExists(payload) {
-    return await this.repository.count({
-      where: {
-        voucherNumber: payload
+  // TODO : Working on this
+  async update(payload) {
+    try {
+      let header = payload;
+
+      let [deleted, details] = this.partition(payload['deliveryDetails'], x => x.deleted);
+
+      delete payload['deliveryDetails']
+      console.log(header.voucherNumber, header.id)
+      console.log(await this.voucherNumberExists(header.voucherNumber, header.id))
+      console.log("!!!!!!!!!!!!!")
+      console.log(header.challanNumber, header.id)
+      console.log(await this.chalanNumberExists(header.challanNumber, header.id))
+      if (await this.voucherNumberExists(header.voucherNumber, header.id)) {
+        return Promise.reject("Challan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
-    }) != 0
+      if (await this.chalanNumberExists(header.challanNumber, header.id)) {
+        return Promise.reject("Challan With Challan Number " + header.challanNumber + " Already Exists!")
+      }
+
+      const runner = this.connection.createQueryRunner();
+
+      await runner.startTransaction();
+
+      try {
+        await runner.manager.save(
+          DeliveryTransaction,
+          header
+        );
+        await runner.manager.save(
+          DeliveryDetail,
+          details
+        )
+
+        await runner.manager.delete(
+          DeliveryDetail,
+          deleted.map(x => x.id)
+        )
+
+        await runner.commitTransaction();
+        return "Updated";
+      } catch (err) {
+        console.log(err)
+        await runner.rollbackTransaction();
+      } finally {
+        await runner.release();
+      }
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something went wrong!")
+    }
   }
 
-  async chalanNumberExists(payload) {
-    return await this.repository.count({
-      where: {
-        challanNumber: payload
+  async delete(payload) {
+    try {
+      const id = payload
+      const runner = this.connection.createQueryRunner();
+
+      await runner.startTransaction();
+
+      try {
+        // const entity = await this.getByIdWithDetails(id)
+        await runner.manager.delete(
+          DeliveryTransaction,
+          id
+        );
+
+        // await runner.manager.delete(
+        //   DeliveryDetail,
+        //   deleted.map(x => x.id)
+        // )
+
+        await runner.commitTransaction();
+        return true;
+      } catch (err) {
+        console.log(err)
+        await runner.rollbackTransaction();
+      } finally {
+        await runner.release();
       }
-    }) != 0
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something went wrong!")
+    }
+  }
+
+  async voucherNumberExists(payload, id) {
+    const stmt = this.connection.manager.createQueryBuilder(DeliveryTransaction, "challan");
+    stmt.where("challan.voucherNumber = :voucherNumber", { voucherNumber: payload })
+    if (id) {
+      stmt.andWhere("challan.id != :id", { id: id })
+    }
+    return await stmt.getCount() != 0;
+  }
+
+  async chalanNumberExists(payload, id) {
+    const stmt = this.connection.manager.createQueryBuilder(DeliveryTransaction, "challan");
+    stmt.where("challan.challanNumber = :challanNumber", { challanNumber: payload })
+    if (id) {
+      stmt.andWhere("challan.id != :id", { id: id })
+    }
+    return await stmt.getCount() != 0;
+  }
+
+  partition(array, filter) {
+    let pass = [], fail = [];
+    array.forEach((e, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
+    return [pass, fail];
   }
 }
 module.exports = DeliveryChallanService;

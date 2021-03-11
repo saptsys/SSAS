@@ -13,6 +13,10 @@ promiseIpc.on(createPath("save"), (payload) => {
   return service.save(payload);
 });
 
+promiseIpc.on(createPath("update"), (payload) => {
+  return service.update(payload);
+});
+
 promiseIpc.on(createPath("getDetailsById"), (payload) => {
   return service.getDetailsById(payload);
 });

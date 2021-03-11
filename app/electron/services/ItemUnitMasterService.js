@@ -1,6 +1,8 @@
 
 const __BaseService = require("./__BaseService");
 const {ItemUnitMaster} = require("../../dbManager/models/ItemUnitMaster");
+const {ItemMaster} = require("../../dbManager/models/ItemMaster");
+
 const { getConnection } = require("typeorm");
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
@@ -46,7 +48,7 @@ class ItemUnitMasterService extends __BaseService {
    * @returns {Promise}
    */
   hasItems(id){
-    const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
+    const stmt =  this.connection.manager.createQueryBuilder(ItemMaster, "item")
     .where("item.isActive = true")
     .andWhere("item.deletedAt IS NULL")
     .andWhere("item.itemUnitMasterId = :id", { id: id })

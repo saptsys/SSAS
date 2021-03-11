@@ -1,6 +1,8 @@
 
 const __BaseService = require("./__BaseService");
 const {ItemGroupMaster} = require("../../dbManager/models/ItemGroupMaster");
+const {ItemMaster} = require("../../dbManager/models/ItemMaster");
+
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
 class ItemGroupMasterService extends __BaseService {
@@ -42,7 +44,7 @@ class ItemGroupMasterService extends __BaseService {
    * @returns {Promise}
    */
   hasItems(id){
-    const stmt =  this.connection.manager.createQueryBuilder(Models.ItemMaster, "item")
+    const stmt =  this.connection.manager.createQueryBuilder(ItemMaster, "item")
     .where("item.isActive = true")
     .andWhere("item.deletedAt IS NULL")
     .andWhere("item.itemGroupMasterId = :id", { id: id })
