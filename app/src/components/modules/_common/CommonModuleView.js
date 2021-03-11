@@ -176,6 +176,7 @@ function CommonModuleView({
           titleSufix={title}
           editId={editMode.editId}
           refs={{ deleteBtn: deleteBtnRef, saveBtn: saveBtnRef }}
+          methods={methods}
         />
       </CommonEditDrawer>
     </div>

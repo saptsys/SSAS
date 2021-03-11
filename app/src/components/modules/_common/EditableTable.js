@@ -121,7 +121,7 @@ const EditableCell = ({
     </td>
   )
     : (
-      <td {...props}>
+      <td {...props} className={`normal-cell ${props.className ?? ""}`}>
         {children}
       </td>
     )

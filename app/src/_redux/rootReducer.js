@@ -8,6 +8,7 @@ import { PartyMasterSlice } from "./actionFiles/PartyMasterRedux";
 import { SettingsMasterSlice } from "./actionFiles/SettingsMasterRedux";
 import { TaxMasterSlice } from "./actionFiles/TaxMasterRedux";
 import { FirmInfoSlice } from "./actionFiles/FirmInfoRedux";
+import { DeliveryChallanSlice } from "./actionFiles/DeliveryChallanRedux";
 
 
 //add your custom slice which you createed without _BaseSlice class
@@ -24,6 +25,7 @@ const redcuerList = [
     SettingsMasterSlice,
     TaxMasterSlice,
     LayoutSlice,
+    DeliveryChallanSlice
 
 ]
 redcuerList.forEach(slice => {

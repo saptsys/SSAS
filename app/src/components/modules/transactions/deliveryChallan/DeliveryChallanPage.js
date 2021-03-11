@@ -1,8 +1,9 @@
 import React from 'react'
 import DeliveryChallanTable from "./DeliveryChallanTable";
 import CommonModuleView from '../../_common/CommonModuleView';
-import { PartyMasterActions, reducerInfo } from '../../../../_redux/actionFiles/PartyMasterRedux';
+import { DeliveryChallanActions, reducerInfo } from '../../../../_redux/actionFiles/DeliveryChallanRedux';
 import DeliveryChallanForm from './DeliveryChallanForm';
+
 
 function DeliveryChallanPage() {
   return <CommonModuleView
@@ -10,7 +11,13 @@ function DeliveryChallanPage() {
     MainTable={DeliveryChallanTable}
     EditForm={DeliveryChallanForm}
     drawerWidth="full"
-    actions={PartyMasterActions}
+    actions={DeliveryChallanActions}
+    methods={{
+      fetchTableData: "getAll",
+      fetchEditData: "getByIdWithDetail",
+      saveForm: "save",
+      deleteRecord: "delete"
+    }}
   />
 }
 

@@ -65,7 +65,7 @@ module.exports = new EntitySchema({
         referencedColumnName: 'deliveryTransactionId'
       },
       inverseSide: 'deliveryTransactionId',
-      type: "one-to-many",
+      type: "many-to-one",
     }
   },
 });
