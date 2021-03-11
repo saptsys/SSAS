@@ -29,54 +29,52 @@ const EditableCell = ({
   }
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
   const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
-  const elmToReturn =
-    editor
-      ? function () {
-        const { type, onChange, getOptions, getCustomCoponent, ...elmProps } = editor
-        switch (type) {
-          case "number":
-            return <Input
-              type="number"
-              value={curCellVal()}
-              onChange={e => setVal(e.target.value) && onChange && onChange(e)}
-              size="small"
-              {...elmProps}
-            />
-          case "select":
-            return <Select
-              value={curCellVal()}
-              onChange={val => {
-                setVal(val) && onChange && onChange(val)
-              }}
-              options={getOptions(record, rowIndex, colIndex)}
-              showAction="focus"
-              size="small"
-              defaultActiveFirstOption={false}
-              {...elmProps}
-            />
-          case "custom":
-            return function () {
-              const copm = getCustomCoponent(record, rowIndex, colIndex)
-              return (<copm
-                value={curCellVal()}
-                onChange={val => setVal(val) && onChange && onChange(val)}
-              />)
-            }()
-          default:
-            return <Input
-              value={curCellVal()}
-              onChange={e => setVal(e.target.value) && onChange && onChange(e)}
-              size="small"
-              {...elmProps}
-            />
-        }
-      }()
-      : children
+  const elmToReturn = function () {
+    const { type, onChange, getOptions, getCustomCoponent, ...elmProps } = editor
+    switch (type) {
+      case "number":
+        return <Input
+          step={undefined}
+          value={curCellVal()}
+          onChange={e => setVal((e.target.value)) && onChange && onChange(e)}
+          size="small"
+          style={{textAlign:'right'}}
+          {...elmProps}
+        />
+      case "select":
+        return <Select
+          value={curCellVal()}
+          onChange={val => {
+            setVal(val) && onChange && onChange(val)
+          }}
+          options={getOptions(record, rowIndex, colIndex)}
+          showAction="focus"
+          size="small"
+          defaultActiveFirstOption={false}
+          {...elmProps}
+        />
+      case "custom":
+        return function () {
+          const copm = getCustomCoponent(record, rowIndex, colIndex)
+          return (<copm
+            value={curCellVal()}
+            onChange={val => setVal(val) && onChange && onChange(val)}
+          />)
+        }()
+      default:
+        return <Input
+          value={curCellVal()}
+          onChange={e => setVal(e.target.value) && onChange && onChange(e)}
+          size="small"
+          {...elmProps}
+        />
+    }
+  }
 
-  const focusCell = (rowIndex, colIndex) => {
+  const focusCell = (rowI, colI) => {
     const table = document.getElementById(tableId)
     if (table) {
-      let next = table.querySelector(`.focus-index-${rowIndex}-${colIndex}`)?.querySelector('input')
+      let next = table.querySelector(`.focus-index-${rowI}-${colI}`)?.querySelector('input')
       if (next) {
         // e.target.blur()
         saveData()
@@ -87,14 +85,14 @@ const EditableCell = ({
     }
   }
 
-  return (
-    <td {...props} className={`${props.className} focus-index-${rowIndex}-${colIndex}`} onKeyDown={function (e) {
+  return editor ? (
+    <td {...props} className={`${props.className} focus-index-${rowIndex}-${editor.editorColIndex}`} onKeyDown={function (e) {
       if (e.key === "Enter") {
         e.preventDefault()
         let nextRowIndex = 0
         let nextColIndex = 0
         if (rowIndex < rowsLength) {
-          if (colIndex === colsLength - 1) {
+          if (editor.editorColIndex === editor.editorColsLength - 1) {
             if (rowIndex === rowsLength - 1) {
               addRow();
               setTimeout(() => {
@@ -106,12 +104,12 @@ const EditableCell = ({
             nextRowIndex = rowIndex + 1
             nextColIndex = 0
           } else {
-            nextColIndex = colIndex + 1
+            nextColIndex = editor.editorColIndex + 1
             nextRowIndex = rowIndex
           }
         }
 
-        if (rowIndex === rowsLength - 1 && colIndex === 0 && !((currentCellValue ? currentCellValue[rowIndex] : record)[dataIndex])) {
+        if (rowIndex === rowsLength - 1 && editor.editorColIndex === 0 && !((currentCellValue ? currentCellValue[rowIndex] : record)[dataIndex])) {
           const next = document.querySelector(`[tabindex='${nextTabIndex}']`)
           next.focus()
         }
@@ -119,9 +117,14 @@ const EditableCell = ({
           focusCell(nextRowIndex, nextColIndex)
       }
     }}>
-      {elmToReturn}
+      {elmToReturn()}
     </td>
   )
+    : (
+      <td {...props}>
+        {children}
+      </td>
+    )
 }
 
 const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, afterSave, beforeSave = (newRow, oldRow) => newRow }) => {
@@ -134,14 +137,13 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
         oldRow = tmp[r]
         const beforeSaveRes = beforeSave(currentCellValue[r], oldRow)
         newRow = beforeSaveRes
-        if (beforeSaveRes)
-          tmp[r] = beforeSaveRes
+        tmp[r] = beforeSaveRes
       })
-      if (afterSave)
-        afterSave(newRow, oldRow, tmp)
       form.setFieldsValue({
         [name]: tmp
       })
+      if (afterSave)
+        afterSave(newRow, oldRow, tmp)
       setCurrentCellValue(null)
     }
   }
@@ -177,6 +179,7 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
             components={{ body: { cell: EditableCell } }}
             dataSource={form.getFieldValue(name)}
             columns={columns.map((col, colIndex) => {
+              const editorCols = col.editor ? Object.values(columns).filter(x => x.editor).map(x => x.dataIndex) : []
               return {
                 ...col,
                 onCell: (record, rowIndex) => {
@@ -193,7 +196,7 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
                     rowsLength: form.getFieldValue(name)?.length ?? 0,
                     tableId: name,
                     nextTabIndex,
-                    editor: col.editor,
+                    editor: col.editor ? { ...col.editor, editorColIndex: editorCols.indexOf(col.dataIndex), editorColsLength: editorCols.length } : undefined,
                     ...(col?.onCell ? col.onCell(record, rowIndex) : {})
                   }
                 }

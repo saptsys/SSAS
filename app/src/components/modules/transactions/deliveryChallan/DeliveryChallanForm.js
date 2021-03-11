@@ -10,6 +10,7 @@ import TextArea from "antd/lib/input/TextArea";
 import { DeliveryDetail } from "../../../../../dbManager/models/DeliveryDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { ItemMasterActions } from "../../../../_redux/actionFiles/ItemMasterRedux";
+import { ItemUnitMasterActions } from "../../../../_redux/actionFiles/ItemUnitMasterRedux";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -17,20 +18,24 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   const generateId = (text) => "basic_" + text
 
   const onFinish = (values) => {
-    saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
+    debugger;
+    let val = { ...(entityForEdit ?? {}), ...values }
+    saveBtnHandler && saveBtnHandler({ header: val, details: val.deliveryDetails })
   };
 
   const { itemState, partyState } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster }))
   const [allItems, setAllItems] = useState([])
+  const [allUnits, setAllUnits] = useState([])
   useEffect(() => {
-    dispatch(ItemMasterActions.getAll()).then(res => setAllItems(res))
+    dispatch(ItemMasterActions.getAll()).then(setAllItems)
+    dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
   }, [])
 
 
   return (
     <Form
       name="delivery-challan-form"
-      initialValues={{ deliveryDetails: [new DeliveryDetail()], ...(entityForEdit ?? {}), voucherNumber: 1234 }}
+      initialValues={{ deliveryDetails: [], ...(entityForEdit ?? {}), voucherNumber: 1 }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -109,12 +114,9 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               width: '20%'
             }, {
               title: "Unit",
-              dataIndex: "unitMasterId",
-              editor: {
-                type: 'select',
-                getOptions: () => [{ label: 'Unit 1', value: 1 }, { label: 'Unit 2', value: 3 }]
-              },
-              width: '15%'
+              dataIndex: "itemUnitMasterId",
+              width: '15%',
+              render: cell => allUnits.find(x => x.id === cell)?.name
             }, {
               title: "Qty",
               dataIndex: "quantity",
@@ -122,31 +124,33 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
                 type: 'number',
               },
               footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.quantity ?? 0), 0),
-              width: '10%'
+              width: '10%',
+              align: 'right'
             }, {
               title: "Rate",
               dataIndex: "rate",
               editor: {
                 type: 'number',
               },
-              width: '10%'
+              width: '10%',
+              align: 'right'
             }, {
               title: "Amount",
               dataIndex: "amount",
-              editor: {
-                type: 'number',
-              },
-              width: '10%'
+              width: '10%',
+              align: 'right'
             }
             ]}
             autoAddRow={{ ...(new DeliveryDetail()) }}
             beforeSave={(newRow, oldRow) => {
-              newRow.amount = (newRow.quantity ?? 0) * (newRow.rate ?? 0)
+              newRow.amount = parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)
+              newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
               return newRow;
             }}
             afterSave={(newRow, oldRow, data) => {
-              form.setFieldsValue({ grossAmount: data?.reduce((a, b) => a + b.amount, 0) })
-              form.setFieldsValue({ netAmount: data?.reduce((a, b) => a + b.amount, 0) })
+              const subTotal = data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)
+              form.setFieldsValue({ grossAmount: subTotal })
+              form.setFieldsValue({ netAmount: subTotal })
             }}
           />
         </Col>
@@ -169,6 +173,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               return (
                 <>
                   <Form.Item
+                    name="grossAmount"
                     label="Gross Amount"
                     required
                     rules={[{ required: true }]}
