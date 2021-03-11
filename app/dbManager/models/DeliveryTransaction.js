@@ -14,6 +14,7 @@ class DeliveryTransaction extends _BaseModel {
     netAmount,
     remarks,
     partyMasterId,
+    deliveryDetails,
     ...rest
   } = {}) {
     super(rest), (this.id = id);
@@ -28,6 +29,7 @@ class DeliveryTransaction extends _BaseModel {
     this.netAmount = netAmount;
     this.remarks = remarks;
     this.partyMasterId = partyMasterId;
+    this.deliveryDetails = deliveryDetails;
   }
 }
 module.exports = {DeliveryTransaction:DeliveryTransaction};

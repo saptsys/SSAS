@@ -52,20 +52,23 @@ class DeliveryChallanService extends __BaseService {
     }
   }
 
-  // TODO : workling on this
-  getById(id) {
-    const stmt = this.repository.createQueryBuilder("chalan")
-        .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .leftJoin(DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
-        .leftJoin(ItemMaster , "item" , "detail.itemMasterId = item.id")
-        .leftJoin(ItemUnitMaster , "unit" , "detail.itemUnitMasterId = unit.id")
-        .select([
-          ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
-          ...rowToModelPropertyMapper("party", PartyMaster),
-        ])
-
-    return stmt.getRawMany();
-
+  getDetailsById(id) {
+    try{
+      const stmt = this.repository.createQueryBuilder("chalan")
+      .leftJoin(DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+      .leftJoin(ItemMaster , "item" , "detail.itemMasterId = item.id")
+      .leftJoin(ItemUnitMaster , "unit" , "detail.itemUnitMasterId = unit.id")
+      .where("detail.deliveryTransactionId = :id" , {id:id})
+      .select([
+        ...rowToModelPropertyMapper("detail", DeliveryDetail),
+        "unit.name as unitName",
+        "item.name as itemName",
+      ])
+      return stmt.getRawMany();
+    }catch(e){
+      console.log(e)
+      return Promise.reject("Something Went Wrong!")
+    }
   }
 
   getAll() {
@@ -125,6 +128,70 @@ class DeliveryChallanService extends __BaseService {
       return Promise.reject("Something went wrong!")
     }
   }
+  /**
+   *
+   * @param {Object} payload
+   * @param {DeliveryTransaction} payload.header
+   * @param {Array<DeliveryDetail>} payload.details
+   */
+  async save(payload){
+    try{
+      const header = payload.header;
+      let details = payload.details;
+      if(await this.voucherNumberExists(header.voucherNumber)){
+        return Promise.reject("Chalan With Voucher Number "+header.voucherNumber+" Already Exists!")
+      }
+      if(await this.chalanNumberExists(header.challanNumber)){
+        return Promise.reject("Chalan With Chalan Number "+header.challanNumber+" Already Exists!")
+      }
+      const runner = this.connection.createQueryRunner();
 
+      await runner.startTransaction();
+
+      try {
+
+        const savedChalan =  await runner.manager.insert(DeliveryTransaction , header);
+        const chalanId = savedChalan['raw']
+        details = details.map(x => {
+          return {
+            ...x,
+            deliveryTransactionId:chalanId
+          }
+        })
+        const savedChalanDetails = await runner.manager.insert(
+          DeliveryDetail,
+          details
+        )
+
+        await runner.commitTransaction();
+        return savedChalanDetails;
+    } catch (err) {
+        console.log(err)
+        await runner.rollbackTransaction();
+    } finally {
+        await runner.release();
+    }
+
+    }catch(e){
+      console.log(e)
+      return Promise.reject("Something went wrong!")
+    }
+  }
+
+  async voucherNumberExists(payload){
+    return await this.repository.count({
+      where:{
+        voucherNumber:payload
+      }
+    }) != 0
+  }
+
+  async chalanNumberExists(payload){
+    return await this.repository.count({
+      where:{
+        challanNumber:payload
+      }
+    }) != 0
+  }
 }
 module.exports = DeliveryChallanService;
