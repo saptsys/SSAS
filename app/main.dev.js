@@ -165,10 +165,21 @@ function init() {
 }
 
 function loadMainProcess() {
-  function requireAll(r) {
-    r.keys().forEach(r);
+  if(process.env.NODE_ENV === 'production'){
+    function requireAll(r) {
+      r.keys().forEach(r);
+    }
+    requireAll(require.context('./electron/', true, /\.js$/));
+  }else{
+    const files = glob.sync(
+      path.join(__dirname, "electron/main-processes/**/*.js")
+    );
+    files.forEach((file) => {
+      file = file.split("electron/main-processes/")[1]
+      require(`./electron/main-processes/${file}`)
+      sout(`require(./electron/main-processes/${file})`)
+    });
   }
-  requireAll(require.context('./electron/', true, /\.js$/));
 }
 /**
  * @returns Promise<Connection>

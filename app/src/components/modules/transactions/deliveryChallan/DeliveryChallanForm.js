@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Row, Col, InputNumber, DatePicker, Table } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { PartyDropdown } from "../../_common/CommonDropdowns";
@@ -8,8 +8,11 @@ import CustomDatePicker from "../../../form/CustomDatePicker";
 import './deliveryChallanForm.less'
 import TextArea from "antd/lib/input/TextArea";
 import { DeliveryDetail } from "../../../../../dbManager/models/DeliveryDetail";
+import { useDispatch, useSelector } from "react-redux";
+import { ItemMasterActions } from "../../../../_redux/actionFiles/ItemMasterRedux";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
+  const dispatch = useDispatch()
 
   const generateId = (text) => "basic_" + text
 
@@ -17,14 +20,12 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values })
   };
 
-  const layout = {
-    labelCol: {
-      span: 8,
-    },
-    wrapperCol: {
-      span: 16
-    }
-  };
+  const { itemState, partyState } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster }))
+  const [allItems, setAllItems] = useState([])
+  useEffect(() => {
+    dispatch(ItemMasterActions.getAll()).then(res => setAllItems(res))
+  }, [])
+
 
   return (
     <Form
@@ -36,6 +37,12 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       validateMessages={validateMsgs}
       colon={false}
       className="copact-form"
+      labelCol={{
+        span: 8,
+      }}
+      wrapperCol={{
+        span: 16
+      }}
     >
       <Row className="header-row">
         <Col md={{ span: 12 }} xs={{ span: 14 }}>
@@ -89,7 +96,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               dataIndex: "itemMasterId",
               editor: {
                 type: 'select',
-                getOptions: () => [{ label: 'Item 1', value: 1 }, { label: 'Item 2', value: 3 }]
+                getOptions: () => allItems?.map(x => ({ label: x.name, value: x.id }))
               },
               width: '25%'
             },
@@ -162,7 +169,6 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
               return (
                 <>
                   <Form.Item
-                    name="grosAmounts"
                     label="Gross Amount"
                     required
                     rules={[{ required: true }]}

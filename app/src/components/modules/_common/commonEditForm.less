@@ -2,13 +2,15 @@
 
 
 .form-spinner {
-  max-height: 100vh;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
 
   .ant-spin-container {
-    max-height: 100vh !important;
+    height: 100% !important;
 
     #auto-focuser {
-      max-height: 100vh !important;
+      height: 100% !important;
       display: flex;
       flex-direction: column;
 
@@ -35,7 +37,6 @@
       .form-body {
         padding: 20px;
         flex-grow: 1;
-        height: 100vh;
         overflow: auto;
       }
 

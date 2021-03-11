@@ -155,14 +155,14 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
     })
   }
   return (
-    <Form.Item className="editable-table-wrapper" shouldUpdate={(a, b) => a[name] !== b[name]}>
+    <Form.Item wrapperCol={24} labelCol={0} className="editable-table-wrapper" shouldUpdate={(a, b) => a[name] !== b[name]}>
       {() => (
-        <Form.Item name={name}>
+        <Form.Item wrapperCol={24} labelCol={0} name={name}>
           <Table
             className="editable-table"
             id={name}
             footer={columns.some(x => !!x.footer) ? () => (
-              <table className="ant-table ant-table-default ">
+              <table className=" ">
                 <thead className="ant-table-thead">
                   <tr>
                     {
