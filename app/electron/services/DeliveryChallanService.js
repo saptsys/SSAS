@@ -27,6 +27,16 @@ class DeliveryChallanService extends __BaseService {
     return stmt.getRawOne();
   }
 
+  getTotalBillsAndLastBillNumber() {
+    const stmt = this.repository.createQueryBuilder('DeliveryChallan')
+      .select([
+        "count(DeliveryChallan.challanNumber) as total",
+        "COALESCE(MAX(DeliveryChallan.challanNumber) , 0) as lastBillNumber",
+      ])
+    return stmt.getRawOne();
+  }
+
+
   search(payload) {
     try {
       const term = payload.term
@@ -145,8 +155,9 @@ class DeliveryChallanService extends __BaseService {
    */
   async save(payload) {
     try {
-      const header = payload.header;
-      let details = payload.details;
+      let details = payload['deliveryDetails'];
+      // delete paylaod['DeliveryDetails']
+      const header = payload;
       if (await this.voucherNumberExists(header.voucherNumber)) {
         return Promise.reject("Chalan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
@@ -180,7 +191,6 @@ class DeliveryChallanService extends __BaseService {
       } finally {
         await runner.release();
       }
-
     } catch (e) {
       console.log(e)
       return Promise.reject("Something went wrong!")
@@ -204,3 +214,6 @@ class DeliveryChallanService extends __BaseService {
   }
 }
 module.exports = DeliveryChallanService;
+
+
+
