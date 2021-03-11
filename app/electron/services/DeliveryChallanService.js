@@ -53,19 +53,28 @@ class DeliveryChallanService extends __BaseService {
   }
 
   getDetailsById(id) {
-    try{
+    try {
       const stmt = this.repository.createQueryBuilder("chalan")
-      .leftJoin(DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
-      .leftJoin(ItemMaster , "item" , "detail.itemMasterId = item.id")
-      .leftJoin(ItemUnitMaster , "unit" , "detail.itemUnitMasterId = unit.id")
-      .where("detail.deliveryTransactionId = :id" , {id:id})
-      .select([
-        ...rowToModelPropertyMapper("detail", DeliveryDetail),
-        "unit.name as unitName",
-        "item.name as itemName",
-      ])
+        .leftJoin(DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .leftJoin(ItemMaster, "item", "detail.itemMasterId = item.id")
+        .leftJoin(ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
+        .where("detail.deliveryTransactionId = :id", { id: id })
+        .select([
+          ...rowToModelPropertyMapper("detail", DeliveryDetail),
+          "unit.name as unitName",
+          "item.name as itemName",
+        ])
       return stmt.getRawMany();
-    }catch(e){
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something Went Wrong!")
+    }
+  }
+
+  getByIdWithDetails(trxId) {
+    try {
+      return this.repository.findOne(trxId, { relations: ["deliveryDetails"] })
+    } catch (e) {
       console.log(e)
       return Promise.reject("Something Went Wrong!")
     }
@@ -80,50 +89,50 @@ class DeliveryChallanService extends __BaseService {
         "party.name as partyName",
       ]).getRawMany()
   }
-/**
- *
- * @param {Object} payload
- * @param {Integer} payload.party
- * @param {Date} payload.date
- * @returns Promise
- */
+  /**
+   *
+   * @param {Object} payload
+   * @param {Integer} payload.party
+   * @param {Date} payload.date
+   * @returns Promise
+   */
   getByPartyAndDate(payload) {
-    try{
+    try {
       const { party, date } = payload
       return this.getByPartyListAndDateInterval({
-        party:[party],
-        fromDate:date,
-        toDate:date
+        party: [party],
+        fromDate: date,
+        toDate: date
       });
-    }catch(e){
+    } catch (e) {
       console.log(e)
       return Promise.reject("Something went wrong!")
     }
   }
 
-/**
- *
- * @param {Object} payload
- * @param {Array} payload.party
- * @param {Date} payload.fromDate
- * @param {Date} payload.toDate
- * @returns Promise
- */
+  /**
+   *
+   * @param {Object} payload
+   * @param {Array} payload.party
+   * @param {Date} payload.fromDate
+   * @param {Date} payload.toDate
+   * @returns Promise
+   */
   getByPartyListAndDateInterval(payload) {
-    try{
-      const { party, fromDate , toDate } = payload
+    try {
+      const { party, fromDate, toDate } = payload
       const stmt = this.repository
-      .createQueryBuilder("chalan")
-      .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-      .where("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
-      .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
-      .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
-      .select([
-        ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
-        "party.name as partyName",
-      ])
+        .createQueryBuilder("chalan")
+        .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
+        .where("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
+        .select([
+          ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
+          "party.name as partyName",
+        ])
       return stmt.getRawMany()
-    }catch(e){
+    } catch (e) {
       console.log(e)
       return Promise.reject("Something went wrong!")
     }
@@ -134,15 +143,15 @@ class DeliveryChallanService extends __BaseService {
    * @param {DeliveryTransaction} payload.header
    * @param {Array<DeliveryDetail>} payload.details
    */
-  async save(payload){
-    try{
+  async save(payload) {
+    try {
       const header = payload.header;
       let details = payload.details;
-      if(await this.voucherNumberExists(header.voucherNumber)){
-        return Promise.reject("Chalan With Voucher Number "+header.voucherNumber+" Already Exists!")
+      if (await this.voucherNumberExists(header.voucherNumber)) {
+        return Promise.reject("Chalan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
-      if(await this.chalanNumberExists(header.challanNumber)){
-        return Promise.reject("Chalan With Chalan Number "+header.challanNumber+" Already Exists!")
+      if (await this.chalanNumberExists(header.challanNumber)) {
+        return Promise.reject("Chalan With Chalan Number " + header.challanNumber + " Already Exists!")
       }
       const runner = this.connection.createQueryRunner();
 
@@ -150,12 +159,12 @@ class DeliveryChallanService extends __BaseService {
 
       try {
 
-        const savedChalan =  await runner.manager.insert(DeliveryTransaction , header);
+        const savedChalan = await runner.manager.insert(DeliveryTransaction, header);
         const chalanId = savedChalan['raw']
         details = details.map(x => {
           return {
             ...x,
-            deliveryTransactionId:chalanId
+            deliveryTransactionId: chalanId
           }
         })
         const savedChalanDetails = await runner.manager.insert(
@@ -165,31 +174,31 @@ class DeliveryChallanService extends __BaseService {
 
         await runner.commitTransaction();
         return savedChalanDetails;
-    } catch (err) {
+      } catch (err) {
         console.log(err)
         await runner.rollbackTransaction();
-    } finally {
+      } finally {
         await runner.release();
-    }
+      }
 
-    }catch(e){
+    } catch (e) {
       console.log(e)
       return Promise.reject("Something went wrong!")
     }
   }
 
-  async voucherNumberExists(payload){
+  async voucherNumberExists(payload) {
     return await this.repository.count({
-      where:{
-        voucherNumber:payload
+      where: {
+        voucherNumber: payload
       }
     }) != 0
   }
 
-  async chalanNumberExists(payload){
+  async chalanNumberExists(payload) {
     return await this.repository.count({
-      where:{
-        challanNumber:payload
+      where: {
+        challanNumber: payload
       }
     }) != 0
   }

@@ -18,6 +18,8 @@ import {
   INVALID_REASONS
 } from "./electron/services/FirmInfoService";
 
+import { glob } from "glob";
+import path from 'path'
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -165,12 +167,12 @@ function init() {
 }
 
 function loadMainProcess() {
-  if(process.env.NODE_ENV === 'production'){
+  if (process.env.NODE_ENV === 'production') {
     function requireAll(r) {
       r.keys().forEach(r);
     }
     requireAll(require.context('./electron/', true, /\.js$/));
-  }else{
+  } else {
     const files = glob.sync(
       path.join(__dirname, "electron/main-processes/**/*.js")
     );
