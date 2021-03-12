@@ -30,7 +30,6 @@ class DeliveryChallanService extends __BaseService {
 
   getTotalBills() {
     const stmt = this.repository.createQueryBuilder('DeliveryChallan')
-      .where("DeliveryChallan.deletedAt IS NOT NULL")
       .select([
         "count(DeliveryChallan.challanNumber) as total"
       ])
@@ -47,7 +46,6 @@ class DeliveryChallanService extends __BaseService {
       const stmt = this.repository
         .createQueryBuilder('deliveryChallan')
         .leftJoin(PartyMaster, "partyMaster", "deliveryChallan.partyMasterId = partyMaster.id")
-        .where("deliveryChallan.deletedAt IS NOT NULL")
         .orWhere("deliveryChallan.voucherNumber = :term", { term: term })
         .orWhere("deliveryChallan.challanNumber = :term", { term: term })
         .orWhere("deliveryChallan.challanDate = :term", { term: term })
@@ -70,7 +68,6 @@ class DeliveryChallanService extends __BaseService {
         .leftJoin(ItemMaster, "item", "detail.itemMasterId = item.id")
         .leftJoin(ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
         .where("detail.deliveryTransactionId = :id", { id: id })
-        .andWhere("detail.deletedAt IS NOT NULL")
         .select([
           ...rowToModelPropertyMapper("detail", DeliveryDetail),
           "unit.name as unitName",
@@ -85,12 +82,10 @@ class DeliveryChallanService extends __BaseService {
 
   getByIdWithDetails(trxId) {
     try {
-      return this.repository.findOne(trxId, {
-        relations: ["deliveryDetails"],
-        // where: {
-        //   deletedAt: Not(null)
-        // }
-      })
+      return this.repository.createQueryBuilder("chalan")
+      .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+      .where("chalan.id = :id", { id: trxId })
+      .getOne();
     } catch (e) {
       console.log(e)
       return Promise.reject("Something Went Wrong!")
@@ -101,7 +96,6 @@ class DeliveryChallanService extends __BaseService {
     return this.repository
       .createQueryBuilder("chalan")
       .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-      // .where("chalan.deletedAt IS NOT NULL")
       .select([
         ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
         "party.name as partyName",
@@ -142,7 +136,6 @@ class DeliveryChallanService extends __BaseService {
       const stmt = this.repository
         .createQueryBuilder("chalan")
         .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .where("chalan.deletedAt IS NOT NULL")
         .andWhere("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
         .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
@@ -165,11 +158,12 @@ class DeliveryChallanService extends __BaseService {
   async save(payload) {
     try {
       let details = payload['deliveryDetails'];
+      delete payload['deliveryDetails']
       const header = payload;
       if (await this.voucherNumberExists(header.voucherNumber, header.id)) {
         return Promise.reject("Challan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
-      if (await this.challanNumberExists(header.challanNumber, header.id)) {
+      if (await this.chalanNumberExists(header.challanNumber, header.id)) {
         return Promise.reject("Challan With Challan Number " + header.challanNumber + " Already Exists!")
       }
       const runner = this.connection.createQueryRunner();
@@ -177,7 +171,10 @@ class DeliveryChallanService extends __BaseService {
       await runner.startTransaction();
 
       try {
-        const savedChalan = await runner.manager.save(DeliveryTransaction, header);
+        const savedChalan = await runner.manager.save(
+          DeliveryTransaction,
+          header
+        )
 
         const chalanId = savedChalan.id
         details = details.map(x => {
@@ -187,10 +184,21 @@ class DeliveryChallanService extends __BaseService {
           }
         })
 
-        await runner.manager.save(
-          DeliveryDetail,
-          details
-        )
+        const [deletedDetails , updatedDetails] = this.partition(details , x => x.deletedAt)
+
+        if(updatedDetails){
+          await runner.manager.save(
+            DeliveryDetail,
+            updatedDetails
+          )
+        }
+
+        if(deletedDetails){
+          await runner.manager.delete(
+            DeliveryDetail,
+            deletedDetails.map(x => x.id)
+          )
+        }
 
         await runner.commitTransaction();
         await runner.release();
@@ -218,16 +226,14 @@ class DeliveryChallanService extends __BaseService {
       try {
         const entity = await this.getByIdWithDetails(headerId)
         const detailIds = entity['deliveryDetails'].map(x => x.id)
-
-        await runner.manager.softDelete(
-          DeliveryTransaction,
-          headerId
-        );
-
-        await runner.manager.softDelete(
+        await runner.manager.delete(
           DeliveryDetail,
           detailIds
         )
+        await runner.manager.delete(
+          DeliveryTransaction,
+          headerId
+        );
 
         await runner.commitTransaction();
         return true;
@@ -253,7 +259,7 @@ class DeliveryChallanService extends __BaseService {
     return await this.repository.count(criteria)
   }
 
-  async challanNumberExists(payload, id) {
+  async chalanNumberExists(payload, id) {
     let criteria = {
       challanNumber: payload
     }
