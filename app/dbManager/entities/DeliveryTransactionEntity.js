@@ -2,7 +2,7 @@ const EntitySchema = require("typeorm").EntitySchema;
 const __BaseEntity = require("./__BaseEntity");
 const NAME = "DeliveryTransaction";
 const TABLE_NAME = "delivery_trx";
-const {DeliveryTransaction} = require(`../models/DeliveryTransaction`);
+const { DeliveryTransaction } = require(`../models/DeliveryTransaction`);
 
 module.exports = new EntitySchema({
   name: NAME,
@@ -64,8 +64,8 @@ module.exports = new EntitySchema({
         name: "id",
         referencedColumnName: 'deliveryTransactionId'
       },
-      inverseSide: 'deliveryTransactionId',
-      type: "many-to-one",
+      inverseSide: 'deliveryTransaction',
+      type: "one-to-many",
     }
   },
 });

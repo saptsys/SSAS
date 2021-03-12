@@ -23,7 +23,6 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
     let val = { ...(entityForEdit ?? {}), ...values }
     val.challanDate = val.challanDate.toDate()
     val.deliveryDetails = val.deliveryDetails.filter(x => x.itemMasterId)
-    debugger;
     saveBtnHandler && saveBtnHandler(val)
   };
 
@@ -34,15 +33,16 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
-    dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then((res) => {
-      form.setFieldsValue({ challanNumber: res.chalanNumber + 1, voucherNumber: res.voucherNumber + 1, challanDate: moment(new Date()) })
-    })
+    if (!entityForEdit.id)
+      dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then((res) => {
+        form.setFieldsValue({ challanNumber: res.chalanNumber + 1, voucherNumber: res.voucherNumber + 1 })
+      })
   }, [])
-
+  console.log(entityForEdit)
   return (
     <Form
       name="delivery-challan-form"
-      initialValues={{ ...entityForEdit, deliveryDetails: [...(entityForEdit.deliveryDetails ?? []), new DeliveryDetail()] }}
+      initialValues={{ ...entityForEdit, deliveryDetails: [...(entityForEdit.deliveryDetails ?? []), new DeliveryDetail()], challanDate: moment(entityForEdit.challanDate ?? new Date()) }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}

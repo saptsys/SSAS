@@ -14,7 +14,7 @@ function DeliveryChallanPage() {
     actions={DeliveryChallanActions}
     methods={{
       fetchTableData: "getAll",
-      fetchEditData: "getByIdWithDetail",
+      fetchEditData: "getByIdWithDetails",
       saveForm: "save",
       deleteRecord: "delete"
     }}

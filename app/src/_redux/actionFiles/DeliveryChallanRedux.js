@@ -8,17 +8,15 @@ export const reducerInfo = {
 }
 
 class Actions extends _BaseIpcActions {
-  getByIdWithDetail = (trxId) => (dispatch) => {
-    const from = "getByIdWithDetail";
+  getByIdWithDetails = (trxId) => (dispatch) => {
+    const from = "getByIdWithDetails";
     dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getByIdWithDetail", trxId)
+    return this.sendIPC("getByIdWithDetails", trxId)
       .then((res) => {
-        debugger
         dispatch(this.stopCall(this.callTypes.action));
         return Promise.resolve(res);
       })
       .catch((error) => {
-        debugger
         dispatch(this.catchError(error.message, this.callTypes.action, from));
         return Promise.reject(error);
       });

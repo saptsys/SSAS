@@ -46,13 +46,24 @@ module.exports = new EntitySchema({
     },
   },
   relations: {
+    // deliveryTransaction: {
+    //   target: "DeliveryTransaction",
+    //   type: "many-to-one",
+    //   joinTable: true,
+    //   cascade: true,
+    //   joinColumn:{
+    //     name:"delivery_trx_id",
+    //   },
+    // },
     deliveryTransaction: {
       target: "DeliveryTransaction",
       type: "many-to-one",
-      joinTable: true,
       cascade: true,
-      joinColumn:{
-        name:"delivery_trx_id",
+      nullable: true,
+      inverseSide: 'id',
+      joinColumn: {
+        name: "delivery_trx_id",
+        referencedColumnName: 'id'
       },
     },
     itemMaster: {
