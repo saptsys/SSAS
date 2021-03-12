@@ -14,9 +14,12 @@ const MainMenu = () => {
 
 
   const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
-    const title = getTitleByUrl(key) ?? domEvent.currentTarget.innerText
-    dispatch(LayoutActions.setTitle(title))
-    history.push(key)
+    dispatch(LayoutActions.clearAll())
+    setTimeout(() => {
+      const title = getTitleByUrl(key)
+      dispatch(LayoutActions.setTitle(title))
+      history.push(key)
+    }, 10)
   }
 
   useEffect(() => {

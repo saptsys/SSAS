@@ -7,6 +7,7 @@ export const MODULE_ROUTES = {
     _path: "/masters",
     partyMaster: {
       _path: "/masters/party-master",
+      _title: "Party Master",
     },
     item: {
       _path: "/masters/item",
@@ -16,13 +17,16 @@ export const MODULE_ROUTES = {
       },
       itemMaster: {
         _path: "/masters/item/item-master",
+        _title: "Item Master",
       },
       unitMaster: {
         _path: "/masters/item/unit-master",
+        _title: "Unit Master",
       },
     },
     taxMaster: {
       _path: "/masters/tax-master",
+      _title: "Tax Master",
     },
   },
   transactions: {
@@ -31,16 +35,19 @@ export const MODULE_ROUTES = {
       _path: "/transactions/sales",
       salesInvoice: {
         _path: "/transactions/sales/sales-invoice",
+        _title: "Sales Invoice",
       },
     },
     purchase: {
       _path: "/purchase",
       purchaseInvoice: {
         _path: "/transactions/purchase/purchase-invoice",
+        _title: "Purchase Invoice",
       },
     },
     deliveryChallan: {
       _path: "/transactions/delivery-challan",
+      _title: "Delivery Challan",
     },
   },
   reports: {
