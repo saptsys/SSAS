@@ -5,6 +5,7 @@ class _BaseModel {
     createdBy,
     modifiedAt,
     modifiedBy,
+    deletedAt
   } = {}
   ) {
     this.id = id;
@@ -13,7 +14,6 @@ class _BaseModel {
     this.modifiedAt = modifiedAt;
     this.modifiedBy = modifiedBy;
     this.deletedAt = deletedAt;
-    this.deletedBy = deletedBy;
   }
 }
 
