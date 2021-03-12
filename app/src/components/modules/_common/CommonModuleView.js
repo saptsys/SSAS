@@ -25,7 +25,8 @@ function CommonModuleView({
     deleteRecord: "delete"
   },
   actions,
-  drawerWidth = "500"
+  drawerWidth = "500",
+  editModeChanged
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -46,6 +47,13 @@ function CommonModuleView({
   const cancelEditBtnHandler = () => {
     setEditMode({ mode: false, editId: null })
   }
+
+
+  useEffect(() => {
+    if (editModeChanged)
+      editModeChanged(editMode)
+  }, [editMode])
+
 
   const deleteBtnHandler = (param) => {
     confirm({
