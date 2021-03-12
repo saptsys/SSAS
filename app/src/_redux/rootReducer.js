@@ -9,6 +9,7 @@ import { SettingsMasterSlice } from "./actionFiles/SettingsMasterRedux";
 import { TaxMasterSlice } from "./actionFiles/TaxMasterRedux";
 import { FirmInfoSlice } from "./actionFiles/FirmInfoRedux";
 import { DeliveryChallanSlice } from "./actionFiles/DeliveryChallanRedux";
+import { SalesInvoiceSlice } from "./actionFiles/SalesInvoiceRedux";
 
 
 //add your custom slice which you createed without _BaseSlice class
@@ -17,19 +18,20 @@ let reducers = {
 }
 // add slice object which you created into this array to automatic combine
 const redcuerList = [
-    FirmInfoSlice,
-    ItemGroupMasterSlice,
-    ItemMasterSlice,
-    ItemUnitMasterSlice,
-    PartyMasterSlice,
-    SettingsMasterSlice,
-    TaxMasterSlice,
-    LayoutSlice,
-    DeliveryChallanSlice
+  FirmInfoSlice,
+  ItemGroupMasterSlice,
+  ItemMasterSlice,
+  ItemUnitMasterSlice,
+  PartyMasterSlice,
+  SettingsMasterSlice,
+  TaxMasterSlice,
+  LayoutSlice,
+  DeliveryChallanSlice,
+  SalesInvoiceSlice
 
 ]
 redcuerList.forEach(slice => {
-    reducers[slice.slice.name] = slice.reducer
+  reducers[slice.slice.name] = slice.reducer
 })
 
 export const rootReducer = combineReducers(reducers);
