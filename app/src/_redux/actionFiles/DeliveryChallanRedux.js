@@ -35,6 +35,20 @@ class Actions extends _BaseIpcActions {
         return Promise.reject(error);
       });
   };
+
+  getTotalBills = () => (dispatch) => {
+    const from = "getTotalBills";
+    dispatch(this.startCall(this.callTypes.action, from));
+    return this.sendIPC("getTotalBills")
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.action));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        dispatch(this.catchError(error.message, this.callTypes.action, from));
+        return Promise.reject(error);
+      });
+  };
 }
 
 

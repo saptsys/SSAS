@@ -10,10 +10,10 @@ import { LayoutActions } from '../../../../_redux/actionFiles/LayoutRedux';
 function DeliveryChallanPage() {
   const dispatch = useDispatch()
 
-  const setMessage = () => {
-    dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then(res => {
-      dispatch(LayoutActions.setMessage(<span> Last Challan No: <b>{res.chalanNumber}</b> &nbsp;&nbsp; Total Bills: <b>{res.voucherNumber}</b></span>))
-    })
+  const setMessage = async () => {
+    const last = await dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber())
+    const total = await dispatch(DeliveryChallanActions.getTotalBills())
+    dispatch(LayoutActions.setMessage(<span> Last Challan No: <b>{last.challanNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total.total}</b></span>))
   }
 
   useEffect(() => {

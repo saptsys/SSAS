@@ -12,7 +12,7 @@ class BillsTransaction extends _BaseModel {
     billNumber,
     billDate,
     voucherNumber,
-    chalanNumber,
+    challanNumber,
     chalanDate,
     dueDate,
     grossAmount,
@@ -44,7 +44,7 @@ class BillsTransaction extends _BaseModel {
     this.billNumber = billNumber;
     this.billDate = billDate;
     this.voucherNumber = voucherNumber;
-    this.chalanNumber = chalanNumber;
+    this.challanNumber = challanNumber;
     this.chalanDate = chalanDate;
     this.dueDate = dueDate;
     this.grossAmount = grossAmount;

@@ -87,9 +87,9 @@ class DeliveryChallanService extends __BaseService {
     try {
       return this.repository.findOne(trxId, {
         relations: ["deliveryDetails"],
-        where: {
-          deletedAt: Not(null)
-        }
+        // where: {
+        //   deletedAt: Not(null)
+        // }
       })
     } catch (e) {
       console.log(e)
@@ -101,7 +101,7 @@ class DeliveryChallanService extends __BaseService {
     return this.repository
       .createQueryBuilder("chalan")
       .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-      .where("chalan.deletedAt IS NOT NULL")
+      // .where("chalan.deletedAt IS NOT NULL")
       .select([
         ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
         "party.name as partyName",
@@ -169,7 +169,7 @@ class DeliveryChallanService extends __BaseService {
       if (await this.voucherNumberExists(header.voucherNumber, header.id)) {
         return Promise.reject("Challan With Voucher Number " + header.voucherNumber + " Already Exists!")
       }
-      if (await this.chalanNumberExists(header.challanNumber, header.id)) {
+      if (await this.challanNumberExists(header.challanNumber, header.id)) {
         return Promise.reject("Challan With Challan Number " + header.challanNumber + " Already Exists!")
       }
       const runner = this.connection.createQueryRunner();
@@ -253,7 +253,7 @@ class DeliveryChallanService extends __BaseService {
     return await this.repository.count(criteria)
   }
 
-  async chalanNumberExists(payload, id) {
+  async challanNumberExists(payload, id) {
     let criteria = {
       challanNumber: payload
     }

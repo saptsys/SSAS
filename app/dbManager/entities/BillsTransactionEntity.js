@@ -36,7 +36,7 @@ module.exports = new EntitySchema({
       type: "bigint",
       nullable: false,
     },
-    chalanNumber: {
+    challanNumber: {
       name: "chalan_number",
       type: "bigint",
       nullable: false,

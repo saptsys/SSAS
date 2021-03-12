@@ -35,7 +35,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
     if (!entityForEdit.id)
       dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then((res) => {
-        form.setFieldsValue({ challanNumber: res.chalanNumber + 1, voucherNumber: res.voucherNumber + 1 })
+        form.setFieldsValue({ challanNumber: res.challanNumber + 1, voucherNumber: res.voucherNumber + 1 })
       })
   }, [])
   console.log(entityForEdit)
