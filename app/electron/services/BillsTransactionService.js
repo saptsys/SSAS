@@ -1,14 +1,12 @@
 
 const __BaseService = require("./__BaseService");
 const { PartyMaster } = require("../../dbManager/models/PartyMaster");
-const { ItemMaster } = require("../../dbManager/models/ItemMaster");
-const { ItemGroupMaster } = require("../../dbManager/models/ItemGroupMaster");
-const { ItemUnitMaster } = require("../../dbManager/models/ItemUnitMaster");
-const { TaxMaster } = require("../../dbManager/models/TaxMaster");
 const { Not, Brackets } = require("typeorm");
 
 const { BillsTransaction } = require("../../dbManager/models/BillsTransaction");
 const { BillsDetail } = require("../../dbManager/models/BillsDetail");
+
+const DeliveryChallanService = require("../services/DeliveryChallanService");
 
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
 
@@ -18,6 +16,8 @@ const ALL_BILLINGS = ["RETAIL", "GST"]
 class BillsTransactionService extends __BaseService {
   constructor() {
     super(BillsTransaction)
+    this.challanService = new DeliveryChallanService();
+
   }
 
   getTotalBillsAndLastBill(payload) {
@@ -319,6 +319,31 @@ class BillsTransactionService extends __BaseService {
       criteria.id = Not(id)
     }
     return await this.repository.count(criteria)
+  }
+
+  getChalanByPartiesAndDateInterval(payload){
+    return this.challanService.getWithDetailsByPartiesAndDate(payload)
+  }
+
+  getByBillNumber(payload){
+      const tag = payload.tag ?? ALL_TAGS
+      const billing = payload.billing ?? ALL_BILLINGS
+      const billNumber = payload.billNumber
+      if(!billNumber){
+        throw "Bill number is requried"
+      }
+      try {
+        return this.repository.createQueryBuilder("bill")
+          .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+          .where("bill.billNumber = :billNumber", { billNumber: billNumber })
+          .andWhere("bill.tag IN (:...tag)", { tag: tag })
+          .andWhere("bill.billing IN (:...billing)", { billing: billing })
+          .getOne();
+      } catch (e) {
+        console.log(e)
+        return Promise.reject("Something Went Wrong!")
+      }
+
   }
 
   partition(array, filter) {

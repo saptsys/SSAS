@@ -41,6 +41,13 @@ promiseIpc.on(createPath("getByPartyListAndDateInterval"), (payload) => {
   return service.getByPartyListAndDateInterval(payload);
 });
 
+promiseIpc.on(createPath("getByBillNumber"), (payload) => {
+  return service.getByBillNumber(payload);
+});
+
+promiseIpc.on(createPath("getChalanByPartiesAndDateInterval"), (payload) => {
+  return service.getChalanByPartiesAndDateInterval(payload);
+});
 
 promiseIpc.on(createPath("getTotalBillsAndLastBill"), () => {
   return service.getTotalBillsAndLastBill();

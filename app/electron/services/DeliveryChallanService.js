@@ -31,7 +31,7 @@ class DeliveryChallanService extends __BaseService {
   getTotalBills() {
     const stmt = this.repository.createQueryBuilder('DeliveryChallan')
       .select([
-        "count(DeliveryChallan.challanNumber) as total"
+        "count(DeliveryChallan.id) as total"
       ])
     return stmt.getRawOne();
   }
@@ -149,6 +149,37 @@ class DeliveryChallanService extends __BaseService {
       return Promise.reject("Something went wrong!")
     }
   }
+
+
+  getWithDetailsByPartiesAndDate(payload){
+    try {
+      const { party, fromDate, toDate } = payload
+      const stmt = this.repository
+        .createQueryBuilder("chalan")
+        .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .andWhere("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
+      return stmt.getMany()
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something went wrong!")
+    }
+  }
+
+  getByChalanNumberWithDetails(challanNumber) {
+    try {
+      return this.repository.createQueryBuilder("chalan")
+      .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+      .where("chalan.challanNumber = :challanNumber", { challanNumber: challanNumber })
+      .getOne();
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something Went Wrong!")
+    }
+  }
+
+
   /**
    *
    * @param {Object} payload
