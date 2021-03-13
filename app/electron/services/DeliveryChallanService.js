@@ -186,14 +186,14 @@ class DeliveryChallanService extends __BaseService {
 
         const [deletedDetails , updatedDetails] = this.partition(details , x => x.deletedAt)
 
-        if(updatedDetails){
+        if(updatedDetails && updatedDetails.length != 0){
           await runner.manager.save(
             DeliveryDetail,
             updatedDetails
           )
         }
 
-        if(deletedDetails){
+        if(deletedDetails && deletedDetails.length != 0){
           await runner.manager.delete(
             DeliveryDetail,
             deletedDetails.map(x => x.id)

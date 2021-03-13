@@ -47,7 +47,7 @@ module.exports = new EntitySchema({
       nullable: false,
     },
     dueDate: {
-      name: "du_date",
+      name: "due_date",
       type: "date",
       nullable: false,
     },
@@ -146,5 +146,14 @@ module.exports = new EntitySchema({
         name:"party_mst_id",
       },
     },
+    billDetails: {
+      target: "BillsDetail",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'billsTransactionId'
+      },
+      inverseSide: 'billsTransaction',
+      type: "one-to-many",
+    }
   },
 });

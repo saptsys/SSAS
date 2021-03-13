@@ -11,7 +11,7 @@ class BillsDetail extends _BaseModel {
     quantity,
     rate,
     amount,
-    billsTransaction,
+    billsTransactionId,
     itemMasterId,
     itemUnitMasterId,
     ...rest
@@ -26,7 +26,7 @@ class BillsDetail extends _BaseModel {
     this.quantity = quantity;
     this.rate = rate;
     this.amount = amount;
-    this.billsTransaction = billsTransaction;
+    this.billsTransactionId = billsTransactionId;
     this.itemMasterId = itemMasterId;
     this.itemUnitMasterId = itemUnitMasterId;
   }

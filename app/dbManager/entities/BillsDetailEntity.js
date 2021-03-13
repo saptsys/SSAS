@@ -48,8 +48,10 @@ module.exports = new EntitySchema({
       type: "many-to-one",
       joinTable: true,
       cascade: true,
+      inverseSide: 'id',
       joinColumn:{
         name:"bill_trx_id",
+        referencedColumnName: 'id'
       },
     },
     itemMaster: {
