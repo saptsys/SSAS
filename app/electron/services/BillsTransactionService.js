@@ -51,8 +51,7 @@ class BillsTransactionService extends __BaseService {
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
         .andWhere(new Brackets(sq => {
           sq.Where("bill.voucherNumber = :voucherNumber", { voucherNumber: term })
-            .orWhere("bill.chalanNumber = :challanNumber", { challanNumber: term })
-            .orWhere("bill.chalanDate = :challanDate", { challanDate: term })
+            .orWhere("bill.billNumber = :billNumber", { billNumber: term })
             .orWhere("bill.remarks = :remarks", { remarks: term })
             .orWhere("bill.netAmount = :netAmount", { netAmount: term })
             .orWhere("bill.billDate = :billDate", { billDate: term })
@@ -149,8 +148,8 @@ class BillsTransactionService extends __BaseService {
         .where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
         .andWhere(new Brackets(sq => {
-          sq.Where("( (:fromDate IS NULL) OR (bill.challanDate >= :fromDate) )", { fromDate: fromDate })
-            .andWhere("( (:toDate IS NULL) OR (bill.challanDate <= :toDate) )", { toDate: toDate })
+          sq.Where("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
+            .andWhere("( (:toDate IS NULL) OR (bill.billDate <= :toDate) )", { toDate: toDate })
             .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: party })
         }))
         .select([
@@ -342,7 +341,62 @@ class BillsTransactionService extends __BaseService {
       console.log(e)
       return Promise.reject("Something Went Wrong!")
     }
+  }
 
+  /**
+   *
+   * @param {Object} payload
+   * @param {Array<String>} payload.tag
+   * @param {Array<String>} payload.billing
+   * @param {Array<Integer>} payload.parties
+   * @param {String} payload.fromDate
+   * @param {toDate} payload.toDate
+   * @param {Object} payload.limit
+   * @param {Integer} payload.limit.take
+   * @param {Integer} payload.limit.skip
+   */
+  filter(payload) {
+    try {
+      const tag = payload.tag ?? ALL_TAGS
+      const billing = payload.billing ?? ALL_BILLINGS
+      const parties = payload.parties ?? []
+      const fromDate = payload.fromDate
+      const toDate = payload.toDate
+      const limit = payload.limit
+
+      const includeDetail = payload.includeDetail
+      const includeParty = payload.includeParty;
+
+      const stmt = this.repository.createQueryBuilder("bill")
+
+      if (includeDetail) {
+        stmt.leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+      } else {
+        stmt.leftJoin(BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+      }
+
+      if (includeParty) {
+        stmt.leftJoinAndMapOne("bill.partyMasterId", PartyMaster, "party", "bill.partyMasterId = party.id")
+      } else {
+        stmt.leftJoin(PartyMaster, "party", "bill.partyMasterId = party.id")
+      }
+
+      stmt.where("bill.tag IN (:...tag)", { tag: tag })
+        .andWhere("bill.billing IN (:...billing)", { billing: billing })
+        .andWhere("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (bill.billDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: parties })
+
+      if (limit) {
+        stmt.take(limit.take)
+        stmt.skip(limit.skip)
+      }
+
+      return stmt.getMany();
+
+    } catch (e) {
+
+    }
   }
 
   partition(array, filter) {
