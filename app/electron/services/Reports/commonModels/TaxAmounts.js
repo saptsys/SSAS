@@ -1,4 +1,4 @@
-class Amount {
+class TaxAmounts {
   constructor({
     integratedTax = 0,
     centralTax = 0,
@@ -12,5 +12,5 @@ class Amount {
   }
 }
 module.exports = {
-  Amount: Amount,
+  TaxAmounts: TaxAmounts,
 };

@@ -4,6 +4,6 @@ const ReportService = require("../../services/ReportService");
 
 const service = new ReportService();
 
-promiseIpc.on(createPath("gst1"), (payload) => {
-  return service.gst1(payload)
+promiseIpc.on(createPath("gstr1"), (payload) => {
+  return service.gstr1(payload)
 });

@@ -1,7 +1,7 @@
-const { Amount } = require("./Amount");
+const { TaxAmounts } = require("./TaxAmounts");
 const { InvoiceDetails } = require("./InvoiceDetails");
 
 module.exports = {
-  Amount: Amount,
+  TaxAmounts: TaxAmounts,
   InvoiceDetails: InvoiceDetails,
 }
