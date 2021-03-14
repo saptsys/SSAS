@@ -49,7 +49,7 @@ promiseIpc.on(createPath("getChalanByPartiesAndDateInterval"), (payload) => {
   return service.getChalanByPartiesAndDateInterval(payload);
 });
 
-promiseIpc.on(createPath("getTotalBillsAndLastBill"), () => {
-  return service.getTotalBillsAndLastBill();
+promiseIpc.on(createPath("getTotalBillsAndLastBill"), (payload) => {
+  return service.getTotalBillsAndLastBill(payload);
 });
 
