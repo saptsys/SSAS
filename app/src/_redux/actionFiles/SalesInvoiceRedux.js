@@ -1,57 +1,26 @@
-import BillsTransaction from "../../../dbManager/models/BillsTransaction";
+import { BillsTransaction } from "../../../dbManager/models/BillsTransaction";
 import { DeliveryTransaction } from "../../../dbManager/models/DeliveryTransaction";
 import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
+import _BillTransactionActionsBase from "./_BillTransactionsBase";
+
+class SalesInvoiceModal extends BillsTransaction {
+  constructor(params) {
+    super(params)
+    this.tag = "S"
+    this.billing = "RETAIL" // default
+  }
+}
 
 export const reducerInfo = {
   name: 'SalesInvoice',
-  model: BillsTransaction
+  model: SalesInvoiceModal
 }
 
-class Actions extends _BaseIpcActions {
-  getByIdWithDetails = (trxId) => (dispatch) => {
-    const from = "getByIdWithDetails";
-    dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getByIdWithDetails", trxId)
-      .then((res) => {
-        dispatch(this.stopCall(this.callTypes.action));
-        return Promise.resolve(res);
-      })
-      .catch((error) => {
-        dispatch(this.catchError(error.message, this.callTypes.action, from));
-        return Promise.reject(error);
-      });
-  };
+class Actions extends _BillTransactionActionsBase {
 
-  getLastChalanAndVoucherNumber = () => (dispatch) => {
-    const from = "getLastChalanAndVoucherNumber";
-    dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getLastChalanAndVoucherNumber")
-      .then((res) => {
-        dispatch(this.stopCall(this.callTypes.action));
-        return Promise.resolve(res);
-      })
-      .catch((error) => {
-        dispatch(this.catchError(error.message, this.callTypes.action, from));
-        return Promise.reject(error);
-      });
-  };
-
-  getTotalBills = () => (dispatch) => {
-    const from = "getTotalBills";
-    dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getTotalBills")
-      .then((res) => {
-        dispatch(this.stopCall(this.callTypes.action));
-        return Promise.resolve(res);
-      })
-      .catch((error) => {
-        dispatch(this.catchError(error.message, this.callTypes.action, from));
-        return Promise.reject(error);
-      });
-  };
 }
 
 
 export const SalesInvoiceSlice = new _BaseSlice(reducerInfo.name)
-export const SalesInvoiceActions = new Actions("BillsTransaction", SalesInvoiceSlice)
+export const SalesInvoiceActions = new Actions(["S"], SalesInvoiceSlice)

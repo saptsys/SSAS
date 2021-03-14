@@ -26,7 +26,8 @@ function CommonModuleView({
   },
   actions,
   drawerWidth = "500",
-  editModeChanged
+  editModeChanged,
+  resetAfterSave = false
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -85,8 +86,8 @@ function CommonModuleView({
   }
 
   const onEditDrawerClosed = ({ event, param }) => {
+    getTableData()
     if (event === COMMON_FORM_EVENTS.CREATED) {
-      getTableData()
     }
     if (event === COMMON_FORM_EVENTS.DELETED) {
       setTableData(tableData.filter(x => x.id !== param))
@@ -185,6 +186,7 @@ function CommonModuleView({
           editId={editMode.editId}
           refs={{ deleteBtn: deleteBtnRef, saveBtn: saveBtnRef }}
           methods={methods}
+          resetAfterSave={resetAfterSave}
         />
       </CommonEditDrawer>
     </div>

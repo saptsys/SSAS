@@ -13,6 +13,7 @@ import { ItemMasterActions } from "../../../../_redux/actionFiles/ItemMasterRedu
 import { ItemUnitMasterActions } from "../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { DeliveryChallanActions } from "../../../../_redux/actionFiles/DeliveryChallanRedux";
 import moment from "moment";
+import { setDeliveryStatusMessage } from "./DeliveryChallanPage";
 
 function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -37,8 +38,8 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then((res) => {
         form.setFieldsValue({ challanNumber: res.challanNumber + 1, voucherNumber: res.voucherNumber + 1 })
       })
-  }, [])
-  console.log(entityForEdit)
+    setDeliveryStatusMessage(dispatch)
+  }, [entityForEdit])
   return (
     <Form
       name="delivery-challan-form"

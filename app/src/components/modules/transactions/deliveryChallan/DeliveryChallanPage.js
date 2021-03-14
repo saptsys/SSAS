@@ -6,18 +6,19 @@ import DeliveryChallanForm from './DeliveryChallanForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../_redux/actionFiles/LayoutRedux';
 
+export const setDeliveryStatusMessage = async (dispatch) => {
+  dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then(res1 => {
+    dispatch(DeliveryChallanActions.getTotalBills()).then(res2 => {
+      dispatch(LayoutActions.setMessage(<span> Last Challan No: <b>{res1.challanNumber}</b> &nbsp;&nbsp; Total Bills: <b>{res2.total}</b></span>))
+    })
+  })
+}
 
 function DeliveryChallanPage() {
   const dispatch = useDispatch()
 
-  const setMessage = async () => {
-    const last = await dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber())
-    const total = await dispatch(DeliveryChallanActions.getTotalBills())
-    dispatch(LayoutActions.setMessage(<span> Last Challan No: <b>{last.challanNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total.total}</b></span>))
-  }
-
   useEffect(() => {
-    setMessage()
+    setDeliveryStatusMessage(dispatch)
   }, [])
 
   return <CommonModuleView
@@ -33,8 +34,9 @@ function DeliveryChallanPage() {
       deleteRecord: "delete"
     }}
     editModeChanged={({ mode }) => {
-      setMessage()
+      setDeliveryStatusMessage(dispatch)
     }}
+    resetAfterSave={true}
   />
 }
 

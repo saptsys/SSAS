@@ -28,7 +28,6 @@ const redcuerList = [
   LayoutSlice,
   DeliveryChallanSlice,
   SalesInvoiceSlice
-
 ]
 redcuerList.forEach(slice => {
   reducers[slice.slice.name] = slice.reducer

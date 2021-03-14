@@ -13,6 +13,8 @@ import { ItemMasterActions } from "../../../../../_redux/actionFiles/ItemMasterR
 import { ItemUnitMasterActions } from "../../../../../_redux/actionFiles/ItemUnitMasterRedux";
 import { SalesInvoiceActions } from "../../../../../_redux/actionFiles/SalesInvoiceRedux";
 import moment from "moment";
+import { PartyMasterActions } from "../../../../../_redux/actionFiles/PartyMasterRedux";
+import { deleteColumnRenderer } from "../../../../table/columnRenderers";
 
 function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -20,29 +22,38 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const generateId = (text) => "basic_" + text
 
   const onFinish = (values) => {
-    let val = { ...(entityForEdit ?? {}), ...values }
-    val.challanDate = val.challanDate.toDate()
-    val.billsDetails = val.billsDetails.filter(x => x.itemMasterId)
-    saveBtnHandler && saveBtnHandler(val)
+    // let val = { ...(entityForEdit ?? {}), ...values }
+    // val.challanDate = val.challanDate.toDate()
+    // val.billsDetails = val.billsDetails.filter(x => x.itemMasterId)
+    // saveBtnHandler && saveBtnHandler(val)
   };
 
   const { itemState, partyState } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster }))
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
+  const [allParties, setAllParties] = useState([])
 
   useEffect(() => {
+    dispatch(PartyMasterActions.getAll("CUSTOMER")).then(setAllParties)
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
     if (!entityForEdit.id)
-      dispatch(SalesInvoiceActions.getLastChalanAndVoucherNumber()).then((res) => {
-        form.setFieldsValue({ challanNumber: res.challanNumber + 1, voucherNumber: res.voucherNumber + 1 })
+      dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([entityForEdit.billing])).then((res) => {
+        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
       })
   }, [])
-  console.log(entityForEdit)
+
+
+  const calcTotals = (rows) => {
+    const subTotal = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
+    form.setFieldsValue({ grossAmount: subTotal })
+    // form.setFieldsValue({ netAmount: subTotal })
+  }
+
   return (
     <Form
-      name="delivery-challan-form"
-      initialValues={{ ...entityForEdit, billsDetails: [...(entityForEdit.billsDetails ?? []), new BillsDetail()], challanDate: moment(entityForEdit.challanDate ?? new Date()) }}
+      name="sales-invoice-form"
+      initialValues={{ ...entityForEdit, billsDetails: [...(entityForEdit.billsDetails ?? []), new BillsDetail()], billDate: moment(entityForEdit.billDate ?? new Date()) }}
       onFinish={onFinish}
       labelAlign="left"
       form={form}
@@ -59,7 +70,20 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
       <Row className="header-row">
         <Col md={{ span: 12 }} xs={{ span: 14 }}>
           <PartyDropdown
-            propsForSelect={{ tabIndex: "0", autoFocus: true }}
+            propsForSelect={{
+              onChange: val => {
+                const billing = allParties.find(x => x.id === val)?.gstin ? "TAX" : "RETAIL"
+                dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing])).then((res) => {
+                  form.setFieldsValue({ billNumber: res.billNumber + 1 })
+                })
+                return form.setFieldsValue({
+                  billing: billing
+                })
+              },
+              tabIndex: "0",
+              autoFocus: true,
+              options: allParties.map(x => ({ label: x.name, value: x.id }))
+            }}
             labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
             name="partyMasterId"
             label="Customer"
@@ -84,12 +108,15 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                 <Form.Item
                   shouldUpdate
                   labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
-                  name="challanNumber"
-                  label="Challan No"
+                  name="billNumber"
+                  label="Bill No"
                   required
                   rules={[{ required: true }]}
                 >
-                  <InputNumber tabIndex="1" style={{ width: '100%' }} />
+                  <Input
+                    addonBefore={form.getFieldValue("billing")}
+                    tabIndex="1"
+                    style={{ width: '100%' }} />
                 </Form.Item>
               </>
             )}
@@ -97,8 +124,8 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           </Form.Item>
           <Form.Item
             labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
-            name="challanDate"
-            label="Challan Date"
+            name="billDate"
+            label="Bill Date"
             required
             rules={[{ required: true }]}
           >
@@ -116,7 +143,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               {
                 title: "#",
                 dataIndex: "",
-                width: '10%',
+                width: '8%',
                 align: 'right',
                 render: (cell, row) => form.getFieldValue("billsDetails").indexOf(row) + 1
               },
@@ -139,8 +166,11 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               }, {
                 title: "Unit",
                 dataIndex: "itemUnitMasterId",
-                width: '15%',
-                render: cell => allUnits.find(x => x.id === cell)?.name
+                width: '12%',
+                editor: {
+                  type: 'select',
+                  getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id }))
+                },
               }, {
                 title: "Qty",
                 dataIndex: "quantity",
@@ -168,18 +198,22 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             autoAddRow={{ ...(new BillsDetail()) }}
             beforeSave={(newRow, oldRow) => {
               newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
-              newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
+              if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
+                newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
               return newRow;
             }}
             afterSave={(newRow, oldRow, data) => {
-              const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
-              form.setFieldsValue({ grossAmount: subTotal })
-              form.setFieldsValue({ netAmount: subTotal })
+              calcTotals(data)
+            }}
+            deleteBtnHandler={(a, b, i) => {
+              const newData = form.getFieldValue("billsDetails").filter((x, i2) => i2 !== i)
+              form.setFieldsValue({ billsDetails: newData })
+              calcTotals(newData)
             }}
           />
         </Col>
       </Row>
-      <Row className="footer-row">
+      {/* <Row className="footer-row">
         <Col span={11}>
           <Form.Item
             labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}
@@ -208,8 +242,8 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             }}
           </Form.Item>
         </Col>
-      </Row>
-    </Form>
+      </Row> */}
+    </Form >
   );
 }
 

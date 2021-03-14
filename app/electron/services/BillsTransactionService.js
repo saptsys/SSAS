@@ -9,9 +9,7 @@ const { BillsDetail } = require("../../dbManager/models/BillsDetail");
 const DeliveryChallanService = require("../services/DeliveryChallanService");
 
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
-
-const ALL_TAGS = ["S", "SR", "P", "PR"]
-const ALL_BILLINGS = ["RETAIL", "GST"]
+const { ALL_BILLINGS, ALL_TAGS } = require("../../Constants/Billing");
 
 class BillsTransactionService extends __BaseService {
   constructor() {
@@ -28,7 +26,8 @@ class BillsTransactionService extends __BaseService {
       .andWhere("bill.billing IN (:...billing)", { billing: billing })
       .select([
         "COUNT(bill.billNumber) AS total",
-        "COALESCE(MAX(bill.billNumber) , 0) AS lastBillNumber",
+        "COALESCE(MAX(bill.billNumber) , 0) AS billNumber",
+        "COALESCE(MAX(bill.voucherNumber) , 0) AS voucherNumber",
       ])
     return stmt.getRawOne();
   }
@@ -95,7 +94,7 @@ class BillsTransactionService extends __BaseService {
   getAll(payload) {
     const tag = payload.tag ?? ALL_TAGS
     const billing = payload.billing ?? ALL_BILLINGS
-    const stmt =  this.repository
+    const stmt = this.repository
       .createQueryBuilder("bill")
       .leftJoin(PartyMaster, "party", "bill.partyMasterId = party.id")
       .where("bill.tag IN (:...tag)", { tag: tag })
@@ -104,7 +103,7 @@ class BillsTransactionService extends __BaseService {
         ...rowToModelPropertyMapper("bill", BillsTransaction),
         "party.name as partyName",
       ]);
-      return stmt.getRawMany()
+    return stmt.getRawMany()
   }
   /**
    *
@@ -213,8 +212,8 @@ class BillsTransactionService extends __BaseService {
 
         const [deletedDetails, updatedDetails] = this.partition(details, x => x.deletedAt)
 
-        if (updatedDetails && updatedDetails.length != 0){
-          console.log("UPDATED " , updatedDetails.length)
+        if (updatedDetails && updatedDetails.length != 0) {
+          console.log("UPDATED ", updatedDetails.length)
           await runner.manager.save(
             BillsDetail,
             updatedDetails
@@ -222,7 +221,7 @@ class BillsTransactionService extends __BaseService {
         }
 
         if (deletedDetails && deletedDetails.length != 0) {
-          console.log("DELETED " , deletedDetails.length)
+          console.log("DELETED ", deletedDetails.length)
 
           await runner.manager.delete(
             BillsDetail,
@@ -255,11 +254,11 @@ class BillsTransactionService extends __BaseService {
 
       try {
         const entity = await this.getByIdWithDetails(headerId)
-        if(!entity){
+        if (!entity) {
           return Promise.reject("Bill not found!")
         }
         const detailIds = entity['billsDetail'].map(x => x.id)
-        if(detailIds && detailIds.length != 0){
+        if (detailIds && detailIds.length != 0) {
           await runner.manager.delete(
             BillsDetail,
             detailIds
@@ -321,28 +320,28 @@ class BillsTransactionService extends __BaseService {
     return await this.repository.count(criteria)
   }
 
-  getChalanByPartiesAndDateInterval(payload){
+  getChalanByPartiesAndDateInterval(payload) {
     return this.challanService.getWithDetailsByPartiesAndDate(payload)
   }
 
-  getByBillNumber(payload){
-      const tag = payload.tag ?? ALL_TAGS
-      const billing = payload.billing ?? ALL_BILLINGS
-      const billNumber = payload.billNumber
-      if(!billNumber){
-        throw "Bill number is requried"
-      }
-      try {
-        return this.repository.createQueryBuilder("bill")
-          .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
-          .where("bill.billNumber = :billNumber", { billNumber: billNumber })
-          .andWhere("bill.tag IN (:...tag)", { tag: tag })
-          .andWhere("bill.billing IN (:...billing)", { billing: billing })
-          .getOne();
-      } catch (e) {
-        console.log(e)
-        return Promise.reject("Something Went Wrong!")
-      }
+  getByBillNumber(payload) {
+    const tag = payload.tag ?? ALL_TAGS
+    const billing = payload.billing ?? ALL_BILLINGS
+    const billNumber = payload.billNumber
+    if (!billNumber) {
+      throw "Bill number is requried"
+    }
+    try {
+      return this.repository.createQueryBuilder("bill")
+        .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+        .where("bill.billNumber = :billNumber", { billNumber: billNumber })
+        .andWhere("bill.tag IN (:...tag)", { tag: tag })
+        .andWhere("bill.billing IN (:...billing)", { billing: billing })
+        .getOne();
+    } catch (e) {
+      console.log(e)
+      return Promise.reject("Something Went Wrong!")
+    }
 
   }
 

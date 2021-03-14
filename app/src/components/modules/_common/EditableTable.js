@@ -1,7 +1,8 @@
-import React, { Children, useEffect, useState } from 'react';
+import React, { Children, useEffect, useMemo, useState } from 'react';
 import { Table, Input, InputNumber, Popconfirm, Form, Typography, Select, Button } from 'antd';
 import { PlusCircleTwoTone } from '@ant-design/icons';
 import './editableTable.less'
+import { deleteColumnRenderer } from '../../table/columnRenderers';
 
 export const getFirstFocusableCell = (tableId, rowIndex = 0, cellIndex = 0) => {
   return `.focus-index-${rowIndex}-${cellIndex} input`
@@ -38,7 +39,7 @@ const EditableCell = ({
           value={curCellVal()}
           onChange={e => setVal((e.target.value)) && onChange && onChange(e)}
           size="small"
-          style={{textAlign:'right'}}
+          style={{ textAlign: 'right' }}
           {...elmProps}
         />
       case "select":
@@ -127,7 +128,7 @@ const EditableCell = ({
     )
 }
 
-const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, afterSave, beforeSave = (newRow, oldRow) => newRow }) => {
+const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, afterSave, beforeSave = (newRow, oldRow) => newRow, deleteBtnHandler }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
   const saveRow = () => {
     if (currentCellValue) {
@@ -156,6 +157,20 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
       [name]: tmp
     })
   }
+
+  const finalCols = useMemo(() => {
+    let cols = [...columns]
+    if (deleteBtnHandler)
+      cols.push({
+        title: "",
+        dataIndex: "id",
+        render: (cell, row, index) => deleteColumnRenderer(cell, row, index, deleteBtnHandler),
+        width: '4%',
+        align: 'center'
+      })
+    return cols
+  }, [columns])
+
   return (
     <Form.Item wrapperCol={24} labelCol={0} className="editable-table-wrapper" shouldUpdate={(a, b) => a[name] !== b[name]}>
       {() => (
@@ -163,13 +178,13 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
           <Table
             className="editable-table"
             id={name}
-            footer={columns.some(x => !!x.footer) ? () => (
+            footer={finalCols.some(x => !!x.footer) ? () => (
               <table className=" ">
                 <thead className="ant-table-thead">
                   <tr>
                     {
-                      columns.map((col, i) => (
-                        <th style={{ textAlign: col.align ?? 'left' }} key={i} width={col.width}>{col.footer ? col.footer(form.getFieldValue(name)) : null}</th>
+                      finalCols.map((col, i) => (
+                        <th style={{ textAlign: col.align ?? 'left', width: col.width }} key={i} >{col.footer ? col.footer(form.getFieldValue(name)) : null}</th>
                       ))
                     }
                   </tr>
@@ -178,7 +193,7 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
             ) : undefined}
             components={{ body: { cell: EditableCell } }}
             dataSource={form.getFieldValue(name)}
-            columns={columns.map((col, colIndex) => {
+            columns={finalCols.map((col, colIndex) => {
               const editorCols = col.editor ? Object.values(columns).filter(x => x.editor).map(x => x.dataIndex) : []
               return {
                 ...col,
