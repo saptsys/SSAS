@@ -31,6 +31,7 @@ function TaxMasterTable(props) {
       width: '80px',
       align: 'center',
       width: '15%',
+      defaultSortOrder: "ascend"
     },
   ];
 

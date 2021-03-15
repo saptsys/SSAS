@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, InputNumber } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
 import { stringNormalize } from "./../../../../Helpers/utils"
 import BorderedSwitch from "../../../form/BorderedSwitch";
+import Text from "antd/lib/typography/Text";
 
 function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch();
+
+  const [prevActiveTax, setPrevActiveTax] = useState(null)
 
   const onFinish = (values) => {
     saveBtnHandler && saveBtnHandler({ ...(entityForEdit ?? {}), ...values });
@@ -38,6 +41,10 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
     },
   };
 
+  useEffect(() => {
+    dispatch(TaxMasterActions.getActiveTax()).then(setPrevActiveTax)
+  }, [])
+
   return (
     <Form
       {...layout}
@@ -49,6 +56,7 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
       form={form}
       validateMessages={validateMsgs}
     >
+      <Text mark><b>Note:</b> There is any one tax should be active. if you active this other will be de-actived automatically. </Text><br /><br />
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
         <Input tabIndex="0" autoFocus onBlur={nameChanged} />
       </Form.Item>
@@ -77,13 +85,20 @@ function TaxMasterForm({ entityForEdit, saveBtnHandler, form }) {
           addonAfter="%"
         />
       </Form.Item>
-      <Form.Item
-        name="isActive"
-        valuePropName="checked"
-        label="Active"
-      >
-        <BorderedSwitch tabIndex="4" defaultChecked={true} />
+      <Form.Item noStyle shouldUpdate>
+        {() => (
+          <Form.Item
+            shouldUpdate
+            name="isActive"
+            valuePropName="checked"
+            label="Active"
+            extra={prevActiveTax && prevActiveTax.id !== entityForEdit.id && form.getFieldValue("isActive") ? `Currnet tax '${prevActiveTax.name}' will be deactivated.` : undefined}
+          >
+            <BorderedSwitch tabIndex="4" />
+          </Form.Item>
+        )}
       </Form.Item>
+
     </Form>
   );
 }
