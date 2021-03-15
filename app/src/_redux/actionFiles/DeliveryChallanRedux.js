@@ -49,6 +49,21 @@ class Actions extends _BaseIpcActions {
         return Promise.reject(error);
       });
   };
+
+  getByPartyAndDates = (partyIds, fromDate, toDate) => (dispatch) => {
+    const from = "getByPartyAndDates";
+    dispatch(this.startCall(this.callTypes.action, from));
+    return this.sendIPC("getByPartyListAndDateInterval", { party: partyIds, fromDate, toDate })
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.action));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        dispatch(this.catchError(error.message, this.callTypes.action, from));
+        return Promise.reject(error);
+      });
+  };
+
 }
 
 

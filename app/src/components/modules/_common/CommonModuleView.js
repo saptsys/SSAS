@@ -27,7 +27,8 @@ function CommonModuleView({
   actions,
   drawerWidth = "500",
   editModeChanged,
-  resetAfterSave = false
+  resetAfterSave = false,
+  extraEditShortcuts = []
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -138,6 +139,7 @@ function CommonModuleView({
             title: 'CTRL+S to Save ',
             method: () => { saveBtnRef && saveBtnRef.current && saveBtnRef.current.click() }
           }],
+          ...extraEditShortcuts
         ]} />)
       }
       {

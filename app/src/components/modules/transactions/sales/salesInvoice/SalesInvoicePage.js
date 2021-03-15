@@ -35,6 +35,13 @@ function SalesInvoicePage() {
     editModeChanged={({ mode }) => {
       setMessage()
     }}
+    extraEditShortcuts={[
+      {
+        key: 'F6',
+        title: "F6 to Import Challans",
+        method: () => true
+      }
+    ]}
   />
 }
 
