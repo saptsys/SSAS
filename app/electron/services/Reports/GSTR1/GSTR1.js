@@ -1,6 +1,8 @@
 const commonModels = require("../commonModels/index")
 const models = require("./Models/index")
 
+// TODO : we need to create function that returns current users home state
+const HOME_STATE = "GJ"
 
 class GSTR1 {
 
@@ -11,46 +13,116 @@ class GSTR1 {
   getReport() {
     let sheets = {}
 
-
     sheets.summery = this.getSummary();
     sheets.b2b = this.getB2B()
+    sheets.b2cs = this.getB2CS();
 
     return sheets;
 
   }
 
+  /**
+  * Invoices for Taxable outward supplies to consumers where
+  *     a)The place of supply is outside the state where the supplier is registered and
+  *     b)The total invoice value is more that Rs 2,50,000
+  */
+ getB2CL(){
+  let rows = []
+  const bills = this.bills.filter(x => {
+    if(!x.partyMasterId.gstin){
+      if(x.partyMasterId.stateCode != HOME_STATE && x.grossAmount > 250000){
+        return true
+      }
+    }
+    return false
+  })
+
+  for (let billIndex in bills) {
+
+    /* WORKING FROM HERE */
+    const bill = bills[billIndex]
+    let row = new models.B2CSModel();
+
+    row.type = "OE"
+    row.placeOfSupply = x.partyMasterId.stateCode
+    row.gstinOfEcom = ""
+    row.rate = bill.IGSTPercentage
+    row.taxableValue = bill.netAmount
+    row.cessAmount = 0
+
+
+    rows.push(row)
+  }
+
+  return rows;
+}
+
+  /**
+  *  Supplies made to consumers and unregistered persons of the following nature
+  *     a) Intra-State: any value
+  *     b) Inter-State: Invoice value Rs 2.5 lakh or less
+  */
+  getB2CS(){
+    let rows = []
+    const bills = this.bills.filter(x => {
+      if(!x.partyMasterId.gstin){
+        if(x.partyMasterId.stateCode == HOME_STATE){
+          return true
+        }
+        if(x.grossAmount <= 250000){
+          return true
+        }
+      }
+      return false
+    })
+
+    for (let billIndex in bills) {
+      const bill = bills[billIndex]
+      let row = new models.B2CSModel();
+
+      row.type = "OE"
+      row.placeOfSupply = x.partyMasterId.stateCode
+      row.gstinOfEcom = ""
+      row.rate = bill.IGSTPercentage
+      row.taxableValue = bill.netAmount
+      row.cessAmount = 0
+
+
+      rows.push(row)
+    }
+
+    return rows;
+  }
+
+  /**
+   * Details of invoices of Taxable supplies made to other registered taxpayers
+   */
   getB2B() {
     let rows = []
-    const b2bBills = this.bills.filter(x => {
+    const bills = this.bills.filter(x => {
       return x.partyMasterId.gstin
     })
 
-    for (let billIndex in b2bBills) {
-      const bill = this.bills[billIndex]
+    for (let billIndex in bills) {
+      const bill = bills[billIndex]
       let row = new models.B2BModel();
-      let taxAmounts = new commonModels.TaxAmounts();
       let invoiceDetails = new commonModels.InvoiceDetails();
 
       invoiceDetails.no = bill.billNumber
       invoiceDetails.date = bill.billDate
       invoiceDetails.value = bill.grossAmount
 
-      taxAmounts.integratedTax = bill.IGSTAmount ?? 0
-      taxAmounts.centralTax = bill.CGSTAmount ?? 0
-      taxAmounts.stateTax = bill.SGSTAmount ?? 0
-      taxAmounts.cess = 0
-
+      row.receiverName = bill.partyMasterId.name
       row.gstin = bill.partyMasterId.gstin
-      row.invoiceDetails = invoiceDetails;
+      row.invoiceDetails = invoiceDetails
       row.placeOfSupply = 0
       row.reverseCharge = false
       row.applicablePercentage = 100
       row.invoiceType = "R"
-      row.gstOfEcom = ""
-      row.serialNumber = ""
+      row.gstinOfEcom = ""
       row.rate = bill.IGSTPercentage
       row.taxableValue = bill.netAmount
-      row.taxAmounts = taxAmounts
+      row.cessAmount = 0
 
 
       rows.push(row)
@@ -65,7 +137,6 @@ class GSTR1 {
       const bill = this.bills[billIndex]
 
       let row = new GSTR1SummaryModel();
-      let taxAmounts = new commonModels.TaxAmounts()
       let invoiceDetails = new commonModels.InvoiceDetails();
 
       row.gstin = bill.partyMasterId.gstin

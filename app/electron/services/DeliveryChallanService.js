@@ -151,16 +151,25 @@ class DeliveryChallanService extends __BaseService {
   }
 
 
-  getWithDetailsByPartiesAndDate(payload){
+  async getWithDetailsByPartiesAndDate(payload){
     try {
       const { party, fromDate, toDate } = payload
       const stmt = this.repository
         .createQueryBuilder("chalan")
         .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .leftJoinAndMapOne("chalan.partyMasterId", PartyMaster, "party", "chalan.partyMasterId = party.id")
         .andWhere("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
         .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
-      return stmt.getMany()
+      const data = await stmt.getMany()
+      console.log(data)
+      return data.map(x => {
+        return {
+          ...x,
+          partyName : x.partyMasterId.name,
+          partyMasterId : x.partyMasterId.id
+        }
+      })
     } catch (e) {
       console.log(e)
       return Promise.reject("Something went wrong!")
