@@ -16,7 +16,7 @@ import moment from "moment";
 import { PartyMasterActions } from "../../../../../_redux/actionFiles/PartyMasterRedux";
 import { deleteColumnRenderer } from "../../../../table/columnRenderers";
 import { TaxMasterActions } from "../../../../../_redux/actionFiles/TaxMasterRedux";
-import Modal from "antd/lib/modal/Modal";
+import { Modal } from "antd";
 import ImportChallansDialog from "../../deliveryChallan/ImportChallansDialog";
 
 function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
@@ -52,6 +52,10 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const handleKeyDown = (event) => {
       switch (event.key) {
         case "F6":
+          if (!form.getFieldValue("partyMasterId")) {
+            Modal.error({ title: "Please select party before you import challans" })
+            return;
+          }
           !importChallanVisibility && setImportChallanVisibility(true)
           break;
 
@@ -83,7 +87,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           items = items.map(x => x.itemMasterId === detail.itemMasterId ? billdetail : x)
       })
     })
-    const data = [...(form.getFieldValue("billsDetails") ?? []), ...items.map(item => {
+    const data = [...items.map(item => {
       item.rate = parseFloat(item.rate / item.count).toFixed(2)
       return new BillsDetail({
         itemMasterId: item.itemMasterId,
@@ -92,7 +96,9 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
         rate: item.rate,
         amount: (parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)
       })
-    })]
+    }),
+    ...(form.getFieldValue("billsDetails") ?? [])
+    ]
     form.setFieldsValue({ "billsDetails": data })
     calcTotals(data)
   }
@@ -268,38 +274,124 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             />
           </Col>
         </Row>
-        {/* <Row className="footer-row">
-        <Col span={11}>
-          <Form.Item
-            labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}
-            name="remarks"
-            label="Remarks"
-          >
-            <TextArea style={{ width: '100%' }} rows={3} tabIndex="3" />
-          </Form.Item>
-        </Col>
-        <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 5 }}>
-          <Form.Item noStyle shouldUpdate labelAlign>
-            {() => {
-              return (
-                <>
-                  <Form.Item
-                    name="grossAmount"
-                    label="Gross Amount"
-                    required
-                    rules={[{ required: true }]}
-                    shouldUpdate
-                  >
-                    <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
-                  </Form.Item>
-                </>
-              )
-            }}
-          </Form.Item>
-        </Col>
-      </Row> */}
+        <Row className="footer-row">
+          <Col span={11}>
+            <Form.Item
+              labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}
+              name="remarks"
+              label="Remarks"
+            >
+              <TextArea style={{ width: '100%' }} rows={3} tabIndex="3" />
+            </Form.Item>
+          </Col>
+          <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
+            <Form.Item noStyle shouldUpdate labelAlign>
+              {() => {
+                return (
+                  <div className="footer-fields">
+                    <Form.Item
+                      label="Gross Amount"
+                      rules={[{ required: true }]}
+                      shouldUpdate
+                    >
+                      <Form.Item name="grossAmount" noStyle>
+                        <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
+                      </Form.Item>
+                    </Form.Item>
+                    <Form.Item label="- Discount">
+                      <Input.Group>
+                        <Form.Item
+                          name={['discount']}
+                          noStyle
+                        >
+                          <Input tabIndex="5" suffix='%' style={{ width: '25%' }} />
+                        </Form.Item>
+                        <Form.Item
+                          name={['discountAmount']}
+                          noStyle
+                        >
+                          <Input tabIndex="6" suffix=" " style={{ width: '75%' }} />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item
+                      label="Taxable Amount"
+                      rules={[{ required: true }]}
+                      shouldUpdate
+                    >
+                      <Form.Item name="taxableAmount" noStyle>
+                        <InputNumber tabIndex="7" style={{ width: '100%' }} readOnly />
+                      </Form.Item>
+                    </Form.Item>
+                    <Form.Item label="+ SGST">
+                      <Input.Group>
+                        <Form.Item
+                          name={['sgst']}
+                          noStyle
+                        >
+                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                        </Form.Item>
+                        <Form.Item
+                          name={['sgstAmount']}
+                          noStyle
+                        >
+                          <Input tabIndex="8" suffix=" " style={{ width: '75%' }} readOnly />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item label="+ CGST">
+                      <Input.Group>
+                        <Form.Item
+                          name={['cgst']}
+                          noStyle
+                        >
+                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                        </Form.Item>
+                        <Form.Item
+                          name={['cgstAmount']}
+                          noStyle
+                        >
+                          <Input tabIndex="9" suffix=" " style={{ width: '75%' }} readOnly />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item label="+ IGST">
+                      <Input.Group>
+                        <Form.Item
+                          name={['igst']}
+                          noStyle
+                        >
+                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                        </Form.Item>
+                        <Form.Item
+                          name={['igstAmount']}
+                          noStyle
+                        >
+                          <Input tabIndex="10" suffix=" " style={{ width: '75%' }} readOnly />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item
+                      label="Net Amount"
+                      rules={[{ required: true }]}
+                      shouldUpdate
+                    >
+                      <Form.Item name="netAmount" noStyle>
+                        <InputNumber tabIndex="11" style={{ width: '100%' }} readOnly />
+                      </Form.Item>
+                    </Form.Item>
+                  </div>
+                )
+              }}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item noStyle shouldUpdate>
+          {() => (
+            <ImportChallansDialog parties={[form.getFieldValue("partyMasterId")]} onImport={importChallans} isOpen={importChallanVisibility} onCancel={() => setImportChallanVisibility(false)} />
+          )}
+        </Form.Item>
       </Form >
-      <ImportChallansDialog parties={[1]} onImport={importChallans} isOpen={importChallanVisibility} onCancel={() => setImportChallanVisibility(false)} />
     </>
   );
 }
