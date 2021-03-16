@@ -53,7 +53,7 @@ class Actions extends _BaseIpcActions {
   getByPartyAndDates = (partyIds, fromDate, toDate) => (dispatch) => {
     const from = "getByPartyAndDates";
     dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getByPartyListAndDateInterval", { party: partyIds, fromDate, toDate })
+    return this.sendIPC("getWithDetailsByPartiesAndDate", { party: partyIds, fromDate, toDate })
       .then((res) => {
         dispatch(this.stopCall(this.callTypes.action));
         return Promise.resolve(res);

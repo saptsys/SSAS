@@ -51,6 +51,10 @@ promiseIpc.on(createPath("getByChalanNumberWithDetails"), (payload) => {
   return service.getByChalanNumberWithDetails(payload);
 });
 
+promiseIpc.on(createPath("getWithDetailsByPartiesAndDate"), (payload) => {
+  return service.getWithDetailsByPartiesAndDate(payload);
+});
+
 promiseIpc.on(createPath("getTotalBills"), () => {
   return service.getTotalBills();
 });

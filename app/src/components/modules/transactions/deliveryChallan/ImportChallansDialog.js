@@ -20,8 +20,8 @@ const ImportChallansDialog = ({ isOpen, onImport, onCancel, parties, defaultFrom
 
   useEffect(() => {
     let from = new Date()
+    from.setDate(1)
     let to = new Date()
-    from.setMonth(from.getMonth() - 1)
     if (toDate && fromDate) {
       from = fromDate
       to = toDate
@@ -39,6 +39,11 @@ const ImportChallansDialog = ({ isOpen, onImport, onCancel, parties, defaultFrom
   useEffect(() => {
     loadData()
   }, [parties.length, toDate, fromDate, isOpen])
+
+  useEffect(() => {
+    if (isOpen === false)
+      setselectedRows([])
+  }, [isOpen])
 
   return (
     <Modal
@@ -58,7 +63,7 @@ const ImportChallansDialog = ({ isOpen, onImport, onCancel, parties, defaultFrom
             </Space>
           </Col>
           <Col flex="auto">
-            <Button type="primary" onClick={() => onImport([])}>Import</Button>
+            <Button type="primary" onClick={() => onImport(records.filter(x => selectedRows.includes(x.id)))}>Import</Button>
           </Col>
         </Row>
       ]}
@@ -74,7 +79,19 @@ const ImportChallansDialog = ({ isOpen, onImport, onCancel, parties, defaultFrom
         rowSelection={{
           selectedRows,
           onChange: setselectedRows,
+          columnWidth: "30px"
         }}
+        scroll={{ y: 300 }}
+      // onRow={(record, rowIndex) => ({
+      //   onClick: () => {
+      //     debugger;
+      //     if (selectedRows.includes(record.id)) {
+      //       setselectedRows(selectedRows.filter(x => x !== record.id))
+      //     } else {
+      //       setselectedRows([...selectedRows, record.id])
+      //     }
+      //   }
+      // })}
       />
     </Modal>
   );

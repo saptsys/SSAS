@@ -52,7 +52,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const handleKeyDown = (event) => {
       switch (event.key) {
         case "F6":
-          setImportChallanVisibility(true)
+          !importChallanVisibility && setImportChallanVisibility(true)
           break;
 
         default:
@@ -68,7 +68,33 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
 
   const importChallans = (rows) => {
     setImportChallanVisibility(false)
-    alert("imported")
+    let items = []
+    rows.forEach(challan => {
+      challan.deliveryDetails.forEach(detail => {
+        let billdetail = items.find(x => x.itemMasterId === detail.itemMasterId) ?? { rate: 0, quantity: 0, itemMasterId: detail.itemMasterId, itemUnitMasterId: detail.itemUnitMasterId, _isNew: true, count: 0 }
+        billdetail.count++
+        billdetail.quantity = detail.quantity + billdetail.quantity
+        billdetail.rate = detail.rate + billdetail.rate
+        if (billdetail._isNew) {
+          delete billdetail._isNew
+          items.push(billdetail)
+        }
+        else
+          items = items.map(x => x.itemMasterId === detail.itemMasterId ? billdetail : x)
+      })
+    })
+    const data = [...(form.getFieldValue("billsDetails") ?? []), ...items.map(item => {
+      item.rate = parseFloat(item.rate / item.count).toFixed(2)
+      return new BillsDetail({
+        itemMasterId: item.itemMasterId,
+        itemUnitMasterId: item.itemUnitMasterId,
+        quantity: item.quantity,
+        rate: item.rate,
+        amount: (parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)
+      })
+    })]
+    form.setFieldsValue({ "billsDetails": data })
+    calcTotals(data)
   }
 
 
