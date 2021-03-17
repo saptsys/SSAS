@@ -29,7 +29,7 @@ class GSTR1 {
  getB2CL(){
   let rows = []
   const bills = this.bills.filter(x => {
-    if(!x.partyMasterId.gstin){
+    if(x.billing == "RETAIL" && x.billing.tag === "S"){
       if(x.partyMasterId.stateCode != HOME_STATE && x.grossAmount > 250000){
         return true
       }
@@ -38,18 +38,20 @@ class GSTR1 {
   })
 
   for (let billIndex in bills) {
-
-    /* WORKING FROM HERE */
     const bill = bills[billIndex]
-    let row = new models.B2CSModel();
+    let row = new models.B2CLModel();
+    let invoiceDetails = new commonModels.InvoiceDetails();
 
-    row.type = "OE"
+    invoiceDetails.no = bill.billNumber
+    invoiceDetails.date = bill.billDate
+    invoiceDetails.value = bill.grossAmount
+
+    row.invoiceDetails = invoiceDetails
     row.placeOfSupply = x.partyMasterId.stateCode
     row.gstinOfEcom = ""
     row.rate = bill.IGSTPercentage
     row.taxableValue = bill.netAmount
     row.cessAmount = 0
-
 
     rows.push(row)
   }
@@ -65,7 +67,7 @@ class GSTR1 {
   getB2CS(){
     let rows = []
     const bills = this.bills.filter(x => {
-      if(!x.partyMasterId.gstin){
+      if(x.billing === "RETAIL" && x.billing.tag === "S"){
         if(x.partyMasterId.stateCode == HOME_STATE){
           return true
         }
@@ -100,7 +102,10 @@ class GSTR1 {
   getB2B() {
     let rows = []
     const bills = this.bills.filter(x => {
-      return x.partyMasterId.gstin
+      if(x.billing === "GST" && x.billing.tag === "S"){
+        return true
+      }
+      return false
     })
 
     for (let billIndex in bills) {

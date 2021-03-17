@@ -162,7 +162,6 @@ class DeliveryChallanService extends __BaseService {
         .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
       const data = await stmt.getMany()
-      console.log(data)
       return data.map(x => {
         return {
           ...x,
