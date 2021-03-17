@@ -20,10 +20,11 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
 
   const generateId = (text) => "basic_" + text
 
+  const [deletedDeliveryDetails, setDeletedDeliveryDetails] = useState([])
   const onFinish = (values) => {
     let val = { ...(entityForEdit ?? {}), ...values }
     val.challanDate = val.challanDate.toDate()
-    val.deliveryDetails = val.deliveryDetails.filter(x => x.itemMasterId)
+    val.deliveryDetails = [...val.deliveryDetails.filter(x => x.itemMasterId), ...deletedDeliveryDetails]
     saveBtnHandler && saveBtnHandler(val)
   };
 
@@ -40,6 +41,13 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
       })
     setDeliveryStatusMessage(dispatch)
   }, [entityForEdit])
+
+  const calcTotals = (data) =>{
+    const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
+    form.setFieldsValue({ grossAmount: subTotal })
+    form.setFieldsValue({ netAmount: subTotal })
+  }
+
   return (
     <Form
       name="delivery-challan-form"
@@ -141,7 +149,10 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
                 title: "Unit",
                 dataIndex: "itemUnitMasterId",
                 width: '15%',
-                render: cell => allUnits.find(x => x.id === cell)?.name
+                editor: {
+                  type: 'select',
+                  getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id }))
+                },
               }, {
                 title: "Qty",
                 dataIndex: "quantity",
@@ -169,13 +180,21 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             autoAddRow={{ ...(new DeliveryDetail()) }}
             beforeSave={(newRow, oldRow) => {
               newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
-              newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
+              if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
+                newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
               return newRow;
             }}
             afterSave={(newRow, oldRow, data) => {
-              const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
-              form.setFieldsValue({ grossAmount: subTotal })
-              form.setFieldsValue({ netAmount: subTotal })
+              calcTotals(data)
+            }}
+            deleteBtnHandler={(cell, row, i) => {
+              const newData = form.getFieldValue("deliveryDetails").filter((x, i2) => i2 !== i)
+              form.setFieldsValue({ deliveryDetails: newData })
+              if (row.id) {
+                row.deletedAt = new Date()
+                setDeletedDeliveryDetails([...deletedDeliveryDetails, row])
+              }
+              calcTotals(newData)
             }}
           />
         </Col>

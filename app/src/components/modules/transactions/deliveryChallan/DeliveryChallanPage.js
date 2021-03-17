@@ -36,7 +36,7 @@ function DeliveryChallanPage() {
     editModeChanged={({ mode }) => {
       setDeliveryStatusMessage(dispatch)
     }}
-    resetAfterSave={true}
+    saveAndContinueBtn={true}
   />
 }
 

@@ -29,7 +29,7 @@ const CommonEditForm = ({
   titleSufix,
   closeDialog,
   refs = { cancelBtn: undefined, deleteBtn: undefined, saveBtn: undefined },
-  resetAfterSave = false
+  saveAndContinueBtn = false
 }) => {
   const [entityForEdit, setEntityForEdit] = useState(new reducerInfo.model())
   const currentState = useSelector(state => state[reducerInfo.name])
@@ -55,11 +55,11 @@ const CommonEditForm = ({
       setEntityForEdit(new reducerInfo.model())
   }, [editId])
 
-
+  const [isSaveAndContinue, setIsSaveAndContinue] = useState(false)
   const saveBtnHandler = (values) => {
     dispatch(actions[methods.saveForm](values)).then((res) => {
       message.success(titleSufix + " Saved Successfuly", 4)
-      if (resetAfterSave)
+      if (isSaveAndContinue)
         setEntityForEdit(new reducerInfo.model())
       else
         resetAndCloseDialog(COMMON_FORM_EVENTS.CREATED, res)
@@ -103,9 +103,15 @@ const CommonEditForm = ({
 
   useEffect(() => formRef.resetFields(), [entityForEdit])
 
+  const submitForm = (continueSave) => {
+    setIsSaveAndContinue(continueSave)
+    if (formRef)
+      formRef.submit()
+  }
+
   return (
     <Spin spinning={currentState.action.loading === methods.fetchEditData} wrapperClassName="form-spinner">
-      <AutoFocuser lastElement="#save">
+      <AutoFocuser lastElement={saveAndContinueBtn ? "#save-and-continue" : "#save"}>
         <div className="form-header">
           <Row justify="space-around" align="middle">
             <Col flex="auto">
@@ -118,24 +124,38 @@ const CommonEditForm = ({
                   type="ghost"
                   onClick={() => resetAndCloseDialog()}>
                   Cancel
-                            </Button>
-                <Button
-                  ref={refs.deleteBtn}
-                  hidden={!editId}
-                  type="ghost" danger
-                  onClick={() => deleteBtnHandler(editId)}>
-                  Delete
-                            </Button>
+                </Button>
+                {editId && (
+                  <Button
+                    ref={refs.deleteBtn}
+                    type="ghost" danger
+                    onClick={() => deleteBtnHandler(editId)}>
+                    Delete
+                  </Button>
+                )}
                 <Tooltip title="Press enter to save" placement="bottomLeft" trigger="focus">
                   <Button
+                    ghost={saveAndContinueBtn}
                     ref={refs.saveBtn}
                     id="save"
                     type="primary"
                     loading={currentState.action.loading === methods.saveForm}
-                    onClick={() => formRef && formRef.submit()}>
+                    onClick={() => submitForm(false)}>
                     Save
-                                </Button>
+                  </Button>
                 </Tooltip>
+                {saveAndContinueBtn && (
+                  <Tooltip title="Press enter to save & continue" placement="bottomLeft" trigger="focus">
+                    <Button
+                      // ref={refs.saveBtn}
+                      id="save-and-continue"
+                      type="primary"
+                      loading={currentState.action.loading === methods.saveForm}
+                      onClick={() => submitForm(true)}>
+                      Save & Continue
+                  </Button>
+                  </Tooltip>
+                )}
               </Space>
             </Col>
           </Row>

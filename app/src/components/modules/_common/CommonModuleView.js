@@ -27,7 +27,7 @@ function CommonModuleView({
   actions,
   drawerWidth = "500",
   editModeChanged,
-  resetAfterSave = false,
+  saveAndContinueBtn = false,
   extraEditShortcuts = []
 }) {
   const dispatch = useDispatch()
@@ -188,7 +188,7 @@ function CommonModuleView({
           editId={editMode.editId}
           refs={{ deleteBtn: deleteBtnRef, saveBtn: saveBtnRef }}
           methods={methods}
-          resetAfterSave={resetAfterSave}
+          saveAndContinueBtn={saveAndContinueBtn}
         />
       </CommonEditDrawer>
     </div>

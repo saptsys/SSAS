@@ -25,13 +25,14 @@ function SalesInvoicePage() {
     MainTable={SalesInvoiceTable}
     EditForm={SalesInvoiceForm}
     drawerWidth="full"
+    saveAndContinueBtn={true}
     actions={SalesInvoiceActions}
-    // methods={{
-    //   fetchTableData: "getAll",
-    //   fetchEditData: "getByIdWithDetails",
-    //   saveForm: "save",
-    //   deleteRecord: "delete"
-    // }}
+    methods={{
+      fetchTableData: "getAll",
+      fetchEditData: "getByIdWithDetails",
+      saveForm: "save",
+      deleteRecord: "delete"
+    }}
     editModeChanged={({ mode }) => {
       setMessage()
     }}

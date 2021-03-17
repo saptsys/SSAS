@@ -24,14 +24,16 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
 
   const generateId = (text) => "basic_" + text
 
+  const [deletedBillsDetail, setDeletedBillsDetail] = useState([])
+
   const onFinish = (values) => {
     let val = { ...(entityForEdit ?? {}), ...values }
     val.billDate = val.billDate.toDate()
     let final = {
       header: val,
-      details: val.billsDetails.filter(x => x.itemMasterId)
+      details: [...val.billsDetail.filter(x => x.itemMasterId), ...deletedBillsDetail]
     }
-    delete final.header.billsDetails
+    delete final.header.billsDetail
     saveBtnHandler && saveBtnHandler(final)
   };
 
@@ -47,10 +49,6 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
     dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
-    if (!entityForEdit.id)
-      dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([entityForEdit.billing])).then((res) => {
-        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
-      })
 
 
     const handleKeyDown = (event) => {
@@ -73,6 +71,13 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
       document.removeEventListener("keydown", handleKeyDown)
     }
   }, [])
+
+  useEffect(() => {
+    if (!entityForEdit.id)
+      dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([entityForEdit.billing])).then((res) => {
+        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
+      })
+  }, [entityForEdit])
 
   const importChallans = (rows) => {
     setImportChallanVisibility(false)
@@ -101,14 +106,14 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
         amount: (parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)
       })
     }),
-    ...(form.getFieldValue("billsDetails") ?? [])
+    ...(form.getFieldValue("billsDetail") ?? [])
     ]
-    form.setFieldsValue({ "billsDetails": data })
+    form.setFieldsValue({ "billsDetail": data })
     calcTotals(data)
   }
 
 
-  const calcTotals = (rows = form.getFieldValue("billsDetails")) => {
+  const calcTotals = (rows = form.getFieldValue("billsDetail")) => {
     const currentPartyStateCode = allParties.find(x => x.id === form.getFieldValue("partyMasterId"))?.stateCode
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
@@ -138,7 +143,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     <>
       <Form
         name="sales-invoice-form"
-        initialValues={{ ...entityForEdit, billsDetails: [...(entityForEdit.billsDetails ?? []), new BillsDetail()], billDate: moment(entityForEdit.billDate ?? new Date()) }}
+        initialValues={{ ...entityForEdit, billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()], billDate: moment(entityForEdit.billDate ?? new Date()) }}
         onFinish={onFinish}
         labelAlign="left"
         form={form}
@@ -214,14 +219,14 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetails"} />
+              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
         <Row className="table-row">
           <Col span={24}>
             <EditableTable
-              name="billsDetails"
+              name="billsDetail"
               nextTabIndex="3"
               form={form}
               columns={[
@@ -230,7 +235,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   dataIndex: "",
                   width: '8%',
                   align: 'right',
-                  render: (cell, row) => form.getFieldValue("billsDetails").indexOf(row) + 1
+                  render: (cell, row) => form.getFieldValue("billsDetail").indexOf(row) + 1
                 },
                 {
                   title: "Item",
@@ -290,9 +295,13 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               afterSave={(newRow, oldRow, data) => {
                 calcTotals(data)
               }}
-              deleteBtnHandler={(a, b, i) => {
-                const newData = form.getFieldValue("billsDetails").filter((x, i2) => i2 !== i)
-                form.setFieldsValue({ billsDetails: newData })
+              deleteBtnHandler={(cell, row, i) => {
+                const newData = form.getFieldValue("billsDetail").filter((x, i2) => i2 !== i)
+                form.setFieldsValue({ billsDetail: newData })
+                if (row.id) {
+                  row.deletedAt = new Date()
+                  setDeletedBillsDetail([...deletedBillsDetail, row])
+                }
                 calcTotals(newData)
               }}
             />

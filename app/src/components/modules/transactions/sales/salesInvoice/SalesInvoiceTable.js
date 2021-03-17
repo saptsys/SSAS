@@ -6,20 +6,16 @@ import { dateFormat } from "../../../../../../Constants/Formats";
 function SalesInvoiceTable(props) {
   const columns = [
     {
-      title: "Challan No",
-      dataIndex: "challanNumber",
-      align: 'right',
-      width: '15%'
+      title: "Bill No",
+      dataIndex: "billNumber",
+      align: 'center',
+      width: '15%',
+      render: (cell, row) => row.billing + ' / ' + cell
     },
-    // {
-    //   title: "Voucher No",
-    //   dataIndex: "voucherNumber",
-    //   width: '20%'
-    // },
     {
       title: "Date",
-      dataIndex: "challanDate",
-      width: '20%',
+      dataIndex: "billDate",
+      width: '15%',
       render: cell => moment(cell).format(dateFormat)
     },
     {
@@ -28,15 +24,15 @@ function SalesInvoiceTable(props) {
       width: '25%',
     },
     {
-      title: 'Gross Amount',
-      dataIndex: 'grossAmount',
+      title: 'Net Amount',
+      dataIndex: 'netAmount',
       align: 'right',
-      width: '20%'
+      width: '15%'
     },
     {
       title: "Remarks",
       dataIndex: "remarks",
-      width: '20%'
+      width: '30%'
     },
 
   ];
