@@ -25,7 +25,6 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const generateId = (text) => "basic_" + text
 
   const onFinish = (values) => {
-    debugger;
     let val = { ...(entityForEdit ?? {}), ...values }
     val.billDate = val.billDate.toDate()
     let final = {

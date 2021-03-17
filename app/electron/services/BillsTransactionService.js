@@ -148,7 +148,7 @@ class BillsTransactionService extends __BaseService {
         .where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
         .andWhere(new Brackets(sq => {
-          sq.where("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
+          sq.Where("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
             .andWhere("( (:toDate IS NULL) OR (bill.billDate <= :toDate) )", { toDate: toDate })
             .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: party })
         }))
@@ -173,9 +173,11 @@ class BillsTransactionService extends __BaseService {
 
   async save(payload) {
     try {
-      let details = payload['billsDetail'];
-      delete payload['billsDetail']
-      const header = payload;
+      // let details = payload['billsDetail'];
+      // delete payload['billsDetail']
+      // const header = payload;
+
+      let { header, details } = payload
 
       const tag = header.tag
       const billing = header.billing

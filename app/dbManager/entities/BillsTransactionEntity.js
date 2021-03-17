@@ -2,7 +2,7 @@ const EntitySchema = require("typeorm").EntitySchema;
 const __BaseEntity = require("./__BaseEntity");
 const NAME = "BillsTransaction";
 const TABLE_NAME = "bill_trx";
-const {BillsTransaction} = require("./../models/BillsTransaction");
+const { BillsTransaction } = require("./../models/BillsTransaction");
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
@@ -39,17 +39,17 @@ module.exports = new EntitySchema({
     challanNumber: {
       name: "chalan_number",
       type: "bigint",
-      nullable: false,
+      nullable: true,
     },
     chalanDate: {
       name: "chalan_date",
       type: "date",
-      nullable: false,
+      nullable: true,
     },
     dueDate: {
       name: "due_date",
       type: "date",
-      nullable: false,
+      nullable: true,
     },
     grossAmount: {
       name: "gross_amount",
@@ -147,8 +147,8 @@ module.exports = new EntitySchema({
       type: "many-to-one",
       joinTable: true,
       cascade: true,
-      joinColumn:{
-        name:"party_mst_id",
+      joinColumn: {
+        name: "party_mst_id",
       },
     },
     billDetails: {
