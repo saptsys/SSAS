@@ -16,9 +16,34 @@ class GSTR1 {
     sheets.summery = this.getSummary();
     sheets.b2b = this.getB2B()
     sheets.b2cs = this.getB2CS();
+    sheets.cdnr = this.getCDNR();
 
     return sheets;
 
+  }
+
+  /**
+   * Credit/ Debit Notes/Refund vouchers issued to the registered taxpayers during the tax period.
+   * Debit or credit note issued against invoice will be reported here against original invoice,
+   * hence fill the details of original invoice also which was furnished in
+   * B2B,B2CL section of earlier/current period tax period.
+   *
+   * basically for us cdnr is sales return where billing type is "GST"
+   */
+  getCDNR(){
+    let rows = []
+    const bills = this.bills.filter(x => {
+      if(x.billing === "GST" && x.billing.tag === "SR"){
+        return true
+      }
+      return false
+    })
+    for (let billIndex in bills) {
+      const bill = bills[billIndex]
+      let row = new models.B2CLModel();
+
+    }
+    return rows
   }
 
   /**
@@ -50,7 +75,7 @@ class GSTR1 {
     row.placeOfSupply = x.partyMasterId.stateCode
     row.gstinOfEcom = ""
     row.rate = bill.IGSTPercentage
-    row.taxableValue = bill.netAmount
+    row.taxableValue = bill.taxableAmount
     row.cessAmount = 0
 
     rows.push(row)
@@ -86,7 +111,7 @@ class GSTR1 {
       row.placeOfSupply = x.partyMasterId.stateCode
       row.gstinOfEcom = ""
       row.rate = bill.IGSTPercentage
-      row.taxableValue = bill.netAmount
+      row.taxableValue = bill.taxableAmount
       row.cessAmount = 0
 
 
@@ -126,7 +151,7 @@ class GSTR1 {
       row.invoiceType = "R"
       row.gstinOfEcom = ""
       row.rate = bill.IGSTPercentage
-      row.taxableValue = bill.netAmount
+      row.taxableValue = bill.taxableAmount
       row.cessAmount = 0
 
 
@@ -153,7 +178,7 @@ class GSTR1 {
 
       // TODO : NTD
       row.cessRate = bill.cessRate;
-      row.taxableValue = bill.netAmount
+      row.taxableValue = bill.taxableAmount
       taxAmounts.integratedTax = bill.IGSTAmount ?? 0
       taxAmounts.centralTax = bill.CGSTAmount ?? 0
       taxAmounts.stateTax = bill.SGSTAmount ?? 0
