@@ -26,10 +26,14 @@ const AutoFocuser = ({ children, lastElement }) => {
           const nextElm = mainDiv.querySelectorAll(`[tabindex='${parseInt(event.target.attributes.tabindex.value) + 1}']`).item(0)
           if (nextElm) {
             nextElm.focus()
-            if (nextElm.tagName === "INPUT" || nextElm.tagName === "TEXTAREA") {
-              nextElm.select()
-              nextElm.selectionStart = nextElm.selectionEnd = nextElm.value.length;
-            }
+            if (!nextElm.attributes.readonly)
+              setTimeout(() => {
+                nextElm.setSelectionRange(0, nextElm.value.length)
+              }, 100)
+            // if (nextElm.tagName === "INPUT" || nextElm.tagName === "TEXTAREA") {
+            //   nextElm.select()
+            //   nextElm.selectionStart = nextElm.selectionEnd = nextElm.value.length;
+            // }
             event.preventDefault()
           } else {
             if (lastElement) {

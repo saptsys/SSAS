@@ -113,6 +113,10 @@ const EditableCell = ({
         if (rowIndex === rowsLength - 1 && editor.editorColIndex === 0 && !((currentCellValue ? currentCellValue[rowIndex] : record)[dataIndex])) {
           const next = document.querySelector(`[tabindex='${nextTabIndex}']`)
           next.focus()
+          if (!nextElm.attributes.readonly)
+            setTimeout(() => {
+              next.setSelectionRange(0, next.value.length)
+            }, 100)
         }
         else
           focusCell(nextRowIndex, nextColIndex)

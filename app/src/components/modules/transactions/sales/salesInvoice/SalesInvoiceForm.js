@@ -25,13 +25,18 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const generateId = (text) => "basic_" + text
 
   const onFinish = (values) => {
-    // let val = { ...(entityForEdit ?? {}), ...values }
-    // val.challanDate = val.challanDate.toDate()
-    // val.billsDetails = val.billsDetails.filter(x => x.itemMasterId)
-    // saveBtnHandler && saveBtnHandler(val)
+    debugger;
+    let val = { ...(entityForEdit ?? {}), ...values }
+    val.billDate = val.billDate.toDate()
+    let final = {
+      header: val,
+      details: val.billsDetails.filter(x => x.itemMasterId)
+    }
+    delete final.header.billsDetails
+    saveBtnHandler && saveBtnHandler(final)
   };
 
-  const { itemState, partyState } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster }))
+  const { itemState, partyState, defaultFirm } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster, defaultFirm: s.FirmInfo.data.defaultFirm }))
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [allParties, setAllParties] = useState([])
@@ -104,10 +109,30 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   }
 
 
-  const calcTotals = (rows) => {
-    const subTotal = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
-    form.setFieldsValue({ grossAmount: subTotal })
-    // form.setFieldsValue({ netAmount: subTotal })
+  const calcTotals = (rows = form.getFieldValue("billsDetails")) => {
+    const currentPartyStateCode = allParties.find(x => x.id === form.getFieldValue("partyMasterId"))?.stateCode
+    const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
+    const discountAmount = form.getFieldValue("discountAmount") ?? 0
+    const taxableAmount = parseFloat(grossAmount - discountAmount)
+    const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
+    const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
+    const IGSTPercentage = defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0
+    const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
+    const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
+    form.setFieldsValue({
+      grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
+      // discountAmount: parseFloat(discountAmount ?? 0).toFixed(2),
+      taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
+      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
+      SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
+      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(0),
+      CGSTAmount: parseFloat(CGSTAmount ?? 0).toFixed(2),
+      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
+      IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
+      netAmount: parseFloat(netAmount ?? 0).toFixed(2),
+    })
   }
 
   return (
@@ -291,26 +316,53 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   <div className="footer-fields">
                     <Form.Item
                       label="Gross Amount"
-                      rules={[{ required: true }]}
                       shouldUpdate
                     >
                       <Form.Item name="grossAmount" noStyle>
-                        <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="- Discount">
                       <Input.Group>
                         <Form.Item
-                          name={['discount']}
+                          name={['discountPercentage']}
                           noStyle
                         >
-                          <Input tabIndex="5" suffix='%' style={{ width: '25%' }} />
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (gAmt * e.target.value) / 100
+                                form.setFieldsValue({ discountAmount: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0"
+                            tabIndex="5"
+                            suffix='%'
+                            style={{ width: '40%', textAlign: 'right' }}
+
+                          />
                         </Form.Item>
                         <Form.Item
                           name={['discountAmount']}
                           noStyle
                         >
-                          <Input tabIndex="6" suffix=" " style={{ width: '75%' }} />
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (100 * e.target.value) / gAmt
+                                form.setFieldsValue({ discountPercentage: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0.00"
+                            tabIndex="6"
+                            suffix=" "
+                            style={{ width: '60%' }}
+
+                          />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -320,54 +372,54 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="taxableAmount" noStyle>
-                        <InputNumber tabIndex="7" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="7" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="+ SGST">
                       <Input.Group>
                         <Form.Item
-                          name={['sgst']}
+                          name={['SGSTPercentage']}
                           noStyle
                         >
-                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
                         </Form.Item>
                         <Form.Item
-                          name={['sgstAmount']}
+                          name={['SGSTAmount']}
                           noStyle
                         >
-                          <Input tabIndex="8" suffix=" " style={{ width: '75%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="8" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
                     <Form.Item label="+ CGST">
                       <Input.Group>
                         <Form.Item
-                          name={['cgst']}
+                          name={['CGSTPercentage']}
                           noStyle
                         >
-                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
                         </Form.Item>
                         <Form.Item
-                          name={['cgstAmount']}
+                          name={['CGSTAmount']}
                           noStyle
                         >
-                          <Input tabIndex="9" suffix=" " style={{ width: '75%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
                     <Form.Item label="+ IGST">
                       <Input.Group>
                         <Form.Item
-                          name={['igst']}
+                          name={['IGSTPercentage']}
                           noStyle
                         >
-                          <Input suffix='%' style={{ width: '25%' }} readOnly />
+                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
                         </Form.Item>
                         <Form.Item
-                          name={['igstAmount']}
+                          name={['IGSTAmount']}
                           noStyle
                         >
-                          <Input tabIndex="10" suffix=" " style={{ width: '75%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -377,7 +429,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <InputNumber tabIndex="11" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </div>

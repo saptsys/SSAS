@@ -42,7 +42,8 @@ function init() {
         firms: [{
           id: 1,
           name: "ABC Photo Ltd.",
-          default: true
+          default: true,
+          state: 24
         }],
         databases: [{
           id: 1,

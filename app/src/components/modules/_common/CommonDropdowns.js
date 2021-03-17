@@ -233,7 +233,7 @@ export const StatesDropdown = ({ propsForSelect = {}, ...props }) => {
 }
 
 
-export const PartyDropdown = ({ propsForSelect = {}, ...props }) => {
+export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => { }, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
@@ -264,6 +264,11 @@ export const PartyDropdown = ({ propsForSelect = {}, ...props }) => {
         allowClear={true}
         loading={isLoading}
         defaultActiveFirstOption={false}
+        onChange={(val) => {
+          getRecordOnChange((propsForSelect.filterForOptions
+            ? propsForSelect.filterForOptions(options)
+            : options).find(x => x.id === val))
+        }}
       />
     </Form.Item>)
   return (
@@ -272,3 +277,4 @@ export const PartyDropdown = ({ propsForSelect = {}, ...props }) => {
     </Form.Item>
   )
 }
+

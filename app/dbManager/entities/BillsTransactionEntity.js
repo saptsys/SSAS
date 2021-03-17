@@ -126,6 +126,11 @@ module.exports = new EntitySchema({
       type: "double",
       default: 0.0,
     },
+    taxableAmount: {
+      name: "taxable_amount",
+      type: "double",
+      default: 0.0,
+    },
     remarks: {
       name: "remarks",
       type: "text",

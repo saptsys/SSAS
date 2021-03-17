@@ -1,4 +1,4 @@
-const {_BaseModel} = require("./_BaseModel");
+const { _BaseModel } = require("./_BaseModel");
 
 class BillsTransaction extends _BaseModel {
   constructor({
@@ -33,6 +33,7 @@ class BillsTransaction extends _BaseModel {
     remarks,
     partyMasterId,
     billsDetail,
+    taxableAmount,
     ...rest
   } = {}) {
     super(rest), (this.id = id);
@@ -66,6 +67,7 @@ class BillsTransaction extends _BaseModel {
     this.remarks = remarks;
     this.partyMasterId = partyMasterId;
     this.billsDetail = billsDetail;
+    this.taxableAmount = taxableAmount
   }
 }
 module.exports = {
