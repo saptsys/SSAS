@@ -3,6 +3,8 @@ const __BaseEntity = require("./__BaseEntity");
 const NAME = "BillsTransaction";
 const TABLE_NAME = "bill_trx";
 const { BillsTransaction } = require("./../models/BillsTransaction");
+import { ALL_BILLINGS, ALL_TAGS } from "../../Constants/Transactionals";
+
 module.exports = new EntitySchema({
   name: NAME,
   tableName: TABLE_NAME,
@@ -12,13 +14,13 @@ module.exports = new EntitySchema({
     tag: {
       name: "tag",
       type: "simple-enum",
-      enum: ["S", "SR", "P", "PR"],
+      enum: ALL_TAGS,
       nullable: false,
     },
     billing: {
       name: "billing",
       type: "simple-enum",
-      enum: ["RETAIL", "GST"],
+      enum: ALL_BILLINGS,
       nullable: false,
     },
     billNumber: {

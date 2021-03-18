@@ -81,7 +81,7 @@ class __BaseService {
             .then(() => entityManager.softDelete(this.ModelClass, id));
         });
       } else {
-        return Promise.reject("Something went wrong repository not found.");
+        return Promise.reject({ message: "Something went wrong repository not found." });
       }
     });
   }

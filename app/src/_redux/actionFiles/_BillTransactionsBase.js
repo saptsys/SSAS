@@ -1,4 +1,4 @@
-const { ALL_BILLINGS } = require("../../../Constants/Billing");
+const { ALL_BILLINGS } = require("../../../Constants/Transactionals");
 
 export default class _BillTransactionActionsBase {
   /**

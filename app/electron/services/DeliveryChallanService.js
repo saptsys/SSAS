@@ -76,19 +76,19 @@ class DeliveryChallanService extends __BaseService {
       return stmt.getRawMany();
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something Went Wrong!")
+      return Promise.reject({ message: "Something Went Wrong!" })
     }
   }
 
   getByIdWithDetails(trxId) {
     try {
       return this.repository.createQueryBuilder("chalan")
-      .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
-      .where("chalan.id = :id", { id: trxId })
-      .getOne();
+        .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .where("chalan.id = :id", { id: trxId })
+        .getOne();
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something Went Wrong!")
+      return Promise.reject({ message: "Something Went Wrong!" })
     }
   }
 
@@ -118,7 +118,7 @@ class DeliveryChallanService extends __BaseService {
       });
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 
@@ -146,12 +146,12 @@ class DeliveryChallanService extends __BaseService {
       return stmt.getRawMany()
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 
 
-  async getWithDetailsByPartiesAndDate(payload){
+  async getWithDetailsByPartiesAndDate(payload) {
     try {
       const { party, fromDate, toDate } = payload
       const stmt = this.repository
@@ -165,25 +165,25 @@ class DeliveryChallanService extends __BaseService {
       return data.map(x => {
         return {
           ...x,
-          partyName : x.partyMasterId.name,
-          partyMasterId : x.partyMasterId.id
+          partyName: x.partyMasterId.name,
+          partyMasterId: x.partyMasterId.id
         }
       })
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 
   getByChalanNumberWithDetails(challanNumber) {
     try {
       return this.repository.createQueryBuilder("chalan")
-      .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
-      .where("chalan.challanNumber = :challanNumber", { challanNumber: challanNumber })
-      .getOne();
+        .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .where("chalan.challanNumber = :challanNumber", { challanNumber: challanNumber })
+        .getOne();
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something Went Wrong!")
+      return Promise.reject({ message: "Something Went Wrong!" })
     }
   }
 
@@ -200,10 +200,10 @@ class DeliveryChallanService extends __BaseService {
       delete payload['deliveryDetails']
       const header = payload;
       if (await this.voucherNumberExists(header.voucherNumber, header.id)) {
-        return Promise.reject("Challan With Voucher Number " + header.voucherNumber + " Already Exists!")
+        return Promise.reject({ message: "Challan With Voucher Number " + header.voucherNumber + " Already Exists!" })
       }
       if (await this.chalanNumberExists(header.challanNumber, header.id)) {
-        return Promise.reject("Challan With Challan Number " + header.challanNumber + " Already Exists!")
+        return Promise.reject({ message: "Challan With Challan Number " + header.challanNumber + " Already Exists!" })
       }
       const runner = this.connection.createQueryRunner();
 
@@ -223,16 +223,16 @@ class DeliveryChallanService extends __BaseService {
           }
         })
 
-        const [deletedDetails , updatedDetails] = this.partition(details , x => x.deletedAt)
+        const [deletedDetails, updatedDetails] = this.partition(details, x => x.deletedAt)
 
-        if(updatedDetails && updatedDetails.length != 0){
+        if (updatedDetails && updatedDetails.length != 0) {
           await runner.manager.save(
             DeliveryDetail,
             updatedDetails
           )
         }
 
-        if(deletedDetails && deletedDetails.length != 0){
+        if (deletedDetails && deletedDetails.length != 0) {
           await runner.manager.delete(
             DeliveryDetail,
             deletedDetails.map(x => x.id)
@@ -252,7 +252,7 @@ class DeliveryChallanService extends __BaseService {
     } catch (e) {
       console.log(e)
     }
-    return Promise.reject("Something went wrong!")
+    return Promise.reject({ message: "Something went wrong!" })
   }
 
   async delete(payload) {
@@ -284,7 +284,7 @@ class DeliveryChallanService extends __BaseService {
       }
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 

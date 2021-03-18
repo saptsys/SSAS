@@ -91,9 +91,10 @@ function CommonModuleView({
     if (event === COMMON_FORM_EVENTS.CREATED) {
       getTableData()
       cancelEditBtnHandler()
-    }
-    if (event === COMMON_FORM_EVENTS.DELETED) {
+    } else if (event === COMMON_FORM_EVENTS.DELETED) {
       setTableData(tableData.filter(x => x.id !== param))
+      cancelEditBtnHandler()
+    } else if (event === COMMON_FORM_EVENTS.CANCELLED) {
       cancelEditBtnHandler()
     }
   }

@@ -9,7 +9,7 @@ const { BillsDetail } = require("../../dbManager/models/BillsDetail");
 const DeliveryChallanService = require("../services/DeliveryChallanService");
 
 const rowToModelPropertyMapper = require("../../dbManager/dbUtils");
-const { ALL_BILLINGS, ALL_TAGS } = require("../../Constants/Billing");
+const { ALL_BILLINGS, ALL_TAGS } = require("../../Constants/Transactionals");
 
 class BillsTransactionService extends __BaseService {
   constructor() {
@@ -86,7 +86,7 @@ class BillsTransactionService extends __BaseService {
         .getOne();
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something Went Wrong!")
+      return Promise.reject({ message: "Something Went Wrong!" })
     }
   }
 
@@ -125,7 +125,7 @@ class BillsTransactionService extends __BaseService {
       });
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 
@@ -159,7 +159,7 @@ class BillsTransactionService extends __BaseService {
       return stmt.getRawMany()
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
   /**
@@ -183,16 +183,16 @@ class BillsTransactionService extends __BaseService {
       const billing = header.billing
 
       if (await this.billNumberExists(header.billNumber, header.id, tag, billing)) {
-        return Promise.reject("Bill With Bill Number " + header.billNumber + " Already Exists!")
+        return Promise.reject({ message: "Bill With Bill Number " + header.billNumber + " Already Exists!" })
       }
 
       if (await this.voucherNumberExists(header.voucherNumber, header.id, tag, billing)) {
-        return Promise.reject("Bill With Voucher Number " + header.voucherNumber + " Already Exists!")
+        return Promise.reject({ message: "Bill With Voucher Number " + header.voucherNumber + " Already Exists!" })
       }
 
-      if (await this.chalanNumberExists(header.challanNumber, header.id, tag, billing)) {
-        return Promise.reject("Bill With Challan Number " + header.challanNumber + " Already Exists!")
-      }
+      // if (await this.chalanNumberExists(header.challanNumber, header.id, tag, billing)) {
+      //   return Promise.reject({ message: "Bill With Challan Number " + header.challanNumber + " Already Exists!" })
+      // }
       const runner = this.connection.createQueryRunner();
 
       await runner.startTransaction();
@@ -243,7 +243,7 @@ class BillsTransactionService extends __BaseService {
     } catch (e) {
       console.log(e)
     }
-    return Promise.reject("Something went wrong!")
+    return Promise.reject({ message: "Something went wrong!" })
   }
 
   async delete(payload) {
@@ -256,7 +256,7 @@ class BillsTransactionService extends __BaseService {
       try {
         const entity = await this.getByIdWithDetails(headerId)
         if (!entity) {
-          return Promise.reject("Bill not found!")
+          return Promise.reject({ message: "Bill not found!" })
         }
         const detailIds = entity['billsDetail'].map(x => x.id)
         if (detailIds && detailIds.length != 0) {
@@ -281,7 +281,7 @@ class BillsTransactionService extends __BaseService {
       }
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something went wrong!")
+      return Promise.reject({ message: "Something went wrong!" })
     }
   }
 
@@ -341,7 +341,7 @@ class BillsTransactionService extends __BaseService {
         .getOne();
     } catch (e) {
       console.log(e)
-      return Promise.reject("Something Went Wrong!")
+      return Promise.reject({ message: "Something Went Wrong!" })
     }
   }
 

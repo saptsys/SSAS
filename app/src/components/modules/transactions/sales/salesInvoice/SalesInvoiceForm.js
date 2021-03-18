@@ -169,10 +169,11 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   if (!form.getFieldValue("billingAddress"))
                     form.setFieldsValue({ billingAddress: party?.address })
                   const billing = party?.gstin ? "TAX" : "RETAIL"
-                  dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing])).then((res) => {
-                    form.setFieldsValue({ billNumber: res.billNumber + 1 })
-                  })
-                  return form.setFieldsValue({
+                  if (!entityForEdit.id)
+                    dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing])).then((res) => {
+                      form.setFieldsValue({ billNumber: res.billNumber + 1 })
+                    })
+                  form.setFieldsValue({
                     billing: billing
                   })
                 }
@@ -188,7 +189,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               name="billingAddress"
               label="Address"
             >
-              <TextArea style={{ width: '100%' }} rows={3}/>
+              <TextArea style={{ width: '100%' }} rows={3} />
             </Form.Item>
           </Col>
           <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
@@ -208,16 +209,30 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   <Form.Item
                     shouldUpdate
                     labelCol={{ span: 10 }} wrapperCol={{ span: 14 }}
-                    name="billNumber"
                     label="Bill No"
                     required
                     rules={[{ required: true }]}
                   >
-                    <Input
-                      addonBefore={form.getFieldValue("billing")}
-                      tabIndex="1"
-                      style={{ width: '100%' }} />
+                    <Input.Group>
+                      <Form.Item
+                        name={['billing']}
+                        noStyle
+                        readOnly
+                      >
+                        <Input defaultValue="0" style={{ width: '40%', textAlign: 'center' }} readOnly />
+                      </Form.Item>
+                      <Form.Item
+                        name={['billNumber']}
+                        noStyle
+                      >
+                        <Input
+                          tabIndex="1"
+                          style={{ width: '60%' }} />
+                      </Form.Item>
+                    </Input.Group>
+
                   </Form.Item>
+
                 </>
               )}
 
