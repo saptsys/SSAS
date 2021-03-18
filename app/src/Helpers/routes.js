@@ -37,6 +37,10 @@ export const MODULE_ROUTES = {
         _path: "/transactions/sales/sales-invoice",
         _title: "Sales Invoice",
       },
+      salesReturn: {
+        _path: "/transactions/sales/sales-return",
+        _title: "Sales Return / Cr. Note",
+      },
     },
     purchase: {
       _path: "/purchase",
@@ -51,17 +55,7 @@ export const MODULE_ROUTES = {
     },
   },
   reports: {
-    _path: "/reports",
-    deliveryChallan: {
-      _path: "/reports/delivery-challan",
-      partyWise: {
-        _path: "/reports/delivery-challan/party-wise",
-        _title: "Delivery Challan Report",
-      },
-      // itemWise: {
-      //     _path: '/reports/delivery-challan/item-wise'
-      // }
-    },
+    _path: "/reports"
   },
   utility: {
     _path: "/utility",

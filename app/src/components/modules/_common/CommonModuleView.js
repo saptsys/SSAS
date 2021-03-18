@@ -51,13 +51,6 @@ function CommonModuleView({
     saveAndContinueBtn && getTableData()
   }
 
-
-  useEffect(() => {
-    if (editModeChanged)
-      editModeChanged(editMode)
-  }, [editMode])
-
-
   const deleteBtnHandler = (param) => {
     confirm({
       title: 'Do you want to delete this record?',
@@ -88,6 +81,7 @@ function CommonModuleView({
   }
 
   const onEditDrawerClosed = ({ event, param }) => {
+    editModeChanged && editModeChanged({ event, param })
     if (event === COMMON_FORM_EVENTS.CREATED) {
       getTableData()
       cancelEditBtnHandler()

@@ -52,6 +52,7 @@ const MainMenu = () => {
       <SubMenu key={MODULE_ROUTES.transactions._path} title="Transactions">
         <SubMenu key={MODULE_ROUTES.transactions.sales._path} title="Sales">
           <Menu.Item key={MODULE_ROUTES.transactions.sales.salesInvoice._path}>Sales Invoice</Menu.Item>
+          <Menu.Item key={MODULE_ROUTES.transactions.sales.salesReturn._path}>Sales Return</Menu.Item>
         </SubMenu>
         <SubMenu key={MODULE_ROUTES.transactions.purchase._path} title="Purchase">
           <Menu.Item key={MODULE_ROUTES.transactions.purchase.purchaseInvoice._path}>Purchase Invoice</Menu.Item>
@@ -60,7 +61,7 @@ const MainMenu = () => {
       </SubMenu>
 
       <SubMenu key={MODULE_ROUTES.reports._path} title="Reports">
-        <Menu.Item key={MODULE_ROUTES.reports.deliveryChallan._path}>Delivery Challan</Menu.Item>
+        {/* <Menu.Item key={MODULE_ROUTES.reports.deliveryChallan._path}>Delivery Challan</Menu.Item> */}
       </SubMenu>
 
       <SubMenu key={MODULE_ROUTES.utility._path} title="Utility">

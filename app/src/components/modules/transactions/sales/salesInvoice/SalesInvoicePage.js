@@ -5,15 +5,16 @@ import { SalesInvoiceActions, reducerInfo } from '../../../../../_redux/actionFi
 import SalesInvoiceForm from './SalesInvoiceForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../../_redux/actionFiles/LayoutRedux';
-
+import { errorDialog } from "../../../../../Helpers/dialogs";
 
 function SalesInvoicePage() {
   const dispatch = useDispatch()
 
-  const setMessage = async () => {
-    // const last = await dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber())
-    // const total = await dispatch(DeliveryChallanActions.getTotalBills())
-    // dispatch(LayoutActions.setMessage(<span> Last Challan No: <b>{last.challanNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total.total}</b></span>))
+  const setMessage = () => {
+    dispatch(SalesInvoiceActions.getTotalBillsAndLastBill(null, ['S'])).then(({ total, billNumber }) => {
+      console.log("INFOR SETTEF")
+      return dispatch(LayoutActions.setMessage(<span> Last Bill No: <b>{billNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total}</b></span>))
+    }).catch(err => errorDialog("Error", err.message))
   }
 
   useEffect(() => {
@@ -33,7 +34,7 @@ function SalesInvoicePage() {
       saveForm: "save",
       deleteRecord: "delete"
     }}
-    editModeChanged={({ mode }) => {
+    editModeChanged={() => {
       setMessage()
     }}
     extraEditShortcuts={[

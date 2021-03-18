@@ -33,7 +33,7 @@ function DeliveryChallanPage() {
       saveForm: "save",
       deleteRecord: "delete"
     }}
-    editModeChanged={({ mode }) => {
+    editModeChanged={() => {
       setDeliveryStatusMessage(dispatch)
     }}
     saveAndContinueBtn={true}

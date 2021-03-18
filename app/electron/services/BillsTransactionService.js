@@ -19,8 +19,8 @@ class BillsTransactionService extends __BaseService {
   }
 
   getTotalBillsAndLastBill(payload) {
-    const tag = payload.tag ?? ALL_TAGS
-    const billing = payload.billing ?? ALL_BILLINGS
+    const tag = payload?.tag ?? ALL_TAGS
+    const billing = payload?.billing ?? ALL_BILLINGS
     const stmt = this.repository.createQueryBuilder('bill')
       .where("bill.tag IN (:...tag)", { tag: tag })
       .andWhere("bill.billing IN (:...billing)", { billing: billing })
@@ -36,8 +36,8 @@ class BillsTransactionService extends __BaseService {
     try {
       const term = payload.term
       const limit = payload.limit
-      const tag = payload.tag ?? ALL_TAGS
-      const billing = payload.billing ?? ALL_BILLINGS
+      const tag = payload?.tag ?? ALL_TAGS
+      const billing = payload?.billing ?? ALL_BILLINGS
       if (term === null || limit < 0) {
         throw "invalid limit"
       }
@@ -68,13 +68,13 @@ class BillsTransactionService extends __BaseService {
   /**
    *
    * @param {Object} payload
-   * @param {Array<String>} payload.tag ?? ALL_TAGS
-   * @param {Array<String>} payload.billing ?? ALL_BILLINGS
+   * @param {Array<String>} payload?.tag ?? ALL_TAGS
+   * @param {Array<String>} payload?.billing ?? ALL_BILLINGS
    * @param {Array<String>} payload.billId
    */
   getByIdWithDetails(payload) {
-    // const tag = payload.tag ?? ALL_TAGS
-    // const billing = payload.billing ?? ALL_BILLINGS
+    // const tag = payload?.tag ?? ALL_TAGS
+    // const billing = payload?.billing ?? ALL_BILLINGS
     // const billId = payload.billId
     const billId = payload
     try {
@@ -91,8 +91,8 @@ class BillsTransactionService extends __BaseService {
   }
 
   getAll(payload) {
-    const tag = payload.tag ?? ALL_TAGS
-    const billing = payload.billing ?? ALL_BILLINGS
+    const tag = payload?.tag ?? ALL_TAGS
+    const billing = payload?.billing ?? ALL_BILLINGS
     const stmt = this.repository
       .createQueryBuilder("bill")
       .leftJoin(PartyMaster, "party", "bill.partyMasterId = party.id")
@@ -113,8 +113,8 @@ class BillsTransactionService extends __BaseService {
    */
   getByPartyAndDate(payload) {
     try {
-      const tag = payload.tag ?? ALL_TAGS
-      const billing = payload.billing ?? ALL_BILLINGS
+      const tag = payload?.tag ?? ALL_TAGS
+      const billing = payload?.billing ?? ALL_BILLINGS
       const { party, date } = payload
       return this.getByPartyListAndDateInterval({
         party: [party],
@@ -139,8 +139,8 @@ class BillsTransactionService extends __BaseService {
    */
   getByPartyListAndDateInterval(payload) {
     try {
-      const tag = payload.tag ?? ALL_TAGS
-      const billing = payload.billing ?? ALL_BILLINGS
+      const tag = payload?.tag ?? ALL_TAGS
+      const billing = payload?.billing ?? ALL_BILLINGS
       const { party, fromDate, toDate } = payload
       const stmt = this.repository
         .createQueryBuilder("bill")
@@ -326,8 +326,8 @@ class BillsTransactionService extends __BaseService {
   }
 
   getByBillNumber(payload) {
-    const tag = payload.tag ?? ALL_TAGS
-    const billing = payload.billing ?? ALL_BILLINGS
+    const tag = payload?.tag ?? ALL_TAGS
+    const billing = payload?.billing ?? ALL_BILLINGS
     const billNumber = payload.billNumber
     if (!billNumber) {
       throw "Bill number is requried"
@@ -359,8 +359,8 @@ class BillsTransactionService extends __BaseService {
    */
   filter(payload) {
     try {
-      const tag = payload.tag ?? ALL_TAGS
-      const billing = payload.billing ?? ALL_BILLINGS
+      const tag = payload?.tag ?? ALL_TAGS
+      const billing = payload?.billing ?? ALL_BILLINGS
       const parties = payload.parties ?? []
       const fromDate = payload.fromDate
       const toDate = payload.toDate

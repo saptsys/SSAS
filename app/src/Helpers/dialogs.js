@@ -6,7 +6,7 @@ export function errorDialog(title, content, onCancel, onRetry) {
         content: content,
         okCancel: !!onRetry,
         cancelText: "Close",
-        okText: 'Retry',
+        okText: onRetry ? 'Retry' : "Close",
         onOk: onRetry,
         onCancel: onCancel,
     })

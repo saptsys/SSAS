@@ -127,7 +127,7 @@ export default class _BillTransactionActionsBase {
   getTotalBillsAndLastBill = (billing = ALL_BILLINGS, tag = this.tag) => (dispatch) => {
     const from = "getTotalBillsAndLastBill";
     dispatch(this.startCall(this.callTypes.action, from));
-    return this.sendIPC("getTotalBillsAndLastBill", { billing, tag })
+    return this.sendIPC("getTotalBillsAndLastBill", { billing: billing ?? ALL_BILLINGS, tag: tag ?? this.tag })
       .then((res) => {
         dispatch(this.stopCall(this.callTypes.action));
         return Promise.resolve(res);
