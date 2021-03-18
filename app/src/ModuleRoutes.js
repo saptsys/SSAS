@@ -13,6 +13,7 @@ import TaxMaster from "./components/modules/masters/TaxMaster/TaxMasterPage"
 import SettingsMaster from "./components/modules/masters/settingsMaster/SettingsMasterPage"
 import DeliveryChallan from "./components/modules/transactions/deliveryChallan/DeliveryChallanPage"
 import SalesInvoicePage from './components/modules/transactions/sales/salesInvoice/SalesInvoicePage';
+import SalesReturnPage from './components/modules/transactions/sales/salesReturn/SalesReturnPage';
 
 const ModuleRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const ModuleRoutes = () => {
         {/* Transactions */}
         <Route exact path={MODULE_ROUTES.transactions.deliveryChallan._path} component={DeliveryChallan} />
         <Route exact path={MODULE_ROUTES.transactions.sales.salesInvoice._path} component={SalesInvoicePage} />
+        <Route exact path={MODULE_ROUTES.transactions.sales.salesReturn._path} component={SalesReturnPage} />
 
         {/* Utilities */}
         <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
