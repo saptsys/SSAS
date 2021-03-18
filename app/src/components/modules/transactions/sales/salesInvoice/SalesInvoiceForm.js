@@ -72,11 +72,15 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     }
   }, [])
 
-  useEffect(() => {
-    if (!entityForEdit.id)
-      dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([entityForEdit.billing])).then((res) => {
+  const getAutoVoucherBillNumber = (billing) => {
+    if (!entityForEdit.id && billing !== entityForEdit.billing)
+      dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing ?? entityForEdit.billing])).then((res) => {
         form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
       })
+  }
+
+  useEffect(() => {
+    getAutoVoucherBillNumber()
   }, [entityForEdit])
 
   const importChallans = (rows) => {
@@ -169,10 +173,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   if (!form.getFieldValue("billingAddress"))
                     form.setFieldsValue({ billingAddress: party?.address })
                   const billing = party?.gstin ? "TAX" : "RETAIL"
-                  if (!entityForEdit.id)
-                    dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing])).then((res) => {
-                      form.setFieldsValue({ billNumber: res.billNumber + 1 })
-                    })
+                  getAutoVoucherBillNumber(billing)
                   form.setFieldsValue({
                     billing: billing
                   })

@@ -8,7 +8,7 @@ class SalesInvoiceModal extends BillsTransaction {
   constructor(params) {
     super(params)
     this.tag = "S"
-    this.billing = "RETAIL" // default
+    this.billing = "TAX" // default
   }
 }
 
