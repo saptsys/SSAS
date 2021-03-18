@@ -26,7 +26,7 @@ const AutoFocuser = ({ children, lastElement }) => {
           const nextElm = mainDiv.querySelectorAll(`[tabindex='${parseInt(event.target.attributes.tabindex.value) + 1}']`).item(0)
           if (nextElm) {
             nextElm.focus()
-            if (!nextElm.attributes.readonly)
+            if (!nextElm.attributes.readonly && nextElm.tagName !== "TEXTAREA")
               setTimeout(() => {
                 nextElm.setSelectionRange(0, nextElm.value.length)
               }, 100)

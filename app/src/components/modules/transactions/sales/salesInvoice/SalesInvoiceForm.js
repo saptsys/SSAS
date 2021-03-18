@@ -161,18 +161,21 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           <Col md={{ span: 12 }} xs={{ span: 14 }}>
             <PartyDropdown
               propsForSelect={{
+                tabIndex: "0",
+                autoFocus: true,
+                options: allParties.map(x => ({ label: x.name, value: x.id })),
                 onChange: val => {
-                  const billing = allParties.find(x => x.id === val)?.gstin ? "TAX" : "RETAIL"
+                  const party = allParties.find(x => x.id === val)
+                  if (!form.getFieldValue("billingAddress"))
+                    form.setFieldsValue({ billingAddress: party?.address })
+                  const billing = party?.gstin ? "TAX" : "RETAIL"
                   dispatch(SalesInvoiceActions.getTotalBillsAndLastBill([billing])).then((res) => {
                     form.setFieldsValue({ billNumber: res.billNumber + 1 })
                   })
                   return form.setFieldsValue({
                     billing: billing
                   })
-                },
-                tabIndex: "0",
-                autoFocus: true,
-                options: allParties.map(x => ({ label: x.name, value: x.id }))
+                }
               }}
               labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
               name="partyMasterId"
@@ -180,6 +183,13 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             />
+            <Form.Item
+              labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
+              name="billingAddress"
+              label="Address"
+            >
+              <TextArea style={{ width: '100%' }} rows={3}/>
+            </Form.Item>
           </Col>
           <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
             <Form.Item noStyle shouldUpdate>

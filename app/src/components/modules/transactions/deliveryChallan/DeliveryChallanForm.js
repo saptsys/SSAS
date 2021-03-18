@@ -42,7 +42,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
     setDeliveryStatusMessage(dispatch)
   }, [entityForEdit])
 
-  const calcTotals = (data) =>{
+  const calcTotals = (data) => {
     const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     form.setFieldsValue({ grossAmount: subTotal })
     form.setFieldsValue({ netAmount: subTotal })
@@ -74,7 +74,15 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             label="Customer"
             required
             rules={[{ required: true }]}
+            getRecordOnChange={(record) => !form.getFieldValue("deliveryAddress") && form.setFieldsValue({ deliveryAddress: record.address })}
           />
+          <Form.Item
+            labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
+            name="deliveryAddress"
+            label="Address"
+          >
+            <TextArea style={{ width: '100%' }} rows={3} />
+          </Form.Item>
         </Col>
         <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
           <Form.Item noStyle shouldUpdate>

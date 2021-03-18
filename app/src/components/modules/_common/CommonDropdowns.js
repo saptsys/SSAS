@@ -265,9 +265,10 @@ export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => {
         loading={isLoading}
         defaultActiveFirstOption={false}
         onChange={(val) => {
+          propsForSelect.onChange && propsForSelect.onChange(val)
           getRecordOnChange((propsForSelect.filterForOptions
             ? propsForSelect.filterForOptions(options)
-            : options).find(x => x.id === val))
+            : (propsForSelect.options ?? options)).find(x => x.id === val))
         }}
       />
     </Form.Item>)

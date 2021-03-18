@@ -46,7 +46,12 @@ module.exports = new EntitySchema({
       name: "party_mst_id",
       type: "integer",
       nullable: false
-    }
+    },
+    deliveryAddress: {
+      name: "delivery_address",
+      type: "text",
+      nullable: true,
+    },
   },
   relations: {
     partyMaster: {

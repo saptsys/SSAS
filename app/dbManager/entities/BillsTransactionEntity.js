@@ -140,6 +140,11 @@ module.exports = new EntitySchema({
       name: "party_mst_id",
       type: "integer",
     },
+    billingAddress: {
+      name: "bill_address",
+      type: "text",
+      nullable: true,
+    },
   },
   relations: {
     partyMaster: {

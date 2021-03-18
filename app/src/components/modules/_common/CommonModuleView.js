@@ -48,6 +48,7 @@ function CommonModuleView({
   }
   const cancelEditBtnHandler = () => {
     setEditMode({ mode: false, editId: null })
+    saveAndContinueBtn && getTableData()
   }
 
 
@@ -87,13 +88,14 @@ function CommonModuleView({
   }
 
   const onEditDrawerClosed = ({ event, param }) => {
-    getTableData()
     if (event === COMMON_FORM_EVENTS.CREATED) {
+      getTableData()
+      cancelEditBtnHandler()
     }
     if (event === COMMON_FORM_EVENTS.DELETED) {
       setTableData(tableData.filter(x => x.id !== param))
+      cancelEditBtnHandler()
     }
-    cancelEditBtnHandler()
   }
 
   const getTableData = () => dispatch(actions[methods.fetchTableData]())

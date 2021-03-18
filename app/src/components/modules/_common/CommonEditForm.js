@@ -13,6 +13,7 @@ import './commonEditForm.less'
 export const COMMON_FORM_EVENTS = {
   CANCELLED: 'calncelled',
   CREATED: "created",
+  CREATED_AND_CONTINUE: "createdAndContinue",
   DELETED: "deleted"
 }
 
@@ -59,8 +60,11 @@ const CommonEditForm = ({
   const saveBtnHandler = (values) => {
     dispatch(actions[methods.saveForm](values)).then((res) => {
       message.success(titleSufix + " Saved Successfuly", 4)
-      if (isSaveAndContinue)
+      if (isSaveAndContinue) {
         setEntityForEdit(new reducerInfo.model())
+        resetAndCloseDialog(COMMON_FORM_EVENTS.CREATED_AND_CONTINUE, res)
+
+      }
       else
         resetAndCloseDialog(COMMON_FORM_EVENTS.CREATED, res)
     }).catch(err => {
