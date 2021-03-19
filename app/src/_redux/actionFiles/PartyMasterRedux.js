@@ -8,14 +8,14 @@ export const reducerInfo = {
 }
 
 class Actions extends _BaseIpcActions {
-  getAll = (type) => (dispatch) => {
+  getAll = (types) => (dispatch) => {
     const from = "getAll";
     dispatch(this.startCall(this.callTypes.list, from));
-    return this.sendIPC("getAll")
+    return this.sendIPC("getAll", types)
       .then((res) => {
         console.log(`getAll ${this.reducerName} => `, res)
         dispatch(this.stopCall(this.callTypes.list));
-        return Promise.resolve(type ? res.filter(x => x.type === type) : res);
+        return Promise.resolve(res);
       })
       .catch((error) => {
         dispatch(this.catchError(error.message, this.callTypes.list, from));

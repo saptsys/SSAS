@@ -40,12 +40,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const { itemState, partyState, defaultFirm } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster, defaultFirm: s.FirmInfo.data.defaultFirm }))
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
-  const [allParties, setAllParties] = useState([])
+  const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
   const [importChallanVisibility, setImportChallanVisibility] = useState(false)
 
   useEffect(() => {
-    dispatch(PartyMasterActions.getAll("CUSTOMER")).then(setAllParties)
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
     dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
@@ -118,7 +117,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
 
 
   const calcTotals = (rows = form.getFieldValue("billsDetail")) => {
-    const currentPartyStateCode = allParties.find(x => x.id === form.getFieldValue("partyMasterId"))?.stateCode
+    const currentPartyStateCode = selectedParty?.stateCode
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount - discountAmount)
@@ -167,23 +166,23 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               propsForSelect={{
                 tabIndex: "0",
                 autoFocus: true,
-                options: allParties.map(x => ({ label: x.name, value: x.id })),
-                onChange: val => {
-                  const party = allParties.find(x => x.id === val)
-                  if (!form.getFieldValue("billingAddress"))
-                    form.setFieldsValue({ billingAddress: party?.address })
-                  const billing = party?.gstin ? "TAX" : "RETAIL"
-                  getAutoVoucherBillNumber(billing)
-                  form.setFieldsValue({
-                    billing: billing
-                  })
-                }
               }}
               labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
               name="partyMasterId"
               label="Customer"
               required
               rules={[{ required: true }]}
+              getRecordOnChange={party => {
+                setSelectedParty(party)
+                if (!form.getFieldValue("billingAddress"))
+                  form.setFieldsValue({ billingAddress: party?.address })
+                const billing = party?.gstin ? "TAX" : "RETAIL"
+                getAutoVoucherBillNumber(billing)
+                form.setFieldsValue({
+                  billing: billing
+                })
+              }}
+              accoutType={["BOTH", "CUSTOMER"]}
             />
             <Form.Item
               labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}

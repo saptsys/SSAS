@@ -35,6 +35,8 @@ class BillsTransaction extends _BaseModel {
     billsDetail,
     taxableAmount,
     billingAddress,
+    againstBillNumber,
+    againstBillDate,
     ...rest
   } = {}) {
     super(rest), (this.id = id);

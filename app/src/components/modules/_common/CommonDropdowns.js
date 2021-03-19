@@ -233,14 +233,14 @@ export const StatesDropdown = ({ propsForSelect = {}, ...props }) => {
 }
 
 
-export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => { }, ...props }) => {
+export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => { }, accoutType, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
 
   React.useEffect(() => {
     if (!propsForSelect.options)
-      dispatch(PartyMasterActions.getAll()).then((res) => {
+      dispatch(PartyMasterActions.getAll(accoutType)).then((res) => {
         setOptions(res);
       });
     return () => setOptions([])

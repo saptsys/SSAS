@@ -39,7 +39,7 @@ function SalesReturnPage() {
     extraEditShortcuts={[
       {
         key: 'F6',
-        title: "F6 to Import Challans",
+        title: "F6 to Select Against Bill",
         method: () => true
       }
     ]}

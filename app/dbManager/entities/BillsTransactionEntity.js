@@ -147,6 +147,16 @@ module.exports = new EntitySchema({
       type: "text",
       nullable: true,
     },
+    againstBillNumber: {
+      name: "against_bill_number",
+      type: "bigint",
+      nullable: true,
+    },
+    againstBillDate: {
+      name: "against_bill_date",
+      type: "date",
+      nullable: true,
+    },
   },
   relations: {
     partyMaster: {
