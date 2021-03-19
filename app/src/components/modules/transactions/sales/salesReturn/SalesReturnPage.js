@@ -41,7 +41,12 @@ function SalesReturnPage() {
         key: 'F6',
         title: "F6 to Select Against Bill",
         method: () => true
-      }
+      },
+      {
+        key: 'F7',
+        title: "F7 to Select Items",
+        method: () => true
+      },
     ]}
   />
 }

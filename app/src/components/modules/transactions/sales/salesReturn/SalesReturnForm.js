@@ -20,6 +20,7 @@ import { Modal } from "antd";
 import ImportChallansDialog from "../../deliveryChallan/ImportChallansDialog";
 import BillSelectionDialog from "../../transactionsComponents/BillSelectionDialog";
 import SalesInvoiceRedux from "../../../../../_redux/actionFiles/SalesInvoiceRedux";
+import BillDetailsSelectionDialog from "../../transactionsComponents/BillDetailsSelectionDialog";
 
 function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -46,14 +47,22 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
   const [billSelectionDialogVisibility, setBillSelectionDialogVisibility] = useState(false)
+  const [itemSelectVisibility, setItemSelectVisibility] = useState(false)
 
 
   const startSelectAgainstBill = () => {
     if (!form.getFieldValue("partyMasterId")) {
       Modal.error({ title: "Please select party before you select against" })
       return;
-    }
-    !billSelectionDialogVisibility && setBillSelectionDialogVisibility(true)
+    } else
+      !billSelectionDialogVisibility && setBillSelectionDialogVisibility(true)
+  }
+  const startSelectItems = () => {
+    if (!form.getFieldValue("againstBillNumber")) {
+      Modal.error({ title: "Please select against bill first." })
+      return;
+    } else
+      !itemSelectVisibility && setItemSelectVisibility(true)
   }
 
   useEffect(() => {
@@ -66,6 +75,9 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
       switch (event.key) {
         case "F6":
           startSelectAgainstBill()
+          break;
+        case "F7":
+          startSelectItems()
           break;
 
         default:
@@ -94,6 +106,24 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     setBillSelectionDialogVisibility(false)
     if (rows && rows.length === 1 && rows[0]) {
       form.setFieldsValue({ againstBillNumber: rows[0].billNumber, againstBillDate: moment(rows[0].billDate) })
+    }
+  }
+  const onItemsSelect = (rows) => {
+    setItemSelectVisibility(false)
+    if (rows && rows.length) {
+      let d = form.getFieldValue("billsDetail").filter(x => x.itemMasterId)
+      rows.forEach(r => {
+        d.push(new BillsDetail({
+          itemMasterId: r.itemMasterId,
+          itemUnitMasterId: r.itemUnitMasterId,
+          quantity: r.quantity,
+          rate: r.rate,
+          amount: r.quantity * r.rate
+        }))
+      })
+      d.push(new BillsDetail())
+      form.setFieldsValue({ billsDetail: d })
+      calcTotals(d)
     }
   }
 
@@ -489,6 +519,18 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               ReduxObj={SalesInvoiceRedux}
               type="radio"
               title="Select Sales Invoice"
+            />
+          )}
+        </Form.Item>
+        <Form.Item noStyle shouldUpdate>
+          {() => (
+            <BillDetailsSelectionDialog
+              trxId={form.getFieldValue("againstBillNumber")}
+              isOpen={itemSelectVisibility}
+              onCancel={() => setItemSelectVisibility(false)}
+              onSelectDone={onItemsSelect}
+              ReduxObj={SalesInvoiceRedux}
+              title="Select Items"
             />
           )}
         </Form.Item>
