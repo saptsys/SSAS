@@ -3,7 +3,7 @@ const __BaseEntity = require("./__BaseEntity");
 const NAME = "BillsTransaction";
 const TABLE_NAME = "bill_trx";
 const { BillsTransaction } = require("./../models/BillsTransaction");
-import { ALL_BILLINGS, ALL_TAGS } from "../../Constants/Transactionals";
+const { ALL_BILLINGS,ALL_TAGS } = require("../../Constants/Transactionals")
 
 module.exports = new EntitySchema({
   name: NAME,
