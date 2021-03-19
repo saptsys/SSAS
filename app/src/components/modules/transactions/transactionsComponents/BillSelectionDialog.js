@@ -8,13 +8,14 @@ import moment from 'moment';
 import { dateFormat } from '../../../../../Constants/Formats';
 import _BillTransactionActionsBase from '../../../../_redux/actionFiles/_BillTransactionsBase';
 import CommonTable from '../../_common/CommonTable';
+import Text from 'antd/lib/typography/Text';
 
 /**
  *
  * @param {{ReduxObj:{actions:_BillTransactionActionsBase}}} param0
  * @returns
  */
-const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, onCancel, parties, defaultFromDate = null, defaultToDate = null, ReduxObj, columns }) => {
+const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, onCancel, parties, defaultFromDate = null, defaultToDate = null, ReduxObj, columns, type = "check" }) => {
   const dispatch = useDispatch()
 
   const billState = useSelector(s => s[ReduxObj.name])
@@ -56,7 +57,6 @@ const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, o
       visible={isOpen}
       title={null}
       onCancel={onCancel}
-      onOk={onImport}
       footer={[
         <Row>
           <Col flex="none">
@@ -69,7 +69,7 @@ const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, o
             </Space>
           </Col>
           <Col flex="auto">
-            <Button type="primary" onClick={() => onImport(records.filter(x => selectedRows.includes(x.id)))}>Import</Button>
+            <Button type="primary" onClick={() => onSelectDone(records.filter(x => selectedRows.includes(x.id)))}>Done</Button>
           </Col>
         </Row>
       ]}
@@ -78,6 +78,7 @@ const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, o
     >
       <Title level={4}>{title}</Title>
       <br />
+      {!!billState.list.error && !billState.list.loading && (<Text type="danger" >Error : {billState.list.error}  <Button style={{ padding: "0 5px" }} danger onClick={loadData} type="text">Retry</Button></Text>)}
       <CommonTable
         columns={columns ?? [
           {
@@ -114,6 +115,7 @@ const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, o
         loading={billState.list.loading}
         pagination={false}
         rowSelection={{
+          type: type,
           selectedRows,
           onChange: setselectedRows,
           columnWidth: "30px"

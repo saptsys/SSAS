@@ -24,3 +24,11 @@ class Actions extends _BillTransactionActionsBase {
 
 export const SalesReturnSlice = new _BaseSlice(reducerInfo.name)
 export const SalesReturnActions = new Actions(["SR"], SalesReturnSlice)
+
+const SalesReturnRedux = {
+  ...reducerInfo,
+  slice: SalesReturnSlice,
+  actions: SalesReturnActions
+}
+
+export default SalesReturnRedux;

@@ -140,14 +140,14 @@ export default class _BillTransactionActionsBase {
 
   getByPartyListAndDateInterval = (party, fromDate, toDate, billing = ALL_BILLINGS, tag = this.tag) => (dispatch) => {
     const from = "getByPartyListAndDateInterval";
-    dispatch(this.startCall(this.callTypes.action, from));
+    dispatch(this.startCall(this.callTypes.list, from));
     return this.sendIPC("getByPartyListAndDateInterval", { party, fromDate, toDate, billing: billing ?? ALL_BILLINGS, tag: tag ?? this.tag })
       .then((res) => {
-        dispatch(this.stopCall(this.callTypes.action));
+        dispatch(this.stopCall(this.callTypes.list));
         return Promise.resolve(res);
       })
       .catch((error) => {
-        dispatch(this.catchError(error.message, this.callTypes.action, from));
+        dispatch(this.catchError(error.message, this.callTypes.list, from));
         return Promise.reject(error);
       });
   };

@@ -25,8 +25,9 @@ class Actions extends _BillTransactionActionsBase {
 export const SalesInvoiceSlice = new _BaseSlice(reducerInfo.name)
 export const SalesInvoiceActions = new Actions(["S"], SalesInvoiceSlice)
 
-export default SalesInvoiceRedux = {
+const SalesInvoiceRedux = {
   ...reducerInfo,
   slice: SalesInvoiceSlice,
   actions: SalesInvoiceActions
 }
+export default SalesInvoiceRedux;

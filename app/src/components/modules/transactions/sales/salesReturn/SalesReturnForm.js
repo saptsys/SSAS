@@ -11,13 +11,15 @@ import { BillsDetail } from "../../../../../../dbManager/models/BillsDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { ItemMasterActions } from "../../../../../_redux/actionFiles/ItemMasterRedux";
 import { ItemUnitMasterActions } from "../../../../../_redux/actionFiles/ItemUnitMasterRedux";
-import { SalesReturnActions } from "../../../../../_redux/actionFiles/SalesReturnRedux";
+import SalesReturnRedux, { SalesReturnActions } from "../../../../../_redux/actionFiles/SalesReturnRedux";
 import moment from "moment";
 import { PartyMasterActions } from "../../../../../_redux/actionFiles/PartyMasterRedux";
 import { deleteColumnRenderer } from "../../../../table/columnRenderers";
 import { TaxMasterActions } from "../../../../../_redux/actionFiles/TaxMasterRedux";
 import { Modal } from "antd";
 import ImportChallansDialog from "../../deliveryChallan/ImportChallansDialog";
+import BillSelectionDialog from "../../transactionsComponents/BillSelectionDialog";
+import SalesInvoiceRedux from "../../../../../_redux/actionFiles/SalesInvoiceRedux";
 
 function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -29,6 +31,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const onFinish = (values) => {
     let val = { ...(entityForEdit ?? {}), ...values }
     val.billDate = val.billDate.toDate()
+    val.againstBillDate = val.againstBillDate.toDate()
     let final = {
       header: val,
       details: [...val.billsDetail.filter(x => x.itemMasterId), ...deletedBillsDetail]
@@ -42,7 +45,16 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
-  const [importChallanVisibility, setImportChallanVisibility] = useState(false)
+  const [billSelectionDialogVisibility, setBillSelectionDialogVisibility] = useState(false)
+
+
+  const startSelectAgainstBill = () => {
+    if (!form.getFieldValue("partyMasterId")) {
+      Modal.error({ title: "Please select party before you select against" })
+      return;
+    }
+    !billSelectionDialogVisibility && setBillSelectionDialogVisibility(true)
+  }
 
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
@@ -53,11 +65,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     const handleKeyDown = (event) => {
       switch (event.key) {
         case "F6":
-          if (!form.getFieldValue("partyMasterId")) {
-            Modal.error({ title: "Please select party before you import challans" })
-            return;
-          }
-          !importChallanVisibility && setImportChallanVisibility(true)
+          startSelectAgainstBill()
           break;
 
         default:
@@ -82,37 +90,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     getAutoVoucherBillNumber()
   }, [entityForEdit])
 
-  const importChallans = (rows) => {
-    setImportChallanVisibility(false)
-    let items = []
-    rows.forEach(challan => {
-      challan.deliveryDetails.forEach(detail => {
-        let billdetail = items.find(x => x.itemMasterId === detail.itemMasterId) ?? { rate: 0, quantity: 0, itemMasterId: detail.itemMasterId, itemUnitMasterId: detail.itemUnitMasterId, _isNew: true, count: 0 }
-        billdetail.count++
-        billdetail.quantity = detail.quantity + billdetail.quantity
-        billdetail.rate = detail.rate + billdetail.rate
-        if (billdetail._isNew) {
-          delete billdetail._isNew
-          items.push(billdetail)
-        }
-        else
-          items = items.map(x => x.itemMasterId === detail.itemMasterId ? billdetail : x)
-      })
-    })
-    const data = [...items.map(item => {
-      item.rate = parseFloat(item.rate / item.count).toFixed(2)
-      return new BillsDetail({
-        itemMasterId: item.itemMasterId,
-        itemUnitMasterId: item.itemUnitMasterId,
-        quantity: item.quantity,
-        rate: item.rate,
-        amount: (parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)
-      })
-    }),
-    ...(form.getFieldValue("billsDetail") ?? [])
-    ]
-    form.setFieldsValue({ "billsDetail": data })
-    calcTotals(data)
+  const onBillSelect = (rows) => {
+    setBillSelectionDialogVisibility(false)
+    if (rows && rows.length === 1 && rows[0]) {
+      form.setFieldsValue({ againstBillNumber: rows[0].billNumber, againstBillDate: moment(rows[0].billDate) })
+    }
   }
 
 
@@ -146,7 +128,12 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     <>
       <Form
         name="sales-return-form"
-        initialValues={{ ...entityForEdit, billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()], billDate: moment(entityForEdit.billDate ?? new Date()) }}
+        initialValues={{
+          ...entityForEdit,
+          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
+          billDate: moment(entityForEdit.billDate ?? new Date()),
+          againstBillDate: moment(entityForEdit.againstBillDate)
+        }}
         onFinish={onFinish}
         labelAlign="left"
         form={form}
@@ -197,12 +184,16 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     tabIndex="1"
                     placeholder="Bill No"
                     readOnly
+                    onDoubleClick={() => startSelectAgainstBill()}
                     onFocus={() => {
-                      alert("select bill")
+                      setTimeout(() => {
+                        if (!form.getFieldValue("againstBillNumber"))
+                          startSelectAgainstBill()
+                      }, 100)
                     }} />
                 </Form.Item>
                 <Form.Item name="againstBillDate" noStyle>
-                  <CustomDatePicker tabIndex="2" style={{ width: '60%' }} tabIndex="2" readOnly placeholder="Bill Date" />
+                  <CustomDatePicker style={{ width: '60%' }} readOnly placeholder="Bill Date" />
                 </Form.Item>
               </Input.Group>
             </Form.Item>
@@ -241,7 +232,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                       >
                         <Input
-                          tabIndex="3"
+                          tabIndex="2"
                           style={{ width: '60%' }} />
                       </Form.Item>
                     </Input.Group>
@@ -259,7 +250,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker tabIndex="4" style={{ width: '100%' }} data-focustable={"billsDetail"} />
+              <CustomDatePicker tabIndex="3" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
@@ -267,7 +258,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
           <Col span={24}>
             <EditableTable
               name="billsDetail"
-              nextTabIndex="5"
+              nextTabIndex="4"
               form={form}
               columns={[
                 {
@@ -354,7 +345,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               name="remarks"
               label="Remarks"
             >
-              <TextArea style={{ width: '100%' }} rows={3} tabIndex="5" />
+              <TextArea style={{ width: '100%' }} rows={3} tabIndex="4" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
@@ -367,7 +358,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="grossAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="5" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="- Discount">
@@ -488,7 +479,15 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
         </Row>
         <Form.Item noStyle shouldUpdate>
           {() => (
-            <ImportChallansDialog parties={[form.getFieldValue("partyMasterId")]} onImport={importChallans} isOpen={importChallanVisibility} onCancel={() => setImportChallanVisibility(false)} />
+            <BillSelectionDialog
+              parties={[form.getFieldValue("partyMasterId")]}
+              isOpen={billSelectionDialogVisibility}
+              onCancel={() => setBillSelectionDialogVisibility(false)}
+              onSelectDone={onBillSelect}
+              ReduxObj={SalesInvoiceRedux}
+              type="radio"
+              title="Select Sales Invoice"
+            />
           )}
         </Form.Item>
       </Form >
