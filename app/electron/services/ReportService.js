@@ -18,7 +18,7 @@ class ReportService {
       fromDate:fromDate,
       toDate:toDate,
       tag:["S" , "SR"],
-      billing:["GST" , "RETAIL"],
+      billing:["TAX" , "RETAIL"],
       includeDetail: false,
       includeParty:true,
     });
