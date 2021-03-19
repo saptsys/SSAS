@@ -20,7 +20,7 @@ const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSe
 
   const loadData = () => {
     if (trxId && isOpen) {
-      dispatch(ReduxObj.actions.getByIdWithDetails(trxId)).then(setData)
+      dispatch(ReduxObj.actions.getByBillNumber(trxId)).then(setData)
     }
   }
 

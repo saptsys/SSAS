@@ -124,6 +124,21 @@ export default class _BillTransactionActionsBase {
       });
   };
 
+
+  getByBillNumber = (number, billing = ALL_BILLINGS, tag = this.tag) => (dispatch) => {
+    const from = "getByBillNumber";
+    dispatch(this.startCall(this.callTypes.action, from));
+    return this.sendIPC("getByBillNumber", { billNumber: number, tag: this.tag, billing })
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.action));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        dispatch(this.catchError(error.message, this.callTypes.action, from));
+        return Promise.reject(error);
+      });
+  };
+
   getTotalBillsAndLastBill = (billing = ALL_BILLINGS, tag = this.tag) => (dispatch) => {
     const from = "getTotalBillsAndLastBill";
     dispatch(this.startCall(this.callTypes.action, from));
