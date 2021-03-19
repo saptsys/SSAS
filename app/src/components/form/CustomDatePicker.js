@@ -17,6 +17,7 @@ const CustomDatePicker = (props) => {
       format={props.format ?? dateFormat}
       open={isOpen}
       inputReadOnly={props.readOnly}
+      allowClear={!!props.allowClear}
       {...props}
     />
   );

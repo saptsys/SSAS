@@ -176,10 +176,12 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               label="Against Bill"
               required
               rules={[{ required: true }]}
+              extra="Double click 👆 here to select bill (F6)"
             >
               <Input.Group>
                 <Form.Item name="againstBillNumber" noStyle>
                   <Input
+
                     style={{ width: '40%' }}
                     tabIndex="1"
                     placeholder="Bill No"
@@ -193,7 +195,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     }} />
                 </Form.Item>
                 <Form.Item name="againstBillDate" noStyle>
-                  <CustomDatePicker style={{ width: '60%' }} readOnly placeholder="Bill Date" />
+                  <CustomDatePicker onDoubleClick={() => startSelectAgainstBill()} style={{ width: '60%' }} readOnly placeholder="Bill Date" />
                 </Form.Item>
               </Input.Group>
             </Form.Item>
