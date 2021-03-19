@@ -9,32 +9,39 @@ function SalesReturnTable(props) {
       title: "Bill No",
       dataIndex: "billNumber",
       align: 'center',
-      width: '15%',
+      width: '13%',
       render: (cell, row) => row.billing + ' / ' + cell
     },
     {
       title: "Date",
       dataIndex: "billDate",
-      width: '15%',
+      width: '13%',
       render: cell => moment(cell).format(dateFormat)
     },
     {
       title: "Party",
       dataIndex: "partyName",
-      width: '25%',
+      width: '23%',
+    },
+    {
+      title: "Against Bill No",
+      dataIndex: "againstBillNumber",
+      align: 'center',
+      width: '15%',
+      render: (cell, row) => row.billing + ' / ' + cell
+    },
+    {
+      title: "Against Bill Date",
+      dataIndex: "againstBillDate",
+      width: '15%',
+      render: cell => moment(cell).format(dateFormat)
     },
     {
       title: 'Net Amount',
       dataIndex: 'netAmount',
       align: 'right',
-      width: '15%'
+      width: '13%'
     },
-    {
-      title: "Remarks",
-      dataIndex: "remarks",
-      width: '30%'
-    },
-
   ];
 
   return (<CommonTable

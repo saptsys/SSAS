@@ -174,8 +174,8 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               rules={[{ required: true }]}
               getRecordOnChange={party => {
                 setSelectedParty(party)
-                if (!form.getFieldValue("billingAddress"))
-                  form.setFieldsValue({ billingAddress: party?.address })
+                // if (!form.getFieldValue("billingAddress"))
+                //   form.setFieldsValue({ billingAddress: party?.address })
                 const billing = party?.gstin ? "TAX" : "RETAIL"
                 getAutoVoucherBillNumber(billing)
                 form.setFieldsValue({
@@ -186,10 +186,25 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
             />
             <Form.Item
               labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}
-              name="billingAddress"
-              label="Address"
+              label="Against Bill"
+              required
+              rules={[{ required: true }]}
             >
-              <TextArea style={{ width: '100%' }} rows={3} />
+              <Input.Group>
+                <Form.Item name="againstBillNumber" noStyle>
+                  <Input
+                    style={{ width: '40%' }}
+                    tabIndex="1"
+                    placeholder="Bill No"
+                    readOnly
+                    onFocus={() => {
+                      alert("select bill")
+                    }} />
+                </Form.Item>
+                <Form.Item name="againstBillDate" noStyle>
+                  <CustomDatePicker tabIndex="2" style={{ width: '60%' }} tabIndex="2" readOnly placeholder="Bill Date" />
+                </Form.Item>
+              </Input.Group>
             </Form.Item>
           </Col>
           <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
@@ -226,7 +241,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                       >
                         <Input
-                          tabIndex="1"
+                          tabIndex="3"
                           style={{ width: '60%' }} />
                       </Form.Item>
                     </Input.Group>
@@ -244,7 +259,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetail"} />
+              <CustomDatePicker tabIndex="4" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
@@ -252,7 +267,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
           <Col span={24}>
             <EditableTable
               name="billsDetail"
-              nextTabIndex="3"
+              nextTabIndex="5"
               form={form}
               columns={[
                 {
@@ -339,7 +354,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               name="remarks"
               label="Remarks"
             >
-              <TextArea style={{ width: '100%' }} rows={3} tabIndex="3" />
+              <TextArea style={{ width: '100%' }} rows={3} tabIndex="5" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
@@ -371,7 +386,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0"
-                            tabIndex="5"
+                            tabIndex="6"
                             suffix='%'
                             style={{ width: '40%', textAlign: 'right' }}
 
@@ -391,7 +406,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0.00"
-                            tabIndex="6"
+                            tabIndex="7"
                             suffix=" "
                             style={{ width: '60%' }}
 
@@ -405,7 +420,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="taxableAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="7" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="8" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="+ SGST">
@@ -420,7 +435,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['SGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="8" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -436,7 +451,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['CGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -452,7 +467,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['IGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="11" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -462,7 +477,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="12" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </div>

@@ -137,4 +137,18 @@ export default class _BillTransactionActionsBase {
         return Promise.reject(error);
       });
   };
+
+  getByPartyListAndDateInterval = (party, fromDate, toDate, billing = ALL_BILLINGS, tag = this.tag) => (dispatch) => {
+    const from = "getByPartyListAndDateInterval";
+    dispatch(this.startCall(this.callTypes.action, from));
+    return this.sendIPC("getByPartyListAndDateInterval", { party, fromDate, toDate, billing: billing ?? ALL_BILLINGS, tag: tag ?? this.tag })
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.action));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        dispatch(this.catchError(error.message, this.callTypes.action, from));
+        return Promise.reject(error);
+      });
+  };
 }
