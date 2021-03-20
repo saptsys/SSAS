@@ -218,7 +218,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                   noStyle
                   readOnly
                 >
-                  <Input defaultValue="" style={{ width: '20%', textAlign: 'center' }} readOnly />
+                  <Input defaultValue="" style={{ width: '30%', textAlign: 'center' }} readOnly />
                 </Form.Item>
                 <Form.Item name="againstBillNumber" noStyle>
                   <Input
@@ -236,7 +236,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     }} />
                 </Form.Item>
                 <Form.Item name="againstBillDate" noStyle>
-                  <CustomDatePicker onDoubleClick={() => startSelectAgainstBill()} style={{ width: '50%' }} readOnly placeholder="Bill Date" />
+                  <CustomDatePicker onDoubleClick={() => startSelectAgainstBill()} style={{ width: '40%' }} readOnly placeholder="Bill Date" />
                 </Form.Item>
               </Input.Group>
             </Form.Item>
