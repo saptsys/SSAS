@@ -5,6 +5,8 @@ const { Not, Brackets } = require("typeorm");
 
 const { BillsTransaction } = require("../../dbManager/models/BillsTransaction");
 const { BillsDetail } = require("../../dbManager/models/BillsDetail");
+const { ItemMaster } = require("../../dbManager/models/ItemMaster");
+const { ItemUnitMaster } = require("../../dbManager/models/ItemUnitMaster");
 
 const DeliveryChallanService = require("../services/DeliveryChallanService");
 
@@ -325,7 +327,7 @@ class BillsTransactionService extends __BaseService {
     return this.challanService.getWithDetailsByPartiesAndDate(payload)
   }
 
-  getByBillNumber(payload) {
+  async getByBillNumber(payload) {
     const tag = payload?.tag ?? ALL_TAGS
     const billing = payload?.billing ?? ALL_BILLINGS
     const billNumber = payload.billNumber
@@ -333,12 +335,28 @@ class BillsTransactionService extends __BaseService {
       throw "Bill number is requried"
     }
     try {
-      return this.repository.createQueryBuilder("bill")
+      const stmt = this.repository.createQueryBuilder("bill")
         .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+        .leftJoinAndMapOne("bill.partyMasterId", PartyMaster, "party", "bill.partyMasterId = party.id")
+        .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
+        .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemMasterId = unit.id")
         .where("bill.billNumber = :billNumber", { billNumber: billNumber })
         .andWhere("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
-        .getOne();
+
+      let result = await stmt.getOne();
+      result.billsDetail = result.billsDetail?.map(x => {
+        return {
+          ...x,
+          itemMasterName: x.itemMasterId ? x.itemMasterId.name : null,
+          itemMasterId: x.itemMasterId ? x.itemMasterId.id : null,
+          itemUnitMasterName: x.itemUnitMasterId ? x.itemUnitMasterId.name : null,
+          itemUnitMasterId: x.itemUnitMasterId ? x.itemUnitMasterId.id : null,
+        }
+      })
+
+      return result
+
     } catch (e) {
       console.log(e)
       return Promise.reject({ message: "Something Went Wrong!" })

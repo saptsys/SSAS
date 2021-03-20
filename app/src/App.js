@@ -8,7 +8,7 @@ import { Spin } from "antd";
 import './app.less'
 import ModalRoutes from "./ModalRoutes";
 import InitialLoader from "./InitialLoader";
-
+import PrintRoutes from "./PrintRoutes";
 const App = () => {
   return (
     <Provider store={Store}>
@@ -16,6 +16,9 @@ const App = () => {
       <HashRouter hashType="slash">
         <InitialLoader>
           <Switch>
+          <Route path="/print/">
+              <PrintRoutes />
+            </Route>
             <Route path="/modal/">
               <ModalRoutes />
             </Route>

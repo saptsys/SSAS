@@ -75,6 +75,30 @@ export const MODAL_ROUTES = {
   }
 }
 
+export const PRINT_ROUTES = {
+  chalan: {
+    _path: "/print/chalan/:id",
+    _title: "Chalan"
+  },
+  sales: {
+    _path: "/print/sales/:id",
+    _title: "Sale"
+  },
+  salesReturn: {
+    _path: "/print/sales-return/:id",
+    _title: "Sales Return"
+  },
+  purchase: {
+    _path: "/print/purchase/:id",
+    _title: "Purchase"
+  },
+  purchaseReturn: {
+    _path: "/print/purchase-return/:id",
+    _title: "Purchase Return"
+  }
+}
+
+
 export function generateUrlChain(objPath) {
   let final = [];
   let last = [];

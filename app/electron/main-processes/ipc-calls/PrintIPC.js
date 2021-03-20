@@ -4,6 +4,6 @@ const PrintService = require("../../services/PrintService");
 
 const service = new PrintService();
 
-promiseIpc.on(createPath("challan"), (payload) => {
-  return service.challan(payload)
+promiseIpc.on(createPath(""), (payload) => {
+  return service.print(payload)
 });
