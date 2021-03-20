@@ -36,6 +36,7 @@ class BillsTransaction extends _BaseModel {
     taxableAmount,
     billingAddress,
     againstBillNumber,
+    againstBillBilling,
     againstBillDate,
     ...rest
   } = {}) {
@@ -72,6 +73,7 @@ class BillsTransaction extends _BaseModel {
     this.billsDetail = billsDetail;
     this.taxableAmount = taxableAmount,
 		this.billingAddress = billingAddress;
+		this.againstBillBilling = againstBillBilling;
   }
 }
 module.exports = {

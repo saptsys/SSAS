@@ -10,7 +10,7 @@ import _BillTransactionActionsBase from '../../../../_redux/actionFiles/_BillTra
 import CommonTable from '../../_common/CommonTable';
 import Text from 'antd/lib/typography/Text';
 
-const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSelectDone, onCancel, trxId, ReduxObj, columns, type = "check" }) => {
+const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSelectDone, onCancel, billNumber, billing, ReduxObj, columns, type = "check" }) => {
   const dispatch = useDispatch()
 
   const billState = useSelector(s => s[ReduxObj.name])
@@ -19,14 +19,14 @@ const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSe
   const [selectedRows, setselectedRows] = useState([])
 
   const loadData = () => {
-    if (trxId && isOpen) {
-      dispatch(ReduxObj.actions.getByBillNumber(trxId)).then(setData)
+    if (billNumber && isOpen) {
+      dispatch(ReduxObj.actions.getByBillNumber(billNumber, billing)).then(setData)
     }
   }
 
   useEffect(() => {
     loadData()
-  }, [trxId, isOpen])
+  }, [billNumber, isOpen])
 
   useEffect(() => {
     if (isOpen === false)
@@ -53,15 +53,17 @@ const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSe
       <CommonTable
         title={() => data ? (
           <Space direction="horizontal" size={12}>
+            <Text >Billing: {data?.billing}</Text>
             <Text >Bill Number: {data?.billNumber}</Text>
             <Text >Bill Date: {moment(data?.billDate).format(dateFormat)}</Text>
-            <Text >Party: {data?.partyName}</Text>
+            <Text >Party: {data?.partyMaster?.name}</Text>
+            <Text >Net Amt: {data?.netAmount}</Text>
           </Space>
         ) : undefined}
         columns={columns ?? [
           {
             title: "Item",
-            dataIndex: "itemName",
+            dataIndex: "itemMasterName",
             width: '25%'
           },
           {
@@ -70,7 +72,7 @@ const BillDetailsSelectionDialog = ({ title = "Select Bill's Item", isOpen, onSe
             width: '20%'
           }, {
             title: "Unit",
-            dataIndex: "itemUnitName",
+            dataIndex: "itemUnitMasterName",
             width: '12%',
           }, {
             title: "Qty",

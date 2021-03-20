@@ -3,7 +3,7 @@ const __BaseEntity = require("./__BaseEntity");
 const NAME = "BillsTransaction";
 const TABLE_NAME = "bill_trx";
 const { BillsTransaction } = require("./../models/BillsTransaction");
-const { ALL_BILLINGS,ALL_TAGS } = require("../../Constants/Transactionals")
+const { ALL_BILLINGS, ALL_TAGS } = require("../../Constants/Transactionals")
 
 module.exports = new EntitySchema({
   name: NAME,
@@ -155,6 +155,12 @@ module.exports = new EntitySchema({
     againstBillDate: {
       name: "against_bill_date",
       type: "date",
+      nullable: true,
+    },
+    againstBilling: {
+      name: "against_billing",
+      type: "simple-enum",
+      enum: ALL_BILLINGS,
       nullable: true,
     },
   },

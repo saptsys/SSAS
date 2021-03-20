@@ -28,7 +28,7 @@ function SalesReturnTable(props) {
       dataIndex: "againstBillNumber",
       align: 'center',
       width: '15%',
-      render: (cell, row) => row.billing + ' / ' + cell
+      render: (cell, row) => row.againstBilling + ' / ' + cell
     },
     {
       title: "Against Bill Date",

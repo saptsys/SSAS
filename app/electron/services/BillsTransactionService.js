@@ -337,7 +337,7 @@ class BillsTransactionService extends __BaseService {
     try {
       const stmt = this.repository.createQueryBuilder("bill")
         .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
-        .leftJoinAndMapOne("bill.partyMasterId", PartyMaster, "party", "bill.partyMasterId = party.id")
+        .leftJoinAndMapOne("bill.partyMaster", PartyMaster, "party", "bill.partyMasterId = party.id")
         .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
         .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemMasterId = unit.id")
         .where("bill.billNumber = :billNumber", { billNumber: billNumber })

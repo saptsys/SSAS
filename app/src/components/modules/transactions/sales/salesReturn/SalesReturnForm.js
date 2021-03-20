@@ -105,7 +105,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const onBillSelect = (rows) => {
     setBillSelectionDialogVisibility(false)
     if (rows && rows.length === 1 && rows[0]) {
-      form.setFieldsValue({ againstBillNumber: rows[0].billNumber, againstBillDate: moment(rows[0].billDate) })
+      form.setFieldsValue({
+        againstBillNumber: rows[0].billNumber,
+        againstBilling: rows[0].billing,
+        againstBillDate: moment(rows[0].billDate)
+      })
     }
   }
   const onItemsSelect = (rows) => {
@@ -209,10 +213,17 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               extra="Double click 👆 here to select bill (F6)"
             >
               <Input.Group>
+                <Form.Item
+                  name={['againstBilling']}
+                  noStyle
+                  readOnly
+                >
+                  <Input defaultValue="" style={{ width: '20%', textAlign: 'center' }} readOnly />
+                </Form.Item>
                 <Form.Item name="againstBillNumber" noStyle>
                   <Input
 
-                    style={{ width: '40%' }}
+                    style={{ width: '30%' }}
                     tabIndex="1"
                     placeholder="Bill No"
                     readOnly
@@ -225,7 +236,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     }} />
                 </Form.Item>
                 <Form.Item name="againstBillDate" noStyle>
-                  <CustomDatePicker onDoubleClick={() => startSelectAgainstBill()} style={{ width: '60%' }} readOnly placeholder="Bill Date" />
+                  <CustomDatePicker onDoubleClick={() => startSelectAgainstBill()} style={{ width: '50%' }} readOnly placeholder="Bill Date" />
                 </Form.Item>
               </Input.Group>
             </Form.Item>
@@ -525,7 +536,8 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
         <Form.Item noStyle shouldUpdate>
           {() => (
             <BillDetailsSelectionDialog
-              trxId={form.getFieldValue("againstBillNumber")}
+              billNumber={form.getFieldValue("againstBillNumber")}
+              billing={[form.getFieldValue("againstBilling")]}
               isOpen={itemSelectVisibility}
               onCancel={() => setItemSelectVisibility(false)}
               onSelectDone={onItemsSelect}
