@@ -134,6 +134,7 @@ function init() {
       show: false,
 
       title: app.getName(),
+      icon:"../resources/icon.ico",
     };
 
     mainWindow = new BrowserWindow(windowOptions);
