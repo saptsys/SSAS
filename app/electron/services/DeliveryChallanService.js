@@ -48,7 +48,7 @@ class DeliveryChallanService extends __BaseService {
         .leftJoin(PartyMaster, "partyMaster", "deliveryChallan.partyMasterId = partyMaster.id")
         .orWhere("deliveryChallan.voucherNumber = :term", { term: term })
         .orWhere("deliveryChallan.challanNumber = :term", { term: term })
-        .orWhere("deliveryChallan.challanDate = :term", { term: term })
+        .orWhere("date(deliveryChallan.challanDate) = :date(term)", { term: term })
         .orWhere("deliveryChallan.grossAmount = :term", { term: term })
         .orWhere("deliveryChallan.netAmount = :term", { term: term })
         .orWhere("deliveryChallan.remarks = :term", { term: term })
@@ -136,8 +136,8 @@ class DeliveryChallanService extends __BaseService {
       const stmt = this.repository
         .createQueryBuilder("chalan")
         .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .andWhere("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= :date(fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= :date(toDate)) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
         .select([
           ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
@@ -158,8 +158,8 @@ class DeliveryChallanService extends __BaseService {
         .createQueryBuilder("chalan")
         .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
         .leftJoinAndMapOne("chalan.partyMasterId", PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .andWhere("( (:fromDate IS NULL) OR (chalan.challanDate >= :fromDate) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (chalan.challanDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= :date(fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= :date(toDate)) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
       const data = await stmt.getMany()
       return data.map(x => {

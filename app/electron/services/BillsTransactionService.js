@@ -56,7 +56,7 @@ class BillsTransactionService extends __BaseService {
             .orWhere("bill.billNumber = :billNumber", { billNumber: term })
             .orWhere("bill.remarks = :remarks", { remarks: term })
             .orWhere("bill.netAmount = :netAmount", { netAmount: term })
-            .orWhere("bill.billDate = :billDate", { billDate: term })
+            .orWhere("date(bill.billDate) = :date(billDate)", { billDate: term })
             .orWhere("partyMaster.name = :name", { name: term })
         }))
         .limit(limit)
@@ -150,8 +150,8 @@ class BillsTransactionService extends __BaseService {
         .where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
         .andWhere(new Brackets(sq => {
-          sq.where("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
-            .andWhere("( (:toDate IS NULL) OR (bill.billDate <= :toDate) )", { toDate: toDate })
+          sq.where("( (:fromDate IS NULL) OR (date(bill.billDate) >= :date(fromDate)) )", { fromDate: fromDate })
+            .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= :date(toDate)) )", { toDate: toDate })
             .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: party })
         }))
         .select([
@@ -403,8 +403,8 @@ class BillsTransactionService extends __BaseService {
 
       stmt.where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
-        .andWhere("( (:fromDate IS NULL) OR (bill.billDate >= :fromDate) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (bill.billDate <= :toDate) )", { toDate: toDate })
+        .andWhere("( (:fromDate IS NULL) OR (date(bill.billDate) >= :date(fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= :date(toDate)) )", { toDate: toDate })
         .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: parties })
 
       if (limit) {

@@ -20,6 +20,7 @@ import {
 
 import { glob } from "glob";
 import path from 'path'
+import DeliveryChallanService from './electron/services/DeliveryChallanService';
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -65,9 +66,16 @@ function init() {
   }
   sout("database connecting: " + firmInfo.activeDBPath);
   setDatabaseConnection(firmInfo.activeDBPath)
-    .then(() => {
+    .then(async () => {
       sout("database connected ");
-      loadMainProcess();
+      const test = new DeliveryChallanService()
+      console.log(await test.getByPartyListAndDateInterval({
+        party: [1],
+        fromDate: new Date('2021-03-14'),
+        toDate: new Date('2021-03-18')
+      }))
+      // loadMainProcess();
+      app.exit()
     })
     .catch((e) => {
       console.log(e)
@@ -134,7 +142,7 @@ function init() {
       show: false,
 
       title: app.getName(),
-      icon:"../resources/icon.ico",
+      icon: "../resources/icon.ico",
     };
 
     mainWindow = new BrowserWindow(windowOptions);
