@@ -339,7 +339,7 @@ class BillsTransactionService extends __BaseService {
         .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
         .leftJoinAndMapOne("bill.partyMaster", PartyMaster, "party", "bill.partyMasterId = party.id")
         .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
-        .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemMasterId = unit.id")
+        .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
         .where("bill.billNumber = :billNumber", { billNumber: billNumber })
         .andWhere("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })

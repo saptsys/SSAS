@@ -30,4 +30,3 @@ const SalesInvoiceRedux = {
   slice: SalesInvoiceSlice,
   actions: SalesInvoiceActions
 }
-export default SalesInvoiceRedux;

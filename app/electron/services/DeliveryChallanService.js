@@ -80,12 +80,31 @@ class DeliveryChallanService extends __BaseService {
     }
   }
 
-  getByIdWithDetails(trxId) {
+  async getByIdWithDetails(trxId) {
     try {
-      return this.repository.createQueryBuilder("chalan")
+      const stmt = this.repository.createQueryBuilder("chalan")
         .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
+        .leftJoinAndMapOne("chalan.partyMasterId", PartyMaster, "party", "chalan.partyMasterId = party.id")
+        .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
+        .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
         .where("chalan.id = :id", { id: trxId })
-        .getOne();
+      let data = await stmt.getOne()
+      data = {
+        ...data,
+        partyMaster: data.partyMasterId ? data.partyMasterId : null,
+        partyMasterId: data.partyMasterId ? data.partyMasterId.id : null,
+      }
+      data.deliveryDetails = data.deliveryDetails.map(x => {
+        return {
+          ...x,
+          itemMaster: x.itemMasterId ? x.itemMasterId : null,
+          itemMasterId: x.itemMasterId ? x.itemMasterId.id : null,
+          itemUnitMaster: x.itemUnitMasterId ? x.itemUnitMasterId : null,
+          itemUnitMasterId: x.itemUnitMasterId ? x.itemUnitMasterId.id : null,
+        }
+      })
+      return data
+
     } catch (e) {
       console.log(e)
       return Promise.reject({ message: "Something Went Wrong!" })
