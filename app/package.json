@@ -2,7 +2,7 @@
   "name": "saptsys",
   "productName": "ssas",
   "version": "0.0.1",
-  "description": "Saptsys Simple Accounting Project, created specially for saree photo labs or saree modeling industry",
+  "description": "Saptsys Simple Accounting Software",
   "main": "./main.prod.js",
   "author": {
     "name": "saptsys",
