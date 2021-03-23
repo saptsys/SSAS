@@ -3,7 +3,8 @@
  */
 import {
   app,
-  BrowserWindow
+  BrowserWindow,
+  Tray, Menu
 } from 'electron';
 import {
   autoUpdater
@@ -20,7 +21,8 @@ import {
 
 import { glob } from "glob";
 import path from 'path'
-import DeliveryChallanService from './electron/services/DeliveryChallanService';
+import fs from 'fs';
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -30,7 +32,19 @@ export default class AppUpdater {
 }
 
 function init() {
+  let mainWindow = null;
 
+  const gotTheLock = app.requestSingleInstanceLock()
+  if (!gotTheLock) {
+    app.quit()
+    return
+  }
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
 
   const firmInfo = new FirmInfoService()
   if (firmInfo.isValid.status === false) {
@@ -77,7 +91,6 @@ function init() {
     });
 
 
-  let mainWindow = null;
 
   if (process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support');
@@ -120,12 +133,16 @@ function init() {
     ) {
       await installExtensions();
     }
+
+    var iconpath = path.join(__dirname, '../resources/icon.ico') // path of y
+
     const windowOptions = {
       webPreferences: {
         nodeIntegration: true,
         webSecurity: true,
         contextIsolation: false,
         preload: __dirname + "/preload.js",
+        icon: iconpath
       },
       backgroundColor: "-webkit-linear-gradient(top, #3dadc2 0%,#2f4858 100%)",
 
@@ -143,6 +160,29 @@ function init() {
     mainWindow.loadURL(`file://${__dirname}/app.html`);
     mainWindow.webContents.openDevTools({ mode: "detach" });
 
+    var appIcon = new Tray(iconpath)
+
+    appIcon.on("click", function () {
+      mainWindow.show()
+    })
+
+    var contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Open SSAS', click: function () {
+          mainWindow.show()
+          mainWindow.maximize()
+        }
+      },
+      {
+        label: 'Quit', click: function () {
+          app.isQuiting = true
+          app.quit()
+        }
+      }
+    ])
+
+    appIcon.setContextMenu(contextMenu)
+
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     mainWindow.webContents.on('did-finish-load', () => {
@@ -157,6 +197,17 @@ function init() {
         mainWindow.focus();
       }
     });
+
+    mainWindow.on('close', function (event) {
+      if (!app.isQuiting) {
+        event.preventDefault()
+        mainWindow.hide()
+      }
+    })
+
+    mainWindow.on('show', function () {
+      appIcon.setHighlightMode('always')
+    })
 
     mainWindow.on('closed', () => {
       mainWindow = null;

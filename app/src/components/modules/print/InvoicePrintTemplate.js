@@ -183,6 +183,7 @@ const InvoicePrintTemplate = () => {
             border="1"
             width="100%"
             cellSpacing="0"
+            className="nonBreakable"
           >
             <tbody>
               <tr>
@@ -218,6 +219,7 @@ const InvoicePrintTemplate = () => {
             border="1"
             width="100%"
             cellSpacing="0"
+            className="nonBreakable"
           >
             <tbody>
               <tr>
