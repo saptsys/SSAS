@@ -25,8 +25,6 @@ class PrintService {
         contextIsolation: false,
         preload: __dirname + "/preload.js",
       },
-      resizable: false,
-      modal: true,
     }
 
     if(printOptions.silent){
@@ -38,12 +36,14 @@ class PrintService {
     win.loadURL(`file://${__dirname}/app.html#/${path}`);
     win.webContents.on('did-finish-load', () => {
       if(!printOptions.preview){
-        win.webContents.print({ silent: printOptions.silent })
+        win.webContents.print({
+          silent: printOptions.silent
+        })
       }
       if(printOptions.silent){
         setTimeout(() => {
           win.close();
-        }, 1000);
+        }, 5000);
       }
     })
   }

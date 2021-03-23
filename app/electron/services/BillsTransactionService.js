@@ -74,18 +74,31 @@ class BillsTransactionService extends __BaseService {
    * @param {Array<String>} payload?.billing ?? ALL_BILLINGS
    * @param {Array<String>} payload.billId
    */
-  getByIdWithDetails(payload) {
+  async getByIdWithDetails(payload) {
     // const tag = payload?.tag ?? ALL_TAGS
     // const billing = payload?.billing ?? ALL_BILLINGS
     // const billId = payload.billId
     const billId = payload
     try {
-      return this.repository.createQueryBuilder("bill")
-        .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
-        .where("bill.id = :id", { id: billId })
-        // .andWhere("bill.tag IN (:...tag)", { tag: tag })
-        // .andWhere("bill.billing IN (:...billing)", { billing: billing })
-        .getOne();
+      const stmt = this.repository.createQueryBuilder("bill")
+      .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+      .leftJoinAndMapOne("bill.partyMaster", PartyMaster, "party", "bill.partyMasterId = party.id")
+      .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
+      .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
+      .where("bill.id = :id", { id: billId })
+
+      let result = await stmt.getOne();
+      result.billsDetail = result.billsDetail?.map(x => {
+        return {
+          ...x,
+          itemMaster: x.itemMasterId ? x.itemMasterId : null,
+          itemMasterId: x.itemMasterId ? x.itemMasterId.id : null,
+          itemUnitMaster: x.itemUnitMasterId ? x.itemUnitMasterId : null,
+          itemUnitMasterId: x.itemUnitMasterId ? x.itemUnitMasterId.id : null,
+        }
+      })
+
+      return result
     } catch (e) {
       console.log(e)
       return Promise.reject({ message: "Something Went Wrong!" })

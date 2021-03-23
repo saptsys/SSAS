@@ -1,0 +1,57 @@
+@media print {
+  td,
+  th {
+      line-height: 250x;
+  }
+  .border-b-0 {
+      border-bottom: 0;
+  }
+  .border-t-0 {
+      border-top: 0;
+  }
+  .border-r-0 {
+      border-right: 0;
+  }
+  .border-l-0 {
+      border-left: 0;
+  }
+  .tbl {
+      display: table;
+  }
+  .tbl>div {
+      display: table-row;
+  }
+  /* table structure is three level: table > row > cell */
+  .tbl>div>* {
+      display: table-cell;
+  }
+  /* special cases */
+  .tbl .tbl-head {
+      display: table-header-group;
+  }
+  .tbl .tbl-body {
+      display: table-row-group;
+  }
+  .tbl .tbl-foot {
+      display: table-footer-group;
+  }
+
+  .nonBreakable{
+      page-break-inside: avoid;
+  }
+}
+/*end of media print*/
+.a5-half{
+  width: 14.81cm;
+  height: calc(21.1cm/2);
+}
+
+.a5{
+  width: 14.81cm;
+  height: 21.1cm;
+}
+
+.a4 {
+  width: 21cm;
+  height: 29.7cm;
+}

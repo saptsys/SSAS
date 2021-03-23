@@ -68,14 +68,7 @@ function init() {
   setDatabaseConnection(firmInfo.activeDBPath)
     .then(async () => {
       sout("database connected ");
-      const test = new DeliveryChallanService()
-      console.log(await test.getByPartyListAndDateInterval({
-        party: [1],
-        fromDate: new Date('2021-03-14'),
-        toDate: new Date('2021-03-18')
-      }))
-      // loadMainProcess();
-      app.exit()
+      loadMainProcess();
     })
     .catch((e) => {
       console.log(e)
