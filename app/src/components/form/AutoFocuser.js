@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 
-const AutoFocuser = ({ children, lastElement }) => {
+const AutoFocuser = ({ children, lastElement, onLastElement }) => {
+  const id = "auto-focuser-" + function () {
+    const a = new Date()
+    return a.getTime() + "" + a.getMilliseconds()
+  }()
   useEffect(() => {
-    const mainDiv = document.getElementById(`auto-focuser`)
+    const mainDiv = document.getElementById(id)
 
     const keyUpEvent = (event) => {
       if (event.key === "Enter") {
@@ -40,6 +44,7 @@ const AutoFocuser = ({ children, lastElement }) => {
               event.preventDefault()
               document.querySelector(lastElement)?.focus()
             }
+            onLastElement && onLastElement()
           }
         }
       }
@@ -48,9 +53,9 @@ const AutoFocuser = ({ children, lastElement }) => {
 
     mainDiv?.addEventListener('keydown', keyUpEvent)
     return () => keyUpEvent ? mainDiv?.removeEventListener("keydown", keyUpEvent) : null
-  }, [])
+  }, [onLastElement, lastElement])
   return (
-    <div id="auto-focuser">
+    <div id={id} className="auto-focuser">
       {children}
     </div>
   );
