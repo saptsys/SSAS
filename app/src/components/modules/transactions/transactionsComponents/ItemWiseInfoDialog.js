@@ -6,13 +6,13 @@ import AutoFocuser from '../../../form/AutoFocuser';
 
 const ItemWiseInfoDialog = ({
   data = {
-    amount: 120.00,
+    amount: 0.00,
     otherPercentage: 0.00,
-    otherAmount: -20.00,
-    assessableAmount: 100.0,
-    SGSTPercentage: 6.00,
+    otherAmount: 0.00,
+    assessableAmount: 0.0,
+    SGSTPercentage: 0.00,
     SGSTAmount: 0.00,
-    CGSTPercentage: 6.00,
+    CGSTPercentage: 0.00,
     CGSTAmount: 0.00,
     IGSTPercentage: 0.00,
     IGSTAmount: 0.00,
@@ -53,9 +53,9 @@ const ItemWiseInfoDialog = ({
       closable={false}
       destroyOnClose
       bodyStyle={{ padding: '5px', paddingTop: '10px' }}
-      onFinish={onFinish}
+      // onFinish={onFinish}
     >
-      <AutoFocuser onLastElement={() => editInfoForm.submit()}>
+      <AutoFocuser onLastElement={() => onFinish(editInfoForm.getFieldsValue())}>
         <Form
           form={editInfoForm}
           name="edit-info-form"

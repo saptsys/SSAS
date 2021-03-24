@@ -13,6 +13,7 @@ const EditableCell = ({
   addRow,
   currentCellValue,
   setCurrentCellValue,
+  setCurrentCellName,
   dataIndex,
   record,
   rowIndex,
@@ -27,6 +28,7 @@ const EditableCell = ({
   const setVal = val => {
     currentCellValue = { [rowIndex]: { ...record, [dataIndex]: val } }
     setCurrentCellValue(currentCellValue)
+    setCurrentCellName({ dataIndex, colIndex })
   }
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
   const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
@@ -134,13 +136,14 @@ const EditableCell = ({
 
 const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, afterSave, beforeSave = (newRow, oldRow) => newRow, deleteBtnHandler }) => {
   const [currentCellValue, setCurrentCellValue] = useState()
+  const [currentCellName, setCurrentCellName] = useState()
   const saveRow = () => {
     if (currentCellValue) {
       let tmp = [...form.getFieldValue(name)]
       let newRow, oldRow;
       Object.keys(currentCellValue).forEach(r => {
         oldRow = tmp[r]
-        const beforeSaveRes = beforeSave(currentCellValue[r], oldRow)
+        const beforeSaveRes = beforeSave(currentCellValue[r], oldRow, currentCellName)
         newRow = beforeSaveRes
         tmp[r] = beforeSaveRes
       })
@@ -148,7 +151,7 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
         [name]: tmp
       })
       if (afterSave)
-        afterSave(newRow, oldRow, tmp)
+        afterSave(newRow, oldRow, tmp, currentCellName)
       setCurrentCellValue(null)
     }
   }
@@ -207,6 +210,7 @@ const EditableTable = ({ name, columns, form, nextTabIndex, autoAddRow = null, a
                     addRow: addRow,
                     currentCellValue,
                     setCurrentCellValue,
+                    setCurrentCellName,
                     dataIndex: col.dataIndex,
                     record,
                     rowIndex,

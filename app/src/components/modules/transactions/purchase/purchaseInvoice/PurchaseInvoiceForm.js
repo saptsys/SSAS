@@ -43,7 +43,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
-  const [editInfoVisibility, setEditInfoVisibility] = useState(false)
+  const [currnetEditInfoData, setCurrnetEditInfoData] = useState(null)
 
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
@@ -53,6 +53,8 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
 
     const handleKeyDown = (event) => {
       switch (event.key) {
+        case 'F1':
+          setCurrnetEditInfoData({ data: {}, visibility: true, rowIndex: 0 })
         default:
           break;
       }
@@ -100,6 +102,11 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
       IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
       netAmount: parseFloat(netAmount ?? 0).toFixed(2),
     })
+  }
+
+  const editInfoDone = (values, rowIndex) => {
+    alert("Done")
+    setCurrnetEditInfoData(null)
   }
 
   return (
@@ -290,7 +297,8 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
                 return newRow;
               }}
-              afterSave={(newRow, oldRow, data) => {
+              afterSave={(newRow, oldRow, data, { dataIndex }) => {
+                alert(dataIndex)
                 calcTotals(data)
               }}
               deleteBtnHandler={(cell, row, i) => {
@@ -482,7 +490,11 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             <ImportChallansDialog parties={[form.getFieldValue("partyMasterId")]} onImport={importChallans} isOpen={importChallanVisibility} onCancel={() => setImportChallanVisibility(false)} />
           )}
         </Form.Item> */}
-        <ItemWiseInfoDialog isOpen={editInfoVisibility} />
+        <ItemWiseInfoDialog
+          data={currnetEditInfoData?.data}
+          extraParams={currnetEditInfoData?.rowIndex}
+          isOpen={currnetEditInfoData?.visibility}
+          onEditDone={editInfoDone} />
       </Form >
     </>
   );
