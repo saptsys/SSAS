@@ -22,7 +22,7 @@ import {
 import { glob } from "glob";
 import path from 'path'
 import fs from 'fs';
-
+import initDB from "./InitDB"
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -32,10 +32,14 @@ export default class AppUpdater {
 }
 
 function init() {
+  if (handleStartupEvent()) {
+    return;
+  }
   let mainWindow = null;
 
   const gotTheLock = app.requestSingleInstanceLock()
   if (!gotTheLock) {
+    app.isQuiting = true
     app.quit()
     return
   }
@@ -52,6 +56,7 @@ function init() {
       reason
     } = firmInfo.isValid
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
+
       firmInfo.createNew({
         machineIds: ["54f5sd-sdfgdshdf-sdfhg-sdf234"],
         firms: [{
@@ -63,7 +68,8 @@ function init() {
         databases: [{
           id: 1,
           year: '2020-21',
-          active: true
+          active: true,
+          initialized:false
         }],
         expiryDate: function () {
           const d = new Date();
@@ -73,23 +79,40 @@ function init() {
         renewedDate: new Date()
       })
       sout("\n\nnew dummy firm info created please restart")
+
       // app.relaunch()
     }
+
+
+
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     app.exit()
   }
+
   sout("database connecting: " + firmInfo.activeDBPath);
   setDatabaseConnection(firmInfo.activeDBPath)
-    .then(async () => {
+    .then(async (connection) => {
       sout("database connected ");
+
+      if(!firmInfo.getActiveDB().initialized){
+        try{
+          if(await initDB(connection)){
+            firmInfo.setInit(true)
+          }
+        }catch(e){
+          console.error(e)
+        }
+      }
+
       loadMainProcess();
     })
     .catch((e) => {
       console.log(e)
       sout("database connection failed");
+      app.isQuiting = true
       app.quit();
     });
-
+    // return;
 
 
   if (process.env.NODE_ENV === 'production') {
@@ -122,6 +145,7 @@ function init() {
     // Respect the OSX convention of having the application in memory even
     // after all windows have been closed
     if (process.platform !== 'darwin') {
+      app.isQuiting = true
       app.quit();
     }
   });
@@ -134,7 +158,7 @@ function init() {
       await installExtensions();
     }
 
-    var iconpath = path.join(__dirname, '../resources/icon.ico') // path of y
+    var iconpath = path.join(__dirname, '../resources/icon256.ico') // path of y
 
     const windowOptions = {
       webPreferences: {
@@ -152,36 +176,39 @@ function init() {
       show: false,
 
       title: app.getName(),
-      icon: "../resources/icon.ico",
+      icon: iconpath
     };
 
     mainWindow = new BrowserWindow(windowOptions);
     mainWindow.setMenu(null)
     mainWindow.loadURL(`file://${__dirname}/app.html`);
-    mainWindow.webContents.openDevTools({ mode: "detach" });
+    sout("app.isPackaged = "+app.isPackaged)
+    if(!app.isPackaged){
+      mainWindow.webContents.openDevTools({ mode: "detach" });
+    }
 
-    var appIcon = new Tray(iconpath)
+    // var appIcon = new Tray()
 
-    appIcon.on("click", function () {
-      mainWindow.show()
-    })
+    // appIcon.on("click", function () {
+    //   mainWindow.show()
+    // })
 
-    var contextMenu = Menu.buildFromTemplate([
-      {
-        label: 'Open SSAS', click: function () {
-          mainWindow.show()
-          mainWindow.maximize()
-        }
-      },
-      {
-        label: 'Quit', click: function () {
-          app.isQuiting = true
-          app.quit()
-        }
-      }
-    ])
+    // var contextMenu = Menu.buildFromTemplate([
+    //   {
+    //     label: 'Open SSAS', click: function () {
+    //       mainWindow.show()
+    //       mainWindow.maximize()
+    //     }
+    //   },
+    //   {
+    //     label: 'Quit', click: function () {
+    //       app.isQuiting = true
+    //       app.quit()
+    //     }
+    //   }
+    // ])
 
-    appIcon.setContextMenu(contextMenu)
+    // appIcon.setContextMenu(contextMenu)
 
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -198,16 +225,16 @@ function init() {
       }
     });
 
-    mainWindow.on('close', function (event) {
-      if (!app.isQuiting) {
-        event.preventDefault()
-        mainWindow.hide()
-      }
-    })
+    // mainWindow.on('close', function (event) {
+    //   if (!app.isQuiting) {
+    //     event.preventDefault()
+    //     mainWindow.hide()
+    //   }
+    // })
 
-    mainWindow.on('show', function () {
-      appIcon.setHighlightMode('always')
-    })
+    // mainWindow.on('show', function () {
+    //   appIcon.setHighlightMode('always')
+    // })
 
     mainWindow.on('closed', () => {
       mainWindow = null;
@@ -240,15 +267,13 @@ function loadMainProcess() {
 /**
  * @returns Promise<Connection>
  */
-function setDatabaseConnection(dbName) {
-  let connectionPromise = createConnection({
+async function setDatabaseConnection(dbName) {
+  const connection = await createConnection({
     ...typeOrmConf,
     database: dbName
   });
-  connectionPromise.then((connection) => {
-    syncTypeORM(connection);
-  });
-  return connectionPromise;
+  await syncTypeORM(connection);
+  return connection;
 }
 
 async function syncTypeORM(connection) {
@@ -258,13 +283,82 @@ async function syncTypeORM(connection) {
 }
 
 function sout(log) {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
+  // if (
+  //   process.env.NODE_ENV === 'development' ||
+  //   process.env.DEBUG_PROD === 'true'
+  // ) {
     let line = "/n" + new Date() + " || " + log + "\n\n";
     console.log(line)
     require("fs").appendFileSync("log.txt", line);
-  }
+  // }
 }
+
+
+var handleStartupEvent = function () {
+  if (process.argv.length === 1) {
+    return false;
+  }
+
+  const ChildProcess = require('child_process');
+  const path = require('path');
+
+  const appFolder = path.resolve(process.execPath, '..');
+  const rootAtomFolder = path.resolve(appFolder, '..');
+  const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+  const exeName = path.basename(process.execPath);
+
+  const spawn = function (command, args) {
+    let spawnedProcess, error;
+
+    try {
+      spawnedProcess = ChildProcess.spawn(command, args, {
+        detached: true
+      });
+    } catch (error) { }
+
+    return spawnedProcess;
+  };
+
+  const spawnUpdate = function (args) {
+    return spawn(updateDotExe, args);
+  };
+
+  const squirrelEvent = process.argv[1];
+  switch (squirrelEvent) {
+    case '--squirrel-install':
+    case '--squirrel-updated':
+      // Optionally do things such as:
+      // - Add your .exe to the PATH
+      // - Write to the registry for things like file associations and
+      //   explorer context menus
+
+      // Install desktop and start menu shortcuts
+      spawnUpdate(['--createShortcut', exeName]);
+
+      setTimeout(app.quit, 1000);
+      return true;
+
+    case '--squirrel-uninstall':
+      // Undo anything you did in the --squirrel-install and
+      // --squirrel-updated handlers
+
+      // Remove desktop and start menu shortcuts
+      spawnUpdate(['--removeShortcut', exeName]);
+
+      setTimeout(app.quit, 1000);
+      return true;
+
+    case '--squirrel-obsolete':
+      // This is called on the outgoing version of your app before
+      // we update to the new version - it's the opposite of
+      // --squirrel-updated
+      app.isQuiting = true
+
+      app.quit();
+      return true;
+  }
+};
+
+
+
 init()
