@@ -5,6 +5,7 @@ import { DeliveryChallanActions, reducerInfo } from '../../../../_redux/actionFi
 import DeliveryChallanForm from './DeliveryChallanForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../_redux/actionFiles/LayoutRedux';
+import { PRINT_ROUTES } from '../../../../helpers/routes';
 
 export const setDeliveryStatusMessage = async (dispatch) => {
   dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then(res1 => {
@@ -37,6 +38,7 @@ function DeliveryChallanPage() {
       setDeliveryStatusMessage(dispatch)
     }}
     saveAndContinueBtn={true}
+    printRoute={PRINT_ROUTES.chalan}
   />
 }
 

@@ -2,6 +2,16 @@ import moment from "moment";
 import React from "react";
 import CommonTable from "../../_common/CommonTable";
 import { dateFormat } from "../../../../../Constants/Formats";
+import { errorDialog } from "../../../../helpers/dialogs";
+
+export const printDeliveryChallan = (id) => {
+  window.promiseIpc.send("Print/", {
+    path: "print/chalan/" + id,
+    options: {
+      silent: true
+    }
+  }).then(console.log).catch(err => errorDialog(err.message))
+}
 
 function DeliveryChallanTable(props) {
   const columns = [
@@ -43,6 +53,9 @@ function DeliveryChallanTable(props) {
 
   return (<CommonTable
     columns={columns}
+    printBtnHandler={(cell, row, index) => {
+      printDeliveryChallan(row.id)
+    }}
     {...props}
   />)
 }
