@@ -65,16 +65,14 @@ class FirmInfoService {
   }
 
   encode(content) {
-    return content;
-    // return Buffer.from(content).toString('base64').split('').map(x => {
-    //   const asci = x.charCodeAt()
-    //   return asci < 10 ? "00" + asci : asci < 100 ? "0" + asci : asci
-    // }).join('')
+    return Buffer.from(content).toString('base64').split('').map(x => {
+      const asci = x.charCodeAt()
+      return asci < 10 ? "00" + asci : asci < 100 ? "0" + asci : asci
+    }).join('')
   }
   decode(content) {
-    return content;
-    // const b64 = String.fromCharCode(...content.match(/.{1,3}/g))
-    // return Buffer.from(b64, 'base64').toString()
+    const b64 = String.fromCharCode(...content.match(/.{1,3}/g))
+    return Buffer.from(b64, 'base64').toString()
   }
 
   /**
