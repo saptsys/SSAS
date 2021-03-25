@@ -48,7 +48,7 @@ class DeliveryChallanService extends __BaseService {
         .leftJoin(PartyMaster, "partyMaster", "deliveryChallan.partyMasterId = partyMaster.id")
         .orWhere("deliveryChallan.voucherNumber = :term", { term: term })
         .orWhere("deliveryChallan.challanNumber = :term", { term: term })
-        .orWhere("date(deliveryChallan.challanDate) = :date(term)", { term: term })
+        .orWhere("date(deliveryChallan.challanDate) = date(:term)", { term: term })
         .orWhere("deliveryChallan.grossAmount = :term", { term: term })
         .orWhere("deliveryChallan.netAmount = :term", { term: term })
         .orWhere("deliveryChallan.remarks = :term", { term: term })
@@ -151,13 +151,18 @@ class DeliveryChallanService extends __BaseService {
    */
   getByPartyListAndDateInterval(payload) {
     try {
-      const { party, fromDate, toDate } = payload
+      const fromDate = payload.fromDate ?? null
+      const toDate = payload.toDate ?? null
+      let party = payload.party ?? [null]
+      if(party && party.length == 0 ){
+        party = [null]
+      }
       const stmt = this.repository
         .createQueryBuilder("chalan")
         .leftJoin(PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= :date(fromDate)) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= :date(toDate)) )", { toDate: toDate })
-        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
+        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= date(:fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= date(:toDate)) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:...party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
         .select([
           ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
           "party.name as partyName",
@@ -172,14 +177,19 @@ class DeliveryChallanService extends __BaseService {
 
   async getWithDetailsByPartiesAndDate(payload) {
     try {
-      const { party, fromDate, toDate } = payload
+      const fromDate = payload.fromDate ?? null
+      const toDate = payload.toDate ?? null
+      let party = payload.party ?? [null]
+      if (party && party.length == 0) {
+        party = [null]
+      }
       const stmt = this.repository
         .createQueryBuilder("chalan")
         .leftJoinAndMapMany("chalan.deliveryDetails", DeliveryDetail, "detail", "chalan.id = detail.deliveryTransactionId")
         .leftJoinAndMapOne("chalan.partyMasterId", PartyMaster, "party", "chalan.partyMasterId = party.id")
-        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= :date(fromDate)) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= :date(toDate)) )", { toDate: toDate })
-        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
+        .andWhere("( (:fromDate IS NULL) OR (date(chalan.challanDate) >= date(:fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(chalan.challanDate) <= date(:toDate)) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:...party , NULL) IS NULL) OR (chalan.partyMasterId IN (:...party)) )", { party: party })
       const data = await stmt.getMany()
       return data.map(x => {
         return {
