@@ -91,16 +91,14 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     }
   }, [])
 
-  const getAutoVoucherBillNumber = (billing) => {
-    if (!entityForEdit.id && billing !== entityForEdit.billing)
-      dispatch(SalesReturnActions.getTotalBillsAndLastBill([billing ?? entityForEdit.billing])).then((res) => {
-        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
-      })
-  }
-
   useEffect(() => {
-    getAutoVoucherBillNumber()
-  }, [entityForEdit])
+    if (entityForEdit.id && entityForEdit.partyMasterId === form.getFieldValue("partyMasterId")) {
+      form.setFieldsValue({ billNumber: entityForEdit.billNumber, voucherNumber: entityForEdit.voucherNumber })
+    } else if (entityForEdit.id ? entityForEdit.billing !== form.getFieldValue("billing") : form.getFieldValue("billing"))
+      dispatch(SalesReturnActions.getTotalBillsAndLastBill([(form.getFieldValue("billing"))])).then((res) => {
+        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1 })
+      })
+  }, [form.getFieldValue("billing")])
 
   const onBillSelect = (rows) => {
     setBillSelectionDialogVisibility(false)
@@ -132,8 +130,8 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   }
 
 
-  const calcTotals = (rows = form.getFieldValue("billsDetail")) => {
-    const currentPartyStateCode = selectedParty?.stateCode
+  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty) => {
+    const currentPartyStateCode = party?.stateCode
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount - discountAmount)
@@ -195,13 +193,14 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               rules={[{ required: true }]}
               getRecordOnChange={party => {
                 setSelectedParty(party)
-                // if (!form.getFieldValue("billingAddress"))
-                //   form.setFieldsValue({ billingAddress: party?.address })
-                const billing = party?.gstin ? "TAX" : "RETAIL"
-                getAutoVoucherBillNumber(billing)
-                form.setFieldsValue({
-                  billing: billing
-                })
+                if (party) {
+                  const billing = party?.gstin ? "TAX" : "RETAIL"
+                  form.setFieldsValue({
+                    billing: billing,
+                    // billingAddress: party?.address
+                  })
+                  calcTotals(form.getFieldValue("billsDetail"), party)
+                }
               }}
               accoutType={["BOTH", "CUSTOMER"]}
             />

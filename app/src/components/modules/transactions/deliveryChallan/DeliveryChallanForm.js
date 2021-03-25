@@ -72,7 +72,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             label="Customer"
             required
             rules={[{ required: true }]}
-            getRecordOnChange={(record) => !form.getFieldValue("deliveryAddress") && form.setFieldsValue({ deliveryAddress: record.address })}
+            getRecordOnChange={(record) => record && !form.getFieldValue("deliveryAddress") && form.setFieldsValue({ deliveryAddress: record.address })}
           />
           <Form.Item
             labelCol={{ lg: 4, md: 6, sm: 10, xs: 8 }} wrapperCol={{ lg: 12, md: 12, sm: 14, xs: 16 }}

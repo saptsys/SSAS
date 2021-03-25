@@ -80,6 +80,11 @@ module.exports = new EntitySchema({
             name: "igst_amount",
             type: "double",
             default: 0.0,
+        },
+        grossAmount: {
+            name: "gross_amount",
+            type: "double",
+            default: 0.0,
         }
     },
     relations: {

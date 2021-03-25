@@ -1,7 +1,8 @@
 import { Form, Input } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { round } from '../../../../../Constants/HelperFunctions';
 import AutoFocuser from '../../../form/AutoFocuser';
 
 const ItemWiseInfoDialog = ({
@@ -32,17 +33,27 @@ const ItemWiseInfoDialog = ({
 
 
   const calculateTotals = (values = editInfoForm.getFieldsValue()) => {
-    values.assessableAmount = parseFloat(values.amount + values.otherAmount).toFixed(2)
-    // values.SGSTPercentage = parseFloat(defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0).toFixed(2)
-    values.SGSTAmount = parseFloat((values.SGSTPercentage * values.assessableAmount) / 100).toFixed(2)
-    // values.CGSTPercentage = parseFloat(defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0).toFixed(2)
-    values.CGSTAmount = parseFloat((values.CGSTPercentage * values.assessableAmount) / 100).toFixed(2)
-    // values.IGSTPercentage = parseFloat(defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0).toFixed(2)
-    values.IGSTAmount = parseFloat((values.IGSTPercentage * values.assessableAmount) / 100).toFixed(2)
-    values.grsTotal = parseFloat(values.assessableAmount + values.SGSTAmount + values.CGSTAmount + values.IGSTAmount).toFixed(2)
+    values.assessableAmount = round((values.amount ?? 0) + (values.otherAmount ?? 0))
+    // values.SGSTPercentage = round(defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0)
+    values.SGSTAmount = round(((values.SGSTPercentage ?? 0) * values.assessableAmount) / 100)
+    // values.CGSTPercentage = round(defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0)
+    values.CGSTAmount = round(((values.CGSTPercentage ?? 0) * values.assessableAmount) / 100)
+    // values.IGSTPercentage = round(defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0)
+    values.IGSTAmount = round(((values.IGSTPercentage ?? 0) * values.assessableAmount) / 100)
+    values.grsTotal = round(values.assessableAmount + values.SGSTAmount + values.CGSTAmount + values.IGSTAmount)
 
     editInfoForm.setFieldsValue(values)
   }
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        const el = document.getElementById("first-element")
+        el && el.focus()
+        el && el.setSelectionRange(0, el.value.length)
+      }, 1000)
+    }
+  }, [isOpen])
 
   return (
     <Modal
@@ -53,7 +64,7 @@ const ItemWiseInfoDialog = ({
       closable={false}
       destroyOnClose
       bodyStyle={{ padding: '5px', paddingTop: '10px' }}
-      // onFinish={onFinish}
+    // onFinish={onFinish}
     >
       <AutoFocuser onLastElement={() => onFinish(editInfoForm.getFieldsValue())}>
         <Form
@@ -80,6 +91,7 @@ const ItemWiseInfoDialog = ({
                 noStyle
               >
                 <Input
+                  id="first-element"
                   onChange={e => {
                     if (e.target.value) {
                       const gAmt = editInfoForm.getFieldValue("amount")
@@ -170,7 +182,7 @@ const ItemWiseInfoDialog = ({
             </Input.Group>
           </Form.Item>
           <Form.Item name="grsTotal" label="Grs. Value">
-            <Input tabIndex="5" readOnly />
+            <Input tabIndex="5" readOnly defaultValue="0" />
           </Form.Item>
         </Form>
       </AutoFocuser>

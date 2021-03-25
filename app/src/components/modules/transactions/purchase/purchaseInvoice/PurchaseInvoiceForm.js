@@ -19,6 +19,7 @@ import { TaxMasterActions } from "../../../../../_redux/actionFiles/TaxMasterRed
 import { Modal } from "antd";
 import ImportChallansDialog from "../../deliveryChallan/ImportChallansDialog";
 import ItemWiseInfoDialog from "../../transactionsComponents/ItemWiseInfoDialog";
+import { round } from "../../../../../../Constants/HelperFunctions";
 
 function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
@@ -39,6 +40,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   };
 
   const { itemState, partyState, defaultFirm } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster, defaultFirm: s.FirmInfo.data.defaultFirm }))
+  const currentState = useSelector(s => s.PurchaseInvoice)
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
@@ -66,23 +68,57 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     }
   }, [])
 
-  const getAutoVoucherBillNumber = (billing) => {
-    if (!entityForEdit.id && billing !== entityForEdit.billing)
-      dispatch(PurchaseInvoiceActions.getTotalBillsAndLastBill([billing ?? entityForEdit.billing])).then((res) => {
-        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
-      })
-  }
+  // const getAutoVoucherBillNumber = (billing) => {
+  //   if ((billing ?? form.getFieldValue("billing")))
+  //     dispatch(PurchaseInvoiceActions.getTotalBillsAndLastBill([(billing ?? form.getFieldValue("billing"))])).then((res) => {
+  //       console.log("===================>getTotalBillsAndLastBill Recieved")
+  //       if (entityForEdit.id ? (billing ?? form.getFieldValue("billing")) !== entityForEdit.billing : (billing ?? form.getFieldValue("billing")))
+  //         form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
+  //     }).catch(err => console.log("ERRORRRRRR------->", err))
+  // }
 
   useEffect(() => {
-    getAutoVoucherBillNumber()
-  }, [entityForEdit])
+    if (entityForEdit.id && entityForEdit.partyMasterId === form.getFieldValue("partyMasterId")) {
+      form.setFieldsValue({ billNumber: entityForEdit.billNumber, voucherNumber: entityForEdit.voucherNumber })
+    } else if (entityForEdit.id ? entityForEdit.billing !== form.getFieldValue("billing") : form.getFieldValue("billing"))
+      dispatch(PurchaseInvoiceActions.getTotalBillsAndLastBill([(form.getFieldValue("billing"))])).then((res) => {
+        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1 })
+      })
+  }, [form.getFieldValue("billing")])
 
+  // useEffect(() => {
+  //   getAutoVoucherBillNumber()
+  // }, [])
 
-  const calcTotals = (rows = form.getFieldValue("billsDetail")) => {
-    const currentPartyStateCode = selectedParty.stateCode
-    const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
+  const calcItemWiseTotals = (items) => {
+    return items.reduce((occ, cur) => {
+      return {
+        subTotal: occ.subTotal + parseFloat(cur.amount ?? 0),
+        otherTotal: occ.otherTotal + parseFloat(cur.otherAmount ?? 0),
+        CGSTTotal: occ.CGSTTotal + parseFloat(cur.CGSTAmount ?? 0),
+        SGSTTotal: occ.SGSTTotal + parseFloat(cur.SGSTAmount ?? 0),
+        IGSTTotal: occ.IGSTTotal + parseFloat(cur.IGSTAmount ?? 0),
+        grossAmount: occ.grossAmount + parseFloat(cur.grossAmount ?? 0),
+      }
+    }, {
+      subTotal: 0,
+      otherTotal: 0,
+      CGSTTotal: 0,
+      SGSTTotal: 0,
+      IGSTTotal: 0,
+      grossAmount: 0,
+    })
+  }
+
+  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty) => {
+    const itemWiseTotals = calcItemWiseTotals(rows)
+    const currentPartyStateCode = party?.stateCode
+    console.log(currentPartyStateCode)
+    const grossAmount = round(itemWiseTotals.grossAmount)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
-    const taxableAmount = parseFloat(grossAmount - discountAmount)
+    const freightAmount = form.getFieldValue("freightAmount") ?? 0
+    const commisionAmount = form.getFieldValue("freightAmount") ?? 0
+    const taxableAmount = parseFloat(grossAmount + freightAmount + commisionAmount - discountAmount)
     const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
     const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
@@ -92,7 +128,6 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
       grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
-      // discountAmount: parseFloat(discountAmount ?? 0).toFixed(2),
       taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
       SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
       SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
@@ -101,12 +136,27 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
       IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
       IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
       netAmount: parseFloat(netAmount ?? 0).toFixed(2),
+      itemWiseTotals: itemWiseTotals
     })
   }
 
   const editInfoDone = (values, rowIndex) => {
-    alert("Done")
     setCurrnetEditInfoData(null)
+    calcTotals(form.getFieldValue("billsDetail").map((item, i) => {
+      if (i === rowIndex) {
+        item.assessableAmount = values.assessableAmount
+        item.otherPercentage = values.otherPercentage
+        item.otherAmount = values.otherAmount
+        item.SGSTPercentage = values.SGSTPercentage
+        item.SGSTAmount = values.SGSTAmount
+        item.CGSTPercentage = values.CGSTPercentage
+        item.CGSTAmount = values.CGSTAmount
+        item.IGSTPercentage = values.IGSTPercentage
+        item.IGSTAmount = values.IGSTAmount
+        item.grossAmount = values.grsTotal
+      }
+      return item
+    }))
   }
 
   return (
@@ -118,14 +168,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             ...entityForEdit,
             billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
             billDate: moment(entityForEdit.billDate ?? new Date()),
-            itemWiseTotals: {
-              subTotal: 0,
-              otherTotal: 0,
-              CGSTTotal: 0,
-              SGSTTotal: 0,
-              IGSTTotal: 0,
-              grossAmount: 0,
-            }
+            itemWiseTotals: calcItemWiseTotals((entityForEdit.billsDetail ?? []))
           }}
         onFinish={onFinish}
         labelAlign="left"
@@ -154,13 +197,14 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               rules={[{ required: true }]}
               getRecordOnChange={party => {
                 setSelectedParty(party)
-                if (!form.getFieldValue("billingAddress"))
-                  form.setFieldsValue({ billingAddress: party?.address })
-                const billing = party?.gstin ? "TAX" : "RETAIL"
-                getAutoVoucherBillNumber(billing)
-                form.setFieldsValue({
-                  billing: billing
-                })
+                if (party) {
+                  const billing = party?.gstin ? "TAX" : "RETAIL"
+                  form.setFieldsValue({
+                    billing: billing,
+                    billingAddress: party?.address
+                  })
+                  calcTotals(form.getFieldValue("billsDetail"), party)
+                }
               }}
               accoutType={["BOTH", "CUSTOMER"]}
             />
@@ -169,7 +213,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               name="billingAddress"
               label="Address"
             >
-              <TextArea style={{ width: '100%' }} rows={3} />
+              <TextArea style={{ width: '100%' }} rows={3} readOnly />
             </Form.Item>
           </Col>
           <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
@@ -199,7 +243,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                         readOnly
                       >
-                        <Input defaultValue="0" style={{ width: '40%', textAlign: 'center' }} readOnly />
+                        <Input defaultValue="" style={{ width: '40%', textAlign: 'center' }} readOnly />
                       </Form.Item>
                       <Form.Item
                         name={['billNumber']}
@@ -282,23 +326,49 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                     type: 'number',
                   },
                   width: '10%',
-                  align: 'right'
+                  align: 'right',
+                  onCell: (record, rowIndex) => ({
+                    onCustomKeyDown: (e, { row }) => {
+                      if (e.key === "Enter") {
+                        const item = row ?? record
+                        if (item) {
+                          setCurrnetEditInfoData({
+                            data: {
+                              amount: (parseFloat(item.quantity ?? 0) * parseFloat(item.rate ?? 0)),
+                              otherPercentage: item.otherPercentage,
+                              otherAmount: item.otherAmount,
+                              assessableAmount: item.assessableAmount,
+                              SGSTPercentage: item.SGSTPercentage,
+                              SGSTAmount: item.SGSTAmount,
+                              CGSTPercentage: item.CGSTPercentage,
+                              CGSTAmount: item.CGSTAmount,
+                              IGSTPercentage: item.IGSTPercentage,
+                              IGSTAmount: item.IGSTAmount,
+                              grsTotal: item.grossAmount,
+                            },
+                            visibility: true,
+                            rowIndex: rowIndex
+                          })
+                        }
+                      }
+                    }
+                  })
                 }, {
                   title: "Amount",
                   dataIndex: "amount",
                   width: '10%',
-                  align: 'right'
+                  align: 'right',
+                  footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.amount ?? 0), 0),
                 }
               ]}
               autoAddRow={{ ...(new BillsDetail()) }}
-              beforeSave={(newRow, oldRow) => {
+              beforeSave={(newRow, oldRow, { dataIndex, rowIndex }) => {
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
                   newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
                 return newRow;
               }}
-              afterSave={(newRow, oldRow, data, { dataIndex }) => {
-                alert(dataIndex)
+              afterSave={(newRow, oldRow, data, { dataIndex, rowIndex }) => {
                 calcTotals(data)
               }}
               deleteBtnHandler={(cell, row, i) => {
@@ -315,37 +385,40 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
         </Row>
         <Row className="footer-row">
           <Col span={11}>
-            <Form.Item wrapperCol={{ span: 24 }}>
-
-              <Table
-                bordered
-                size="small"
-                pagination={false}
-                columns={[
-                  {
-                    title: "Subtotal",
-                    dataIndex: "subTotal"
-                  }, {
-                    title: "Other +/-",
-                    dataIndex: "otherTotal"
-                  }, {
-                    title: "CGST Total",
-                    dataIndex: "CGSTTotal"
-                  }, {
-                    title: "SGST Total",
-                    dataIndex: "SGSTTotal"
-                  }, {
-                    title: "IGST Total",
-                    dataIndex: "IGSTTotal"
-                  }, {
-                    title: "Gross Amount",
-                    dataIndex: "grossAmount"
-                  }
-                ]}
-                dataSource={[
-                  form.getFieldValue("itemWiseTotals")
-                ]}
-              />
+            <Form.Item wrapperCol={{ span: 24 }} shouldUpdate={(val, newVal) => val.itemWiseTotals !== newVal.itemWiseTotals}>
+              {() => (
+                <Form.Item noStyle shouldUpdate>
+                  <Table
+                    bordered
+                    size="small"
+                    pagination={false}
+                    columns={[
+                      {
+                        title: "Subtotal",
+                        dataIndex: "subTotal"
+                      }, {
+                        title: "Other +/-",
+                        dataIndex: "otherTotal"
+                      }, {
+                        title: "CGST Total",
+                        dataIndex: "CGSTTotal"
+                      }, {
+                        title: "SGST Total",
+                        dataIndex: "SGSTTotal"
+                      }, {
+                        title: "IGST Total",
+                        dataIndex: "IGSTTotal"
+                      }, {
+                        title: "Gross Amount",
+                        dataIndex: "grossAmount"
+                      }
+                    ]}
+                    dataSource={[
+                      form.getFieldValue("itemWiseTotals")
+                    ]}
+                  />
+                </Form.Item>
+              )}
             </Form.Item>
             <br />
             <Form.Item
@@ -369,6 +442,94 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
+                    <Form.Item label="+ Freight">
+                      <Input.Group>
+                        <Form.Item
+                          name={['ferightPercentage']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (gAmt * e.target.value) / 100
+                                form.setFieldsValue({ freightAmount: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0"
+                            tabIndex="5"
+                            suffix='%'
+                            style={{ width: '40%', textAlign: 'right' }}
+
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={['freightAmount']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (100 * e.target.value) / gAmt
+                                form.setFieldsValue({ freightPercentage: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0.00"
+                            tabIndex="6"
+                            suffix=" "
+                            style={{ width: '60%' }}
+
+                          />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item label="+ Commission">
+                      <Input.Group>
+                        <Form.Item
+                          name={['commisionPercentage']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (gAmt * e.target.value) / 100
+                                form.setFieldsValue({ commisionAmount: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0"
+                            tabIndex="7"
+                            suffix='%'
+                            style={{ width: '40%', textAlign: 'right' }}
+
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={['commisionAmount']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (100 * e.target.value) / gAmt
+                                form.setFieldsValue({ commisionPercentage: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0.00"
+                            tabIndex="8"
+                            suffix=" "
+                            style={{ width: '60%' }}
+
+                          />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
                     <Form.Item label="- Discount">
                       <Input.Group>
                         <Form.Item
@@ -385,7 +546,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0"
-                            tabIndex="5"
+                            tabIndex="9"
                             suffix='%'
                             style={{ width: '40%', textAlign: 'right' }}
 
@@ -405,7 +566,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0.00"
-                            tabIndex="6"
+                            tabIndex="10"
                             suffix=" "
                             style={{ width: '60%' }}
 
@@ -419,7 +580,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="taxableAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="7" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="+ SGST">
@@ -434,7 +595,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['SGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="8" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="12" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -450,7 +611,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['CGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -466,7 +627,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['IGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -476,7 +637,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="15" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </div>

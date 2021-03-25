@@ -8,7 +8,6 @@ class SalesReturnModal extends BillsTransaction {
   constructor(params) {
     super(params)
     this.tag = "SR"
-    this.billing = "TAX" // default
   }
 }
 

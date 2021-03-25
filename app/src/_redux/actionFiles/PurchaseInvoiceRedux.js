@@ -8,7 +8,6 @@ class PurchaseInvoiceModal extends BillsTransaction {
     constructor(params) {
         super(params)
         this.tag = "P"
-        this.billing = "TAX" // default
     }
 }
 
