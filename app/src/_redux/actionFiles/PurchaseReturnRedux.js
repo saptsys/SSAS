@@ -4,16 +4,16 @@ import _BaseIpcActions from "./_BaseIpcActions";
 import _BaseSlice from "./_BaseSlice";
 import _BillTransactionActionsBase from "./_BillTransactionsBase";
 
-class PurchaseInvoiceModal extends BillsTransaction {
+class PurchaseReturnModal extends BillsTransaction {
   constructor(params) {
     super(params)
-    this.tag = "P"
+    this.tag = "PR"
   }
 }
 
 export const reducerInfo = {
-  name: 'PurchaseInvoice',
-  model: PurchaseInvoiceModal
+  name: 'PurchaseReturn',
+  model: PurchaseReturnModal
 }
 
 class Actions extends _BillTransactionActionsBase {
@@ -21,13 +21,11 @@ class Actions extends _BillTransactionActionsBase {
 }
 
 
-export const PurchaseInvoiceSlice = new _BaseSlice(reducerInfo.name)
-export const PurchaseInvoiceActions = new Actions(["P"], PurchaseInvoiceSlice)
+export const PurchaseReturnSlice = new _BaseSlice(reducerInfo.name)
+export const PurchaseReturnActions = new Actions(["PR"], PurchaseReturnSlice)
 
-const PurchaseInvoiceRedux = {
+const PurchaseReturnRedux = {
   ...reducerInfo,
-  slice: PurchaseInvoiceSlice,
-  actions: PurchaseInvoiceActions
+  slice: PurchaseReturnSlice,
+  actions: PurchaseReturnActions
 }
-
-export default PurchaseInvoiceRedux;

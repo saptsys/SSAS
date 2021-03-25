@@ -3,7 +3,8 @@ import React from "react";
 import CommonTable from "../../../_common/CommonTable";
 import { dateFormat } from "../../../../../../Constants/Formats";
 
-function SalesReturnTable(props) {
+function PurchaseReturnTable(props) {
+
   const columns = [
     {
       title: "Bill No",
@@ -50,4 +51,4 @@ function SalesReturnTable(props) {
   />)
 }
 
-export default SalesReturnTable;
+export default PurchaseReturnTable;

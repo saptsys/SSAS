@@ -56,6 +56,7 @@ const MainMenu = () => {
         </SubMenu>
         <SubMenu key={MODULE_ROUTES.transactions.purchase._path} title="Purchase">
           <Menu.Item key={MODULE_ROUTES.transactions.purchase.purchaseInvoice._path}>Purchase Invoice</Menu.Item>
+          <Menu.Item key={MODULE_ROUTES.transactions.purchase.purchaseReturn._path}>Purchase Return</Menu.Item>
         </SubMenu>
         <Menu.Item key={MODULE_ROUTES.transactions.deliveryChallan._path}>Delivery Challan</Menu.Item>
       </SubMenu>

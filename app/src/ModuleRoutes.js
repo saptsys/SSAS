@@ -15,6 +15,7 @@ import DeliveryChallan from "./components/modules/transactions/deliveryChallan/D
 import SalesInvoicePage from './components/modules/transactions/sales/salesInvoice/SalesInvoicePage';
 import SalesReturnPage from './components/modules/transactions/sales/salesReturn/SalesReturnPage';
 import PurchaseInvoicePage from './components/modules/transactions/purchase/purchaseInvoice/PurchaseInvoicePage';
+import PurchaseReturnPage from './components/modules/transactions/purchase/purchaseReturn/PurchaseReturnPage';
 
 const ModuleRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const ModuleRoutes = () => {
         <Route exact path={MODULE_ROUTES.transactions.sales.salesInvoice._path} component={SalesInvoicePage} />
         <Route exact path={MODULE_ROUTES.transactions.sales.salesReturn._path} component={SalesReturnPage} />
         <Route exact path={MODULE_ROUTES.transactions.purchase.purchaseInvoice._path} component={PurchaseInvoicePage} />
+        <Route exact path={MODULE_ROUTES.transactions.purchase.purchaseReturn._path} component={PurchaseReturnPage} />
 
         {/* Utilities */}
         <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
