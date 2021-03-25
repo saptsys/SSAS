@@ -6,6 +6,8 @@ import { DeliveryChallanActions } from '../../../_redux/actionFiles/DeliveryChal
 import moment from "moment"
 import { dateFormat } from "../../../../Constants/Formats";
 import './printStyle.less';
+import commaNumber from "comma-number";
+
 const ChalanPrintTemplate = () => {
   const dispatch = useDispatch()
   const [billData, setBillData] = useState(null)
@@ -96,8 +98,8 @@ const ChalanPrintTemplate = () => {
                           <td style={{ textAlign: "right", verticalAlign: "top" }}>{i + 1}</td>
                           <td style={{ verticalAlign: "top" }}>{chalan.itemMaster.name + (chalan.itemMaster.description ? ` (${chalan.itemMaster.description})` : "")}</td>
                           <td style={{ textAlign: "right", verticalAlign: "top" }} >{chalan.quantity}</td>
-                          <td style={{ textAlign: "right", verticalAlign: "top" }} >{chalan.rate}</td>
-                          <td style={{ textAlign: "right", verticalAlign: "top" }} >{chalan.amount}</td>
+                          <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(chalan.rate)}</td>
+                          <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(chalan.amount)}</td>
                         </tr>
                       )
                     })}
@@ -108,7 +110,7 @@ const ChalanPrintTemplate = () => {
                       <th style={{ textAlign: "right" }} className="border-r-0" colspan="2">Total:</th>
                       <th style={{ textAlign: "right" }}>{billData.deliveryDetails.map(x => x.quantity).reduce((x, y) => x + y)}</th>
                       <th style={{ textAlign: "left" }}></th>
-                      <th style={{ textAlign: "right" }}>{billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y)}</th>
+                      <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y))}</th>
                     </tr>
                     <tr>
                       <th style={{ textAlign: "right" }} className="border-r-0" colspan="2">
@@ -116,7 +118,7 @@ const ChalanPrintTemplate = () => {
                 </th>
                       <th style={{ textAlign: "left" }}></th>
                       <th style={{ textAlign: "left" }}></th>
-                      <th style={{ textAlign: "right" }}>{billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y)}</th>
+                      <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y))}</th>
                     </tr>
                   </tfoot>
                 </table>
@@ -130,7 +132,7 @@ const ChalanPrintTemplate = () => {
                     GSTIN: {FirmInfoState.gstin}
                   </div>
                   <div style={{ flexGrow: 1, textAlign: "right" }}>
-                    For , <strong>{FirmInfoState.firmName}</strong>
+                    For , <strong> {FirmInfoState.firmName}</strong>
                     <br /><br /><br /><br /><br />
                   </div>
                 </div>
