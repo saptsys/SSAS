@@ -28,7 +28,7 @@ const EditableCell = ({
   const setVal = val => {
     currentCellValue = { [rowIndex]: { ...record, [dataIndex]: val } }
     setCurrentCellValue(currentCellValue)
-    setCurrentCellName({ dataIndex, colIndex })
+    setCurrentCellName({ dataIndex, colIndex, rowIndex })
   }
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
   const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
@@ -123,6 +123,8 @@ const EditableCell = ({
         else
           focusCell(nextRowIndex, nextColIndex)
       }
+      props.onKeyDown && props.onKeyDown(e)
+      props.onCustomKeyDown && props.onCustomKeyDown(e, { row: currentCellValue ? currentCellValue[rowIndex] : undefined, rowIndex, colIndex })
     }}>
       {elmToReturn()}
     </td>

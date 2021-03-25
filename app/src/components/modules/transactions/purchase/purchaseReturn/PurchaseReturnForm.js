@@ -3,26 +3,25 @@ import { Form, Input, Row, Col, InputNumber, DatePicker, Table, Button } from "a
 import validateMsgs from "../../../../../helpers/validateMesseges";
 import { PartyDropdown } from "../../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../../Constants/Formats";
-import EditableTable, { getFirstFocusableCell } from "../../../_common/EditableTable";
+import EditableTable from "../../../_common/EditableTable";
 import CustomDatePicker from "../../../../form/CustomDatePicker";
-import './salesReturnForm.less'
+import './purchaseReturnForm.less'
 import TextArea from "antd/lib/input/TextArea";
 import { BillsDetail } from "../../../../../../dbManager/models/BillsDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { ItemMasterActions } from "../../../../../_redux/actionFiles/ItemMasterRedux";
 import { ItemUnitMasterActions } from "../../../../../_redux/actionFiles/ItemUnitMasterRedux";
-import SalesReturnRedux, { SalesReturnActions } from "../../../../../_redux/actionFiles/SalesReturnRedux";
+import { PurchaseReturnActions } from "../../../../../_redux/actionFiles/PurchaseReturnRedux";
 import moment from "moment";
-import { PartyMasterActions } from "../../../../../_redux/actionFiles/PartyMasterRedux";
-import { deleteColumnRenderer } from "../../../../table/columnRenderers";
 import { TaxMasterActions } from "../../../../../_redux/actionFiles/TaxMasterRedux";
 import { Modal } from "antd";
-import ImportChallansDialog from "../../deliveryChallan/ImportChallansDialog";
+import ItemWiseInfoDialog from "../../transactionsComponents/ItemWiseInfoDialog";
+import { round } from "../../../../../../Constants/HelperFunctions";
+import PurchaseInvoiceRedux from "../../../../../_redux/actionFiles/PurchaseInvoiceRedux";
 import BillSelectionDialog from "../../transactionsComponents/BillSelectionDialog";
-import SalesInvoiceRedux from "../../../../../_redux/actionFiles/SalesInvoiceRedux";
 import BillDetailsSelectionDialog from "../../transactionsComponents/BillDetailsSelectionDialog";
 
-function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
+function PurchaseReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const dispatch = useDispatch()
 
   const generateId = (text) => "basic_" + text
@@ -32,7 +31,6 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const onFinish = (values) => {
     let val = { ...(entityForEdit ?? {}), ...values }
     val.billDate = val.billDate.toDate()
-    val.againstBillDate = val.againstBillDate.toDate()
     let final = {
       header: val,
       details: [...val.billsDetail.filter(x => x.itemMasterId), ...deletedBillsDetail]
@@ -42,13 +40,14 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   };
 
   const { itemState, partyState, defaultFirm } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster, defaultFirm: s.FirmInfo.data.defaultFirm }))
+  const currentState = useSelector(s => s.PurchaseReturn)
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
+  const [currnetEditInfoData, setCurrnetEditInfoData] = useState(null)
   const [billSelectionDialogVisibility, setBillSelectionDialogVisibility] = useState(false)
   const [itemSelectVisibility, setItemSelectVisibility] = useState(false)
-
 
   const startSelectAgainstBill = () => {
     if (!form.getFieldValue("partyMasterId")) {
@@ -65,11 +64,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
       !itemSelectVisibility && setItemSelectVisibility(true)
   }
 
+
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
     dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
-
 
     const handleKeyDown = (event) => {
       switch (event.key) {
@@ -91,16 +90,96 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     }
   }, [])
 
-  const getAutoVoucherBillNumber = (billing) => {
-    if (!entityForEdit.id && billing !== entityForEdit.billing)
-      dispatch(SalesReturnActions.getTotalBillsAndLastBill([billing ?? entityForEdit.billing])).then((res) => {
-        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
-      })
-  }
+  // const getAutoVoucherBillNumber = (billing) => {
+  //   if ((billing ?? form.getFieldValue("billing")))
+  //     dispatch(PurchaseReturnActions.getTotalBillsAndLastBill([(billing ?? form.getFieldValue("billing"))])).then((res) => {
+  //       console.log("===================>getTotalBillsAndLastBill Recieved")
+  //       if (entityForEdit.id ? (billing ?? form.getFieldValue("billing")) !== entityForEdit.billing : (billing ?? form.getFieldValue("billing")))
+  //         form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1, billDate: moment(new Date()) })
+  //     }).catch(err => console.log("ERRORRRRRR------->", err))
+  // }
 
   useEffect(() => {
-    getAutoVoucherBillNumber()
-  }, [entityForEdit])
+    if (entityForEdit.id && entityForEdit.partyMasterId === form.getFieldValue("partyMasterId")) {
+      form.setFieldsValue({ billNumber: entityForEdit.billNumber, voucherNumber: entityForEdit.voucherNumber })
+    } else if (entityForEdit.id ? entityForEdit.billing !== form.getFieldValue("billing") : form.getFieldValue("billing"))
+      dispatch(PurchaseReturnActions.getTotalBillsAndLastBill([(form.getFieldValue("billing"))])).then((res) => {
+        form.setFieldsValue({ billNumber: res.billNumber + 1, voucherNumber: res.voucherNumber + 1 })
+      })
+  }, [form.getFieldValue("billing")])
+
+  // useEffect(() => {
+  //   getAutoVoucherBillNumber()
+  // }, [])
+
+  const calcItemWiseTotals = (items) => {
+    return items.reduce((occ, cur) => {
+      return {
+        subTotal: occ.subTotal + parseFloat(cur.amount ?? 0),
+        otherTotal: occ.otherTotal + parseFloat(cur.otherAmount ?? 0),
+        CGSTTotal: occ.CGSTTotal + parseFloat(cur.CGSTAmount ?? 0),
+        SGSTTotal: occ.SGSTTotal + parseFloat(cur.SGSTAmount ?? 0),
+        IGSTTotal: occ.IGSTTotal + parseFloat(cur.IGSTAmount ?? 0),
+        grossAmount: occ.grossAmount + parseFloat(cur.grossAmount ?? 0),
+      }
+    }, {
+      subTotal: 0,
+      otherTotal: 0,
+      CGSTTotal: 0,
+      SGSTTotal: 0,
+      IGSTTotal: 0,
+      grossAmount: 0,
+    })
+  }
+
+  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty) => {
+    const itemWiseTotals = calcItemWiseTotals(rows)
+    const currentPartyStateCode = party?.stateCode
+    console.log(currentPartyStateCode)
+    const grossAmount = round(itemWiseTotals.grossAmount)
+    const discountAmount = form.getFieldValue("discountAmount") ?? 0
+    const freightAmount = form.getFieldValue("freightAmount") ?? 0
+    const commisionAmount = form.getFieldValue("freightAmount") ?? 0
+    const taxableAmount = parseFloat(grossAmount + freightAmount + commisionAmount - discountAmount)
+    const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
+    const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
+    const IGSTPercentage = defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0
+    const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
+    const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
+    form.setFieldsValue({
+      grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
+      taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
+      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
+      SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
+      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(0),
+      CGSTAmount: parseFloat(CGSTAmount ?? 0).toFixed(2),
+      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
+      IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
+      netAmount: parseFloat(netAmount ?? 0).toFixed(2),
+      itemWiseTotals: itemWiseTotals
+    })
+  }
+
+  const editInfoDone = (values, rowIndex) => {
+    setCurrnetEditInfoData(null)
+    calcTotals(form.getFieldValue("billsDetail").map((item, i) => {
+      if (i === rowIndex) {
+        item.assessableAmount = values.assessableAmount
+        item.otherPercentage = values.otherPercentage
+        item.otherAmount = values.otherAmount
+        item.SGSTPercentage = values.SGSTPercentage
+        item.SGSTAmount = values.SGSTAmount
+        item.CGSTPercentage = values.CGSTPercentage
+        item.CGSTAmount = values.CGSTAmount
+        item.IGSTPercentage = values.IGSTPercentage
+        item.IGSTAmount = values.IGSTAmount
+        item.grossAmount = values.grsTotal
+      }
+      return item
+    }))
+  }
 
   const onBillSelect = (rows) => {
     setBillSelectionDialogVisibility(false)
@@ -117,12 +196,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     if (rows && rows.length) {
       let d = form.getFieldValue("billsDetail").filter(x => x.itemMasterId)
       rows.forEach(r => {
+        let rTmp = { ...r }
+        delete r.id
+        delete r.billsTransactionId
         d.push(new BillsDetail({
-          itemMasterId: r.itemMasterId,
-          itemUnitMasterId: r.itemUnitMasterId,
-          quantity: r.quantity,
-          rate: r.rate,
-          amount: r.quantity * r.rate
+          ...rTmp
         }))
       })
       d.push(new BillsDetail())
@@ -131,43 +209,17 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     }
   }
 
-
-  const calcTotals = (rows = form.getFieldValue("billsDetail")) => {
-    const currentPartyStateCode = selectedParty?.stateCode
-    const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
-    const discountAmount = form.getFieldValue("discountAmount") ?? 0
-    const taxableAmount = parseFloat(grossAmount - discountAmount)
-    const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
-    const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
-    const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0
-    const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
-    const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
-    form.setFieldsValue({
-      grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
-      // discountAmount: parseFloat(discountAmount ?? 0).toFixed(2),
-      taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
-      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
-      SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
-      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(0),
-      CGSTAmount: parseFloat(CGSTAmount ?? 0).toFixed(2),
-      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
-      IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
-      netAmount: parseFloat(netAmount ?? 0).toFixed(2),
-    })
-  }
-
   return (
     <>
       <Form
-        name="sales-return-form"
-        initialValues={{
-          ...entityForEdit,
-          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
-          billDate: moment(entityForEdit.billDate ?? new Date()),
-          againstBillDate: moment(entityForEdit.againstBillDate)
-        }}
+        name="purchase-return-form"
+        initialValues={
+          {
+            ...entityForEdit,
+            billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
+            billDate: moment(entityForEdit.billDate ?? new Date()),
+            itemWiseTotals: calcItemWiseTotals((entityForEdit.billsDetail ?? []))
+          }}
         onFinish={onFinish}
         labelAlign="left"
         form={form}
@@ -195,13 +247,14 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               rules={[{ required: true }]}
               getRecordOnChange={party => {
                 setSelectedParty(party)
-                // if (!form.getFieldValue("billingAddress"))
-                //   form.setFieldsValue({ billingAddress: party?.address })
-                const billing = party?.gstin ? "TAX" : "RETAIL"
-                getAutoVoucherBillNumber(billing)
-                form.setFieldsValue({
-                  billing: billing
-                })
+                if (party) {
+                  const billing = party?.gstin ? "TAX" : "RETAIL"
+                  form.setFieldsValue({
+                    billing: billing,
+                    // billingAddress: party?.address
+                  })
+                  calcTotals(form.getFieldValue("billsDetail"), party)
+                }
               }}
               accoutType={["BOTH", "CUSTOMER"]}
             />
@@ -268,14 +321,14 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                         readOnly
                       >
-                        <Input defaultValue="0" style={{ width: '40%', textAlign: 'center' }} readOnly />
+                        <Input defaultValue="" style={{ width: '40%', textAlign: 'center' }} readOnly />
                       </Form.Item>
                       <Form.Item
                         name={['billNumber']}
                         noStyle
                       >
                         <Input
-                          tabIndex="2"
+                          tabIndex="1"
                           style={{ width: '60%' }} />
                       </Form.Item>
                     </Input.Group>
@@ -293,7 +346,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker tabIndex="3" style={{ width: '100%' }} data-focustable={"billsDetail"} />
+              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
@@ -301,7 +354,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
           <Col span={24}>
             <EditableTable
               name="billsDetail"
-              nextTabIndex="4"
+              nextTabIndex="3"
               form={form}
               columns={[
                 {
@@ -351,22 +404,49 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     type: 'number',
                   },
                   width: '10%',
-                  align: 'right'
+                  align: 'right',
+                  onCell: (record, rowIndex) => ({
+                    onCustomKeyDown: (e, { row }) => {
+                      if (e.key === "Enter") {
+                        const item = row ?? record
+                        if (item) {
+                          setCurrnetEditInfoData({
+                            data: {
+                              amount: (parseFloat(item.quantity ?? 0) * parseFloat(item.rate ?? 0)),
+                              otherPercentage: item.otherPercentage,
+                              otherAmount: item.otherAmount,
+                              assessableAmount: item.assessableAmount,
+                              SGSTPercentage: item.SGSTPercentage,
+                              SGSTAmount: item.SGSTAmount,
+                              CGSTPercentage: item.CGSTPercentage,
+                              CGSTAmount: item.CGSTAmount,
+                              IGSTPercentage: item.IGSTPercentage,
+                              IGSTAmount: item.IGSTAmount,
+                              grsTotal: item.grossAmount,
+                            },
+                            visibility: true,
+                            rowIndex: rowIndex
+                          })
+                        }
+                      }
+                    }
+                  })
                 }, {
                   title: "Amount",
                   dataIndex: "amount",
                   width: '10%',
-                  align: 'right'
+                  align: 'right',
+                  footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.amount ?? 0), 0),
                 }
               ]}
               autoAddRow={{ ...(new BillsDetail()) }}
-              beforeSave={(newRow, oldRow) => {
+              beforeSave={(newRow, oldRow, { dataIndex, rowIndex }) => {
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
                   newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
                 return newRow;
               }}
-              afterSave={(newRow, oldRow, data) => {
+              afterSave={(newRow, oldRow, data, { dataIndex, rowIndex }) => {
                 calcTotals(data)
               }}
               deleteBtnHandler={(cell, row, i) => {
@@ -383,12 +463,48 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
         </Row>
         <Row className="footer-row">
           <Col span={11}>
+            <Form.Item wrapperCol={{ span: 24 }} shouldUpdate={(val, newVal) => val.itemWiseTotals !== newVal.itemWiseTotals}>
+              {() => (
+                <Form.Item noStyle shouldUpdate>
+                  <Table
+                    bordered
+                    size="small"
+                    pagination={false}
+                    columns={[
+                      {
+                        title: "Subtotal",
+                        dataIndex: "subTotal"
+                      }, {
+                        title: "Other +/-",
+                        dataIndex: "otherTotal"
+                      }, {
+                        title: "CGST Total",
+                        dataIndex: "CGSTTotal"
+                      }, {
+                        title: "SGST Total",
+                        dataIndex: "SGSTTotal"
+                      }, {
+                        title: "IGST Total",
+                        dataIndex: "IGSTTotal"
+                      }, {
+                        title: "Gross Amount",
+                        dataIndex: "grossAmount"
+                      }
+                    ]}
+                    dataSource={[
+                      form.getFieldValue("itemWiseTotals")
+                    ]}
+                  />
+                </Form.Item>
+              )}
+            </Form.Item>
+            <br />
             <Form.Item
               labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}
               name="remarks"
               label="Remarks"
             >
-              <TextArea style={{ width: '100%' }} rows={3} tabIndex="4" />
+              <TextArea style={{ width: '100%' }} rows={2} tabIndex="3" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
@@ -401,8 +517,96 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="grossAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="5" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
                       </Form.Item>
+                    </Form.Item>
+                    <Form.Item label="+ Freight">
+                      <Input.Group>
+                        <Form.Item
+                          name={['ferightPercentage']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (gAmt * e.target.value) / 100
+                                form.setFieldsValue({ freightAmount: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0"
+                            tabIndex="5"
+                            suffix='%'
+                            style={{ width: '40%', textAlign: 'right' }}
+
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={['freightAmount']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (100 * e.target.value) / gAmt
+                                form.setFieldsValue({ freightPercentage: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0.00"
+                            tabIndex="6"
+                            suffix=" "
+                            style={{ width: '60%' }}
+
+                          />
+                        </Form.Item>
+                      </Input.Group>
+                    </Form.Item>
+                    <Form.Item label="+ Commission">
+                      <Input.Group>
+                        <Form.Item
+                          name={['commisionPercentage']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (gAmt * e.target.value) / 100
+                                form.setFieldsValue({ commisionAmount: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0"
+                            tabIndex="7"
+                            suffix='%'
+                            style={{ width: '40%', textAlign: 'right' }}
+
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={['commisionAmount']}
+                          noStyle
+                        >
+                          <Input
+                            onChange={e => {
+                              if (e.target.value) {
+                                const gAmt = form.getFieldValue("grossAmount")
+                                const dRs = (100 * e.target.value) / gAmt
+                                form.setFieldsValue({ commisionPercentage: dRs })
+                                calcTotals()
+                              }
+                            }}
+                            defaultValue="0.00"
+                            tabIndex="8"
+                            suffix=" "
+                            style={{ width: '60%' }}
+
+                          />
+                        </Form.Item>
+                      </Input.Group>
                     </Form.Item>
                     <Form.Item label="- Discount">
                       <Input.Group>
@@ -420,7 +624,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0"
-                            tabIndex="6"
+                            tabIndex="9"
                             suffix='%'
                             style={{ width: '40%', textAlign: 'right' }}
 
@@ -440,7 +644,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                               }
                             }}
                             defaultValue="0.00"
-                            tabIndex="7"
+                            tabIndex="10"
                             suffix=" "
                             style={{ width: '60%' }}
 
@@ -454,7 +658,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="taxableAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="8" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                     <Form.Item label="+ SGST">
@@ -469,7 +673,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['SGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="12" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -485,7 +689,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['CGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -501,7 +705,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                           name={['IGSTAmount']}
                           noStyle
                         >
-                          <Input defaultValue="0.00" tabIndex="11" suffix=" " style={{ width: '60%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
                         </Form.Item>
                       </Input.Group>
                     </Form.Item>
@@ -511,7 +715,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="12" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="15" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </div>
@@ -527,9 +731,9 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               isOpen={billSelectionDialogVisibility}
               onCancel={() => setBillSelectionDialogVisibility(false)}
               onSelectDone={onBillSelect}
-              ReduxObj={SalesInvoiceRedux}
+              ReduxObj={PurchaseInvoiceRedux}
               type="radio"
-              title="Select Sales Invoice"
+              title="Select Purchase Invoice"
             />
           )}
         </Form.Item>
@@ -541,14 +745,19 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               isOpen={itemSelectVisibility}
               onCancel={() => setItemSelectVisibility(false)}
               onSelectDone={onItemsSelect}
-              ReduxObj={SalesInvoiceRedux}
+              ReduxObj={PurchaseInvoiceRedux}
               title="Select Items"
             />
           )}
         </Form.Item>
+        <ItemWiseInfoDialog
+          data={currnetEditInfoData?.data}
+          extraParams={currnetEditInfoData?.rowIndex}
+          isOpen={currnetEditInfoData?.visibility}
+          onEditDone={editInfoDone} />
       </Form >
     </>
   );
 }
 
-export default SalesReturnForm;
+export default PurchaseReturnForm;

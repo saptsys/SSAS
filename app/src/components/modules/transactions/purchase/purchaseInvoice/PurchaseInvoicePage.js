@@ -11,8 +11,7 @@ function PurchaseInvoicePage() {
   const dispatch = useDispatch()
 
   const setMessage = () => {
-    dispatch(PurchaseInvoiceActions.getTotalBillsAndLastBill(null, ['S'])).then(({ total, billNumber }) => {
-      console.log("INFOR SETTEF")
+    dispatch(PurchaseInvoiceActions.getTotalBillsAndLastBill(null, ['P'])).then(({ total, billNumber }) => {
       return dispatch(LayoutActions.setMessage(<span> Last Bill No: <b>{billNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total}</b></span>))
     }).catch(err => errorDialog("Error", err.message))
   }

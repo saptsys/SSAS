@@ -8,7 +8,6 @@ class SalesInvoiceModal extends BillsTransaction {
   constructor(params) {
     super(params)
     this.tag = "S"
-    this.billing = "TAX" // default
   }
 }
 
@@ -30,3 +29,6 @@ const SalesInvoiceRedux = {
   slice: SalesInvoiceSlice,
   actions: SalesInvoiceActions
 }
+
+
+export default SalesInvoiceRedux;

@@ -48,6 +48,10 @@ export const MODULE_ROUTES = {
         _path: "/transactions/purchase/purchase-invoice",
         _title: "Purchase Invoice",
       },
+      purchaseReturn: {
+        _path: "/transactions/purchase/purchase-return",
+        _title: "Purchase Return / Dr. Note",
+      },
     },
     deliveryChallan: {
       _path: "/transactions/delivery-challan",

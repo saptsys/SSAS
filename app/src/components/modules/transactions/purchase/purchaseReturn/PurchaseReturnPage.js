@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
-import SalesReturnTable from "./SalesReturnTable";
+import PurchaseReturnTable from "./PurchaseReturnTable";
 import CommonModuleView from '../../../_common/CommonModuleView';
-import { SalesReturnActions, reducerInfo } from '../../../../../_redux/actionFiles/SalesReturnRedux';
-import SalesReturnForm from './SalesReturnForm';
+import { PurchaseReturnActions, reducerInfo } from '../../../../../_redux/actionFiles/PurchaseReturnRedux';
+import PurchaseReturnForm from './PurchaseReturnForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../../_redux/actionFiles/LayoutRedux';
 import { errorDialog } from "../../../../../Helpers/dialogs";
 
-function SalesReturnPage() {
+function PurchaseReturnPage() {
   const dispatch = useDispatch()
 
   const setMessage = () => {
-    dispatch(SalesReturnActions.getTotalBillsAndLastBill(null, ['SR'])).then(({ total, billNumber }) => {
+    dispatch(PurchaseReturnActions.getTotalBillsAndLastBill(null, ['PR'])).then(({ total, billNumber }) => {
       return dispatch(LayoutActions.setMessage(<span> Last Bill No: <b>{billNumber}</b> &nbsp;&nbsp; Total Bills: <b>{total}</b></span>))
     }).catch(err => errorDialog("Error", err.message))
   }
@@ -22,11 +22,11 @@ function SalesReturnPage() {
 
   return <CommonModuleView
     reducerInfo={reducerInfo}
-    MainTable={SalesReturnTable}
-    EditForm={SalesReturnForm}
+    MainTable={PurchaseReturnTable}
+    EditForm={PurchaseReturnForm}
     drawerWidth="full"
     saveAndContinueBtn={true}
-    actions={SalesReturnActions}
+    actions={PurchaseReturnActions}
     methods={{
       fetchTableData: "getAll",
       fetchEditData: "getByIdWithDetails",
@@ -51,4 +51,4 @@ function SalesReturnPage() {
   />
 }
 
-export default SalesReturnPage
+export default PurchaseReturnPage

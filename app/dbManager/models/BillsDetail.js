@@ -23,6 +23,7 @@ class BillsDetail extends _BaseModel {
     CGSTAmount,
     IGSTPercentage,
     IGSTAmount,
+    grossAmount,
     ...rest
   } = {}) {
     super(rest),
@@ -47,6 +48,7 @@ class BillsDetail extends _BaseModel {
     this.CGSTAmount = CGSTAmount;
     this.IGSTPercentage = IGSTPercentage;
     this.IGSTAmount = IGSTAmount;
+    this.grossAmount = grossAmount;
 
   }
 }

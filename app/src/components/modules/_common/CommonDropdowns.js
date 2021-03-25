@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Select,
@@ -237,17 +237,28 @@ export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.ItemMaster.list.loading === "getAll")
+  const [value, setValue] = useState(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!propsForSelect.options)
       dispatch(PartyMasterActions.getAll(accoutType)).then((res) => {
         setOptions(res);
       });
     return () => setOptions([])
   }, []);
+
+
+  useEffect(() => {
+    // propsForSelect.onChange && propsForSelect.onChange(value)
+    getRecordOnChange((propsForSelect.filterForOptions
+      ? propsForSelect.filterForOptions(options)
+      : (propsForSelect.options ?? options)).find(x => x.id === value))
+  }, [value, options, propsForSelect.options])
+
   const subItem = () => (
-    <Form.Item {...formItemPropGenerator(props)}>
+    <Form.Item {...formItemPropGenerator(props)} getValueProps={(val) => { if (value !== val) setValue(val); return val; }}>
       <Select
+        value={value}
         options={
           (propsForSelect.filterForOptions
             ? propsForSelect.filterForOptions(options)
@@ -264,12 +275,6 @@ export const PartyDropdown = ({ propsForSelect = {}, getRecordOnChange = () => {
         allowClear={true}
         loading={isLoading}
         defaultActiveFirstOption={false}
-        onChange={(val) => {
-          propsForSelect.onChange && propsForSelect.onChange(val)
-          getRecordOnChange((propsForSelect.filterForOptions
-            ? propsForSelect.filterForOptions(options)
-            : (propsForSelect.options ?? options)).find(x => x.id === val))
-        }}
       />
     </Form.Item>)
   return (

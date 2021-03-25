@@ -12,6 +12,7 @@ import { DeliveryChallanSlice } from "./actionFiles/DeliveryChallanRedux";
 import { SalesInvoiceSlice } from "./actionFiles/SalesInvoiceRedux";
 import { SalesReturnSlice } from "./actionFiles/SalesReturnRedux";
 import { PurchaseInvoiceSlice } from "./actionFiles/PurchaseInvoiceRedux";
+import { PurchaseReturnSlice } from "./actionFiles/PurchaseReturnRedux";
 
 
 //add your custom slice which you createed without _BaseSlice class
@@ -31,7 +32,8 @@ const redcuerList = [
   DeliveryChallanSlice,
   SalesInvoiceSlice,
   SalesReturnSlice,
-  PurchaseInvoiceSlice
+  PurchaseInvoiceSlice,
+  PurchaseReturnSlice
 ]
 redcuerList.forEach(slice => {
   reducers[slice.slice.name] = slice.reducer
