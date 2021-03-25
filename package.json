@@ -80,10 +80,10 @@
         "nsis"
       ]
     },
-    "nsis":{
-      "oneClick":false,
-      "perMachine":true,
-      "allowToChangeInstallationDirectory":true
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
     },
     "directories": {
       "buildResources": "resources",
@@ -214,6 +214,7 @@
     "@hot-loader/react-dom": "^16.11.0",
     "@reduxjs/toolkit": "^1.5.0",
     "antd": "^4.12.2",
+    "comma-number": "^2.0.1",
     "connected-react-router": "^6.6.0",
     "core-js": "3.4.1",
     "devtron": "^1.4.0",

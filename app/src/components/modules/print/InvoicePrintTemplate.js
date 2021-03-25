@@ -7,7 +7,8 @@ import moment from "moment"
 import { dateFormat } from "../../../../Constants/Formats";
 import geoStates from "../../../../Constants/States";
 import './printStyle.less';
-
+import { numberCurrencyIn as numToWords } from "../../../Helpers/NumToWord";
+import commaNumber from "comma-number";
 
 const InvoicePrintTemplate = () => {
   const dispatch = useDispatch()
@@ -56,7 +57,7 @@ const InvoicePrintTemplate = () => {
           </thead>
           <tbody>
             <tr>
-              <th style={{ textAlign: "left",backgroundColor: "#bbb" }} width="1%" >
+              <th style={{ textAlign: "left", backgroundColor: "#bbb" }} width="1%" >
                 Bill To
           </th>
               <th style={{ textAlign: "left" }} width="50%">
@@ -159,8 +160,8 @@ const InvoicePrintTemplate = () => {
                         <td style={{ textAlign: "right", verticalAlign: "top" }}>{i + 1}</td>
                         <td style={{ verticalAlign: "top" }}>{bill.itemMaster.name + (bill.itemMaster.description ? ` (${bill.itemMaster.description})` : "")}</td>
                         <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.quantity}</td>
-                        <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.rate}</td>
-                        <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.amount}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(bill.rate)}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(bill.amount)}</td>
                       </tr>
                     )
                   })}
@@ -171,7 +172,7 @@ const InvoicePrintTemplate = () => {
                 </th>
                   <th style={{ textAlign: "right" }}>{billData.billsDetail.map(x => x.quantity).reduce((x, y) => x + y)}</th>
                   <th style={{ textAlign: "left" }}></th>
-                  <th style={{ textAlign: "right" }}>{billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y)}</th>
+                  <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y))}</th>
                 </tfoot>
               </table>
             </section>
@@ -186,28 +187,28 @@ const InvoicePrintTemplate = () => {
           >
             <tbody>
               <tr>
-                <td className="border-b-0 border-t-0" rowSpan="5">
-                  Rs.Thirty-two Thousand Four Hundred Seventy-four Only
-            </td>
+                <td className="border-b-0 border-t-0" rowSpan="5" style={{verticalAlign:"top",}}>
+                {numToWords(billData.netAmount ?? 0)}
+                </td>
               </tr>
               <tr>
                 <td className="border-t-0">SGST {billData.SGSTPercentage ?? 0}%</td>
-                <td className="border-t-0">{billData.SGSTAmount ?? 0}</td>
+                <td className="border-t-0" style={{textAlign:"right"}}>₹ {commaNumber(billData.SGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <td>CGST {billData.CGSTPercentage ?? 0}%</td>
-                <td>{billData.CGSTAmount ?? 0}</td>
+                <td style={{textAlign:"right"}}>₹ {commaNumber(billData.CGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <td>IGST {billData.IGSTPercentage ?? 0}%</td>
-                <td>{billData.IGSTAmount ?? 0}</td>
+                <td style={{textAlign:"right"}}>₹ {commaNumber(billData.IGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <th style={{ textAlign: "left", backgroundColor: "#bbb" }}>
                   NET AMOUNT
             </th>
-                <th style={{ textAlign: "left", backgroundColor: "#bbb" }} >
-                  {billData.netAmount ?? 0}
+                <th style={{ textAlign: "right", backgroundColor: "#bbb" }} >
+                ₹ {commaNumber(billData.netAmount ?? 0)}
                 </th>
               </tr>
             </tbody>
