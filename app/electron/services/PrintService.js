@@ -2,15 +2,11 @@ const { webContents, BrowserWindow } = require("electron");
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
-
 class PrintService {
   constructor() {
     this.prefs = {
       silent: true,
-      height: 500,
-      width: 100,
       theme: "DARK",
-      preview: false
     }
     this.window = null;
     this.count = 0;
@@ -20,18 +16,14 @@ class PrintService {
     const path = payload.path
     const printOptions = payload.options
 
-    webContents.getAllWebContents().forEach(x => console.log(x.id, x.getTitle(), x.getURL() + "---------------------------------\n\n"))
-
     let windowOptions = {
       webPreferences: {
         nodeIntegration: true,
         webSecurity: true,
         contextIsolation: false,
         preload: __dirname + "/preload.js",
-        // parent: webContents.getFocusedWebContents()
-        parent: webContents.fromId(2)
-
       },
+      // parent: webContents.getFocusedWebContents()
     }
 
     if (printOptions.silent) {
@@ -43,10 +35,25 @@ class PrintService {
     win.webContents.openDevTools();
 
     win.loadURL(`file://${__dirname}/app.html#/${path}`);
-    win.webContents.on('did-finish-load', () => {
+
+    win.webContents.on('did-finish-load', async () => {
+
+      let height = await win.webContents.executeJavaScript(`try{document.getElementById("root").getElementsByTagName("body")[0].getBoundingClientRect().height}catch(e){}`)
+      let width = await win.webContents.executeJavaScript(`try{document.getElementById("root").getElementsByTagName("body")[0].getBoundingClientRect().width}catch(e){}`)
+
+      if(height > 800){
+        height = 600
+      }
+      win.setSize(parseInt(width) + 20, parseInt(height), true);
+
       console.log("loaded...")
       console.log(printOptions)
       if (printOptions.preview) {
+
+        win.webContents.print({
+          silent: false,
+          printBackground: true
+        })
 
       } else if (printOptions.pdf) {
 
@@ -75,11 +82,6 @@ class PrintService {
           }, 5000);
           win.webContents.print({
             silent: true,
-            printBackground: true
-          })
-        } else {
-          win.webContents.print({
-            silent: false,
             printBackground: true
           })
         }

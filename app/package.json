@@ -9,7 +9,7 @@
     "email": "hello@saptsys.com",
     "url": "https://saptsys.com"
   },
-  "private":"true",
+  "private": "true",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild"
@@ -17,6 +17,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "electron-promise-ipc": "2.2.4",
+    "electron-squirrel-startup": "^1.0.0",
     "moment": "2.29.1",
     "sqlite3": "4.0.9",
     "typeorm": "0.2.30"

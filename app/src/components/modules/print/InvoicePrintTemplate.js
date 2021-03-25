@@ -28,14 +28,13 @@ const InvoicePrintTemplate = () => {
     dispatch(SalesInvoiceActions.getByIdWithDetails(id)).then(setBillData)
   }, [])
   let padding = 20;
-
-  return (
-    billData ?
-      <div class="a4">
+  const getRenderData = () => {
+    return (billData ?
+      <div>
         <table style={{ width: "100%" }} border="1" cellSpacing="0">
           <thead style={{ width: "100%" }}>
             <tr>
-              <th colSpan="4" style={{textAlign:"center",verticalAlign:"center"}}>
+              <th colSpan="4" style={{ textAlign: "center", verticalAlign: "center" }}>
                 <h2>{FirmInfoState.firmName}</h2>
                 <p>{FirmInfoState.address}</p>
               </th>
@@ -57,14 +56,14 @@ const InvoicePrintTemplate = () => {
           </thead>
           <tbody>
             <tr>
-              <th align="left" width="1%" style={{ backgroundColor: "#bbb" }}>
+              <th style={{ textAlign: "left",backgroundColor: "#bbb" }} width="1%" >
                 Bill To
-            </th>
-              <th align="left" width="50%">
+          </th>
+              <th style={{ textAlign: "left" }} width="50%">
                 {billData.partyMaster.name}
               </th>
               <th
-                align="left"
+                style={{ textAlign: "left" }}
                 width="30%"
                 colSpan="2"
                 style={{ backgroundColor: "#bbb" }}
@@ -79,12 +78,12 @@ const InvoicePrintTemplate = () => {
               <td className="border-b-0">
                 {billData.partyMaster.address}
               </td>
-              <th align="left">
+              <th style={{ textAlign: "left" }}>
                 Bill No
-              <br />
-              Bill Date
-            </th>
-              <th align="left">
+            <br />
+            Bill Date
+          </th>
+              <th style={{ textAlign: "left" }}>
                 {billData.billNumber}
                 <br />
                 {moment(billData.billDate).format(dateFormat)}
@@ -97,18 +96,18 @@ const InvoicePrintTemplate = () => {
               <td rowSpan="3"></td>
             </tr>
             <tr>
-              <th className="border-b-0 border-t-0" align="left">
+              <th className="border-b-0 border-t-0" style={{ textAlign: "left" }}>
                 GSTIN
-            </th>
-              <th className="border-b-0 border-t-0" align="left">
+          </th>
+              <th className="border-b-0 border-t-0" style={{ textAlign: "left" }}>
                 {billData.partyMaster.gstin}
               </th>
             </tr>
             <tr>
-              <td className=" border-t-0" align="left">
+              <td className=" border-t-0" style={{ textAlign: "left" }}>
                 State
-            </td>
-              <td className=" border-t-0" align="left">
+          </td>
+              <td className=" border-t-0" style={{ textAlign: "left" }}>
                 {geoStates.find(x => x.tin == billData.partyMaster.stateCode)?.stateName}
               </td>
             </tr>
@@ -125,7 +124,7 @@ const InvoicePrintTemplate = () => {
           <div style={{ flexGrow: 1 }}>LR No.</div>
           <div style={{ flexGrow: 1 }}>
             LR Date:&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;/
-        </div>
+      </div>
           <div style={{ flexGrow: 1 }}>Eway Bill Number:</div>
         </div>
 
@@ -135,21 +134,21 @@ const InvoicePrintTemplate = () => {
               <table border="1" width="100%" cellSpacing="0">
                 <thead>
                   <tr>
-                    <th align="left" width="10%">
+                    <th style={{ textAlign: "left" }} width="10%">
                       Sr.
-                  </th>
-                    <th align="left" width="45%">
+                </th>
+                    <th style={{ textAlign: "left" }} width="45%">
                       Item
-                  </th>
-                    <th align="left" width="15%">
+                </th>
+                    <th style={{ textAlign: "left" }} width="15%">
                       Quantity
-                  </th>
-                    <th align="left" width="15%">
+                </th>
+                    <th style={{ textAlign: "left" }} width="15%">
                       Rate
-                  </th>
-                    <th align="left" width="15%">
+                </th>
+                    <th style={{ textAlign: "left" }} width="15%">
                       Amount
-                  </th>
+                </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -157,22 +156,22 @@ const InvoicePrintTemplate = () => {
                   {(billData.billsDetail ?? []).map(function (bill, i) {
                     return (
                       <tr style={{ backgroundColor: "#f5f5f5 min-height: 200px" }}>
-                        <td align="right" style={{ verticalAlign: "top" }}>{i + 1}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }}>{i + 1}</td>
                         <td style={{ verticalAlign: "top" }}>{bill.itemMaster.name + (bill.itemMaster.description ? ` (${bill.itemMaster.description})` : "")}</td>
-                        <td align="right" style={{ verticalAlign: "top" }}>{bill.quantity}</td>
-                        <td align="right" style={{ verticalAlign: "top" }}>{bill.rate}</td>
-                        <td align="right" style={{ verticalAlign: "top" }}>{bill.amount}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.quantity}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.rate}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.amount}</td>
                       </tr>
                     )
                   })}
                 </tbody>
                 <tfoot>
-                  <th align="right" className="border-r-0" colSpan="2">
+                  <th style={{ textAlign: "right" }} className="border-r-0" colSpan="2">
                     Totals:
-                  </th>
-                  <th align="right">{billData.billsDetail.map(x => x.quantity).reduce((x, y) => x + y)}</th>
-                  <th align="left"></th>
-                  <th align="right">{billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y)}</th>
+                </th>
+                  <th style={{ textAlign: "right" }}>{billData.billsDetail.map(x => x.quantity).reduce((x, y) => x + y)}</th>
+                  <th style={{ textAlign: "left" }}></th>
+                  <th style={{ textAlign: "right" }}>{billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y)}</th>
                 </tfoot>
               </table>
             </section>
@@ -189,7 +188,7 @@ const InvoicePrintTemplate = () => {
               <tr>
                 <td className="border-b-0 border-t-0" rowSpan="5">
                   Rs.Thirty-two Thousand Four Hundred Seventy-four Only
-              </td>
+            </td>
               </tr>
               <tr>
                 <td className="border-t-0">SGST {billData.SGSTPercentage ?? 0}%</td>
@@ -204,10 +203,10 @@ const InvoicePrintTemplate = () => {
                 <td>{billData.IGSTAmount ?? 0}</td>
               </tr>
               <tr>
-                <th align="left" style={{ backgroundColor: "#bbb" }}>
+                <th style={{ textAlign: "left", backgroundColor: "#bbb" }}>
                   NET AMOUNT
-              </th>
-                <th align="left" style={{ backgroundColor: "#bbb" }}>
+            </th>
+                <th style={{ textAlign: "left", backgroundColor: "#bbb" }} >
                   {billData.netAmount ?? 0}
                 </th>
               </tr>
@@ -225,23 +224,23 @@ const InvoicePrintTemplate = () => {
               <tr>
                 <td className="border-b-0 border-t-0" width="50%">
                   Bank Name:
-                <br />
-                A/c No
-                <br />
-                IFSC Code
-              </td>
-                <td className="border-b-0 border-t-0" rowSpan="2" align="right">
+              <br />
+              A/c No
+              <br />
+              IFSC Code
+            </td>
+                <td className="border-b-0 border-t-0" rowSpan="2" style={{ textAlign: "right" }}>
                   For,{FirmInfoState.firmName} <br />
                   <br />
                   <br />
                   <br />
-                Authorised Signatorys
-              </td>
+              Authorised Signatorys
+            </td>
               </tr>
               <tr>
                 <td>
                   Receiver's Sign:
-                <br />
+              <br />
                   <br />
                   <br />
                 </td>
@@ -257,7 +256,13 @@ const InvoicePrintTemplate = () => {
           </div>
         </div>
       </div>
-      : ""
+      : "");
+  }
+  return (
+    <body class="a4">
+      { getRenderData()}
+    </body>
+
   );
 };
 
