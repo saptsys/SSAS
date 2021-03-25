@@ -56,7 +56,7 @@ class BillsTransactionService extends __BaseService {
             .orWhere("bill.billNumber = :billNumber", { billNumber: term })
             .orWhere("bill.remarks = :remarks", { remarks: term })
             .orWhere("bill.netAmount = :netAmount", { netAmount: term })
-            .orWhere("date(bill.billDate) = :date(billDate)", { billDate: term })
+            .orWhere("date(bill.billDate) = date(:billDate)", { billDate: term })
             .orWhere("partyMaster.name = :name", { name: term })
         }))
         .limit(limit)
@@ -156,16 +156,22 @@ class BillsTransactionService extends __BaseService {
     try {
       const tag = payload?.tag ?? ALL_TAGS
       const billing = payload?.billing ?? ALL_BILLINGS
-      const { party, fromDate, toDate } = payload
+      const fromDate = payload.fromDate ?? null
+      const toDate = payload.toDate ?? null
+      let party = payload.party ?? [null]
+      if(party && party.length == 0 ){
+        party = [null]
+      }
+      console.log(party)
       const stmt = this.repository
         .createQueryBuilder("bill")
         .leftJoin(PartyMaster, "party", "bill.partyMasterId = party.id")
         .where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
         .andWhere(new Brackets(sq => {
-          sq.where("( (:fromDate IS NULL) OR (date(bill.billDate) >= :date(fromDate)) )", { fromDate: fromDate })
-            .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= :date(toDate)) )", { toDate: toDate })
-            .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: party })
+          sq.where("( (:fromDate IS NULL) OR (date(bill.billDate) >= date(:fromDate)) )", { fromDate: fromDate })
+            .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= date(:toDate)) )", { toDate: toDate })
+            .andWhere("( (COALESCE(:...party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: party })
         }))
         .select([
           ...rowToModelPropertyMapper("bill", BillsTransaction),
@@ -392,10 +398,14 @@ class BillsTransactionService extends __BaseService {
     try {
       const tag = payload?.tag ?? ALL_TAGS
       const billing = payload?.billing ?? ALL_BILLINGS
-      const parties = payload.parties ?? []
-      const fromDate = payload.fromDate
-      const toDate = payload.toDate
-      const limit = payload.limit
+      const fromDate = payload.fromDate ?? null
+      const toDate = payload.toDate ?? null
+      const limit = payload.limit ?? null
+      let parties = payload.parties ?? null
+
+      if(parties && parties.length == 0 ){
+        parties = null
+      }
 
       const includeDetail = payload.includeDetail
       const includeParty = payload.includeParty;
@@ -416,9 +426,9 @@ class BillsTransactionService extends __BaseService {
 
       stmt.where("bill.tag IN (:...tag)", { tag: tag })
         .andWhere("bill.billing IN (:...billing)", { billing: billing })
-        .andWhere("( (:fromDate IS NULL) OR (date(bill.billDate) >= :date(fromDate)) )", { fromDate: fromDate })
-        .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= :date(toDate)) )", { toDate: toDate })
-        .andWhere("( (COALESCE(:party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: parties })
+        .andWhere("( (:fromDate IS NULL) OR (date(bill.billDate) >= date(:fromDate)) )", { fromDate: fromDate })
+        .andWhere("( (:toDate IS NULL) OR (date(bill.billDate) <= date(:toDate)) )", { toDate: toDate })
+        .andWhere("( (COALESCE(:...party , NULL) IS NULL) OR (bill.partyMasterId IN (:...party)) )", { party: parties })
 
       if (limit) {
         stmt.take(limit.take)
