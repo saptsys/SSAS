@@ -1,4 +1,4 @@
-const { webContents, BrowserWindow } = require("electron");
+const { webContents, BrowserWindow,app } = require("electron");
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
@@ -33,7 +33,10 @@ class PrintService {
 
     let win = new BrowserWindow(windowOptions);
     win.setMenu(null)
-    // win.webContents.openDevTools();
+    if(!app.isPackaged){
+      win.webContents.openDevTools();
+
+    }
 
     win.loadURL(`file://${__dirname}/app.html#/${path}`);
 

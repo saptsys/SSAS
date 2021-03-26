@@ -18,11 +18,13 @@ const ChalanPrintTemplate = () => {
       gstin: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.gstin,
       address: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.address,
       firmState: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.state,
+      mobile: state.FirmInfo.data?.firms?.find(x => x.id && x.default)?.mobile,
     },
     SettingsMasterState: {
       list: state.SettingsMaster.list
     }
   }))
+  console.log(FirmInfoState)
   useEffect(() => {
     dispatch(DeliveryChallanActions.getByIdWithDetails(id)).then(setBillData)
   }, [])
@@ -36,15 +38,15 @@ const ChalanPrintTemplate = () => {
             <thead style={{ width: "100%" }}>
               <tr>
                 <th colspan="4" style={{ textAlign: "center" }}>
-                  <h5 style={{ margin: "5px" }}>|| Shree Ganeshai Namah ||</h5>
-                  <h5 style={{ margin: "5px" }}>Delivery Challan</h5>
-                  <h3 style={{ margin: "5px" }}>{FirmInfoState.firmName}</h3>
-                  <h5 style={{ margin: "5px" }}>
+                  <h5 style={{ margin: "2px" }}>|| Shree Ganeshai Namah ||</h5>
+                  <h5 style={{ margin: "2px" }}>Delivery Challan</h5>
+                  <h3 style={{ margin: "2px" }}>{FirmInfoState.firmName}</h3>
+                  <h5 style={{ margin: "2px" }}>
                     {FirmInfoState.address}
                   </h5>
                   {
-                    FirmInfoState.phone ?
-                      <h5 style={{ margin: "5px" }}>{FirmInfoState.phone} </h5>
+                    FirmInfoState.mobile ?
+                      <h5 style={{ margin: "2px" }}>{FirmInfoState.mobile} </h5>
                       :
                       ""
                   }
@@ -74,7 +76,7 @@ const ChalanPrintTemplate = () => {
           <div className="tbl" style={{ width: "100%" }}>
             <div className="tbl-body" style={{ width: "100%" }}>
               <section style={{ width: "100%" }}>
-                <table border="1" width="100%" cellspacing="0">
+                <table border="0" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th style={{ textAlign: "left" }} width="10%">Sr.</th>
@@ -145,7 +147,7 @@ const ChalanPrintTemplate = () => {
   }
 
   return (
-    <body class="a5-half">
+    <body class="a5-half" className={["b-top","b-bottom","b-left","b-right"]}>
       { getRenderData()}
     </body>
 

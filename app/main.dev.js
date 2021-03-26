@@ -190,9 +190,9 @@ function init() {
     mainWindow.setMenu(null)
     mainWindow.loadURL(`file://${__dirname}/app.html`);
     sout("app.isPackaged = " + app.isPackaged)
-    // if (!app.isPackaged) {
-    //   mainWindow.webContents.openDevTools({ mode: "detach" });
-    // }
+    if (!app.isPackaged) {
+      mainWindow.webContents.openDevTools({ mode: "detach" });
+    }
 
     // var appIcon = new Tray()
 
