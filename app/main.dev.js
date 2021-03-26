@@ -69,7 +69,7 @@ function init() {
           id: 1,
           year: '2020-21',
           active: true,
-          initialized:false
+          initialized: false
         }],
         expiryDate: function () {
           const d = new Date();
@@ -94,12 +94,12 @@ function init() {
     .then(async (connection) => {
       sout("database connected ");
 
-      if(!firmInfo.getActiveDB().initialized){
-        try{
-          if(await initDB(connection)){
+      if (!firmInfo.getActiveDB().initialized) {
+        try {
+          if (await initDB(connection)) {
             firmInfo.setInit(true)
           }
-        }catch(e){
+        } catch (e) {
           console.error(e)
         }
       }
@@ -112,7 +112,7 @@ function init() {
       app.isQuiting = true
       app.quit();
     });
-    // return;
+  // return;
 
 
   if (process.env.NODE_ENV === 'production') {
@@ -182,8 +182,8 @@ function init() {
     mainWindow = new BrowserWindow(windowOptions);
     mainWindow.setMenu(null)
     mainWindow.loadURL(`file://${__dirname}/app.html`);
-    sout("app.isPackaged = "+app.isPackaged)
-    if(!app.isPackaged){
+    sout("app.isPackaged = " + app.isPackaged)
+    if (!app.isPackaged) {
       mainWindow.webContents.openDevTools({ mode: "detach" });
     }
 
@@ -212,6 +212,8 @@ function init() {
 
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
+
+    // firmInfo.openNewDialog()
     mainWindow.webContents.on('did-finish-load', () => {
       if (!mainWindow) {
         throw new Error('"mainWindow" is not defined');
@@ -287,9 +289,9 @@ function sout(log) {
   //   process.env.NODE_ENV === 'development' ||
   //   process.env.DEBUG_PROD === 'true'
   // ) {
-    let line = "/n" + new Date() + " || " + log + "\n\n";
-    console.log(line)
-    require("fs").appendFileSync("log.txt", line);
+  let line = "/n" + new Date() + " || " + log + "\n\n";
+  console.log(line)
+  require("fs").appendFileSync("log.txt", line);
   // }
 }
 

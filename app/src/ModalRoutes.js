@@ -1,7 +1,7 @@
 import { Spin } from 'antd';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { MODAL_ROUTES } from './helpers/routes';
+import { MODAL_ROUTES } from '../Constants/routes';
 
 const ModalRoutes = () => {
     console.log("IN modal")

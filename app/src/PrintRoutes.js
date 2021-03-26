@@ -1,7 +1,7 @@
 import { Spin } from 'antd';
 import React, { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { PRINT_ROUTES } from './helpers/routes';
+import { PRINT_ROUTES } from '../Constants/routes';
 import ChalanPrintTemplate from "./components/modules/print/ChalanPrintTemplate";
 import InvoicePrintTemplate from "./components/modules/print/InvoicePrintTemplate";
 

@@ -1,7 +1,6 @@
 import { Spin } from 'antd';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { MODULE_ROUTES } from "./helpers/routes";
 
 import Dashboard from "./components/modules/dashboard/Dashboard"
 
@@ -16,6 +15,7 @@ import SalesInvoicePage from './components/modules/transactions/sales/salesInvoi
 import SalesReturnPage from './components/modules/transactions/sales/salesReturn/SalesReturnPage';
 import PurchaseInvoicePage from './components/modules/transactions/purchase/purchaseInvoice/PurchaseInvoicePage';
 import PurchaseReturnPage from './components/modules/transactions/purchase/purchaseReturn/PurchaseReturnPage';
+import { MODULE_ROUTES } from '../Constants/routes';
 
 const ModuleRoutes = () => {
   return (

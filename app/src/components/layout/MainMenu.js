@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { Menu } from 'antd';
-import { generateUrlChain, getTitleByUrl, MODULE_ROUTES } from '../../helpers/routes';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../_redux/actionFiles/LayoutRedux';
+import { generateUrlChain, getTitleByUrl, MODULE_ROUTES } from '../../../Constants/routes';
 const { SubMenu } = Menu
 
 const MainMenu = () => {

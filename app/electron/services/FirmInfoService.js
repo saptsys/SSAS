@@ -1,5 +1,6 @@
 const fs = require('fs');
-const path = require("path")
+const path = require("path");
+const { MODAL_ROUTES } = require('../../Constants/routes');
 const FILE_PATH = path.join(__dirname, "../../firm-data")
 
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
@@ -154,8 +155,32 @@ class FirmInfoService {
     })
     this.createNew(data)
   }
-}
 
+  openNewDialog() {
+
+    let windowOptions = {
+      webPreferences: {
+        nodeIntegration: true,
+        webSecurity: true,
+        contextIsolation: false,
+        preload: __dirname + "/preload.js",
+      },
+      // parent: webContents.getFocusedWebContents()
+    }
+
+    let win = new BrowserWindow(windowOptions);
+    win.setMenu(null)
+    win.webContents.openDevTools();
+
+    win.loadURL(`file://${__dirname}/app.html#/${MODAL_ROUTES.firmInfoModal}`);
+
+    win.webContents.on('did-finish-load', async () => {
+
+      win.setSize(500, 500, true);
+
+    })
+  }
+}
 
 module.exports = {
   INVALID_REASONS,
