@@ -79,7 +79,7 @@ function init() {
         }],
         expiryDate: function () {
           const d = new Date();
-          d.setDate(d.getDate() + 1);
+          d.setDate(d.getDate() + 30);
           return d
         }(),
         renewedDate: new Date()
