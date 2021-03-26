@@ -30,7 +30,8 @@ const CommonEditForm = ({
   titleSufix,
   closeDialog,
   refs = { cancelBtn: undefined, deleteBtn: undefined, saveBtn: undefined },
-  saveAndContinueBtn = false
+  saveAndContinueBtn = false,
+  printBtnHandler,
 }) => {
   const [entityForEdit, setEntityForEdit] = useState(new reducerInfo.model())
   const currentState = useSelector(state => state[reducerInfo.name])
@@ -130,12 +131,22 @@ const CommonEditForm = ({
                   Cancel
                 </Button>
                 {editId && (
-                  <Button
-                    ref={refs.deleteBtn}
-                    type="ghost" danger
-                    onClick={() => deleteBtnHandler(editId)}>
-                    Delete
+                  <>
+                    <Button
+                      ref={refs.deleteBtn}
+                      type="ghost" danger
+                      onClick={() => deleteBtnHandler(editId)}>
+                      Delete
                   </Button>
+                    {printBtnHandler && (
+                      <Button
+                        // ref={refs.deleteBtn}
+                        type="ghost"
+                        onClick={() => printBtnHandler(entityForEdit)}>
+                        Print
+                      </Button>
+                    )}
+                  </>
                 )}
                 <Tooltip title="Press enter to save" placement="bottomLeft" trigger="focus">
                   <Button

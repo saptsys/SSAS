@@ -14,6 +14,16 @@ export const setDeliveryStatusMessage = async (dispatch) => {
   })
 }
 
+
+export const printDeliveryChallan = (id) => {
+  window.promiseIpc.send("Print/", {
+    path: "print/chalan/" + id,
+    options: {
+      silent: false
+    }
+  }).then(console.log).catch(err => errorDialog(err.message))
+}
+
 function DeliveryChallanPage() {
   const dispatch = useDispatch()
 
@@ -37,6 +47,9 @@ function DeliveryChallanPage() {
       setDeliveryStatusMessage(dispatch)
     }}
     saveAndContinueBtn={true}
+    printBtnHandler={record => {
+      printDeliveryChallan(record.id)
+    }}
   />
 }
 

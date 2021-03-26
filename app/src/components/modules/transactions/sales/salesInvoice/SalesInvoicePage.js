@@ -7,6 +7,16 @@ import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../../_redux/actionFiles/LayoutRedux';
 import { errorDialog } from "../../../../../Helpers/dialogs";
 
+export const printSalesInvoice = (id) => {
+  window.promiseIpc.send("Print/", {
+    path: "print/sales/" + id,
+    options: {
+      silent: false
+    }
+  }).then(console.log).catch(err => errorDialog(err.message))
+}
+
+
 function SalesInvoicePage() {
   const dispatch = useDispatch()
 
@@ -44,6 +54,9 @@ function SalesInvoicePage() {
         method: () => true
       }
     ]}
+    printBtnHandler={row => {
+      printSalesInvoice(row.id)
+    }}
   />
 }
 

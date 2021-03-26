@@ -28,7 +28,8 @@ function CommonModuleView({
   drawerWidth = "500",
   editModeChanged,
   saveAndContinueBtn = false,
-  extraEditShortcuts = []
+  extraEditShortcuts = [],
+  printBtnHandler
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -170,6 +171,9 @@ function CommonModuleView({
         filterText={filterText}
         editBtnHandler={editFormBtnHandler}
         deleteBtnHandler={deleteBtnHandler}
+        printBtnHandler={printBtnHandler ? (cell, row, index) => {
+          printBtnHandler(row)
+        } : undefined}
       />
       <CommonEditDrawer
         width={drawerWidth}
@@ -186,6 +190,7 @@ function CommonModuleView({
           refs={{ deleteBtn: deleteBtnRef, saveBtn: saveBtnRef }}
           methods={methods}
           saveAndContinueBtn={saveAndContinueBtn}
+          printBtnHandler={printBtnHandler}
         />
       </CommonEditDrawer>
     </div>

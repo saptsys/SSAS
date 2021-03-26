@@ -23,6 +23,7 @@ class PrintService {
         contextIsolation: false,
         preload: __dirname + "/preload.js",
       },
+      title: "Print",
       // parent: webContents.getFocusedWebContents()
     }
 
@@ -32,7 +33,7 @@ class PrintService {
 
     let win = new BrowserWindow(windowOptions);
     win.setMenu(null)
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     win.loadURL(`file://${__dirname}/app.html#/${path}`);
 
@@ -41,7 +42,7 @@ class PrintService {
       let height = await win.webContents.executeJavaScript(`try{document.getElementById("root").getElementsByTagName("body")[0].getBoundingClientRect().height}catch(e){}`)
       let width = await win.webContents.executeJavaScript(`try{document.getElementById("root").getElementsByTagName("body")[0].getBoundingClientRect().width}catch(e){}`)
 
-      if(height > 800){
+      if (height > 800) {
         height = 600
       }
       win.setSize(parseInt(width) + 20, parseInt(height), true);
