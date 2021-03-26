@@ -72,12 +72,11 @@
       "main.prod.js",
       "main.prod.js.map",
       "package.json",
-      "preload.js",
-      "seeding.sql"
+      "preload.js"
     ],
     "win": {
       "target": [
-        "nsis"
+        "squirrel"
       ]
     },
     "nsis": {
