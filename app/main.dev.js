@@ -68,8 +68,8 @@ function init() {
           pan: "AJIPJ6601R",
           mobile: "9377266111",
           email: "xenexdesigns648@mail.com",
-          address:"822,BELGIUM TOWERRING ROAD,SURAT,GUJARAT",
-          city:"SURAT",
+          address: "822,BELGIUM TOWERRING ROAD,SURAT,GUJARAT",
+          city: "SURAT",
         }],
         databases: [{
           id: 1,
@@ -92,6 +92,7 @@ function init() {
 
 
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
+    app.relaunch()
     app.exit()
   }
 
