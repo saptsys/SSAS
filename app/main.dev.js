@@ -61,9 +61,15 @@ function init() {
         machineIds: ["54f5sd-sdfgdshdf-sdfhg-sdf234"],
         firms: [{
           id: 1,
-          name: "ABC Photo Ltd.",
+          name: "ABC Photo",
           default: true,
-          state: 24
+          state: 24,
+          gstin: "24AAIFP3294M1ZM",
+          pan: "AAIFP3294M1",
+          mobile: "9904021519",
+          email: "abcd@mail.com",
+          address: "JAKATNAKA,SURAT,GUJARAT",
+          city: "SURAT",
         }],
         databases: [{
           id: 1,
