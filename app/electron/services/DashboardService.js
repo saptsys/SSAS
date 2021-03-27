@@ -15,15 +15,15 @@ class DashboardService {
     const chalanStmt = getConnection()
       .getRepository(models.DeliveryTransaction)
       .createQueryBuilder("chalan")
-      .where("chalan.challanDate = date(:chalanDate)", { "chalanDate": date })
-      .select(["count(chalan.id) as count", "sum(chalan.netAmount) as value"])
+      .where("date(chalan.challanDate) = date(:chalanDate)", { "chalanDate": date })
+      .select(["count(chalan.id) as count", "sum(chalan.grossAmount) as value"])
 
     const chalanValue = await chalanStmt.getRawOne();
 
     const salesStmt = getConnection()
       .getRepository(models.BillsTransaction)
       .createQueryBuilder("bills")
-      .where("bills.billDate = date(:billDate)", { "billDate": date })
+      .where("date(bills.billDate) = date(:billDate)", { "billDate": date })
       .andWhere("bills.tag = :tag", { tag: "S" })
       .select(["count(bills.id) as count", "sum(bills.netAmount) as value"])
 
@@ -33,7 +33,7 @@ class DashboardService {
     const purchaseStmt = getConnection()
       .getRepository(models.BillsTransaction)
       .createQueryBuilder("bills")
-      .where("bills.billDate = date(:billDate)", { "billDate": date })
+      .where("date(bills.billDate) = date(:billDate)", { "billDate": date })
       .andWhere("bills.tag = :tag", { tag: "P" })
       .select(["count(bills.id) as count", "sum(bills.netAmount) as value"])
 
