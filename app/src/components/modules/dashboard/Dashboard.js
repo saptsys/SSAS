@@ -13,8 +13,8 @@ const Dashboard = () => {
     dispatch(DashboardActions.getStats()).then(setData)
   }, [])
   return (
-    <div style={{  padding: "20px",background: "#ececec" }}>
-      <Row gutter={24}>
+    <div style={{  padding: "20px",background: "#fbfbfb" }}>
+      <Row gutter={24} justify="space-around">
         <Col span={6}>
           <Card size="small" title="Chalan">
             <Row justify="space-around">
