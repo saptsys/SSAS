@@ -13,11 +13,11 @@ const Dashboard = () => {
     dispatch(DashboardActions.getStats()).then(setData)
   }, [])
   return (
-    <div style={{  padding: "20px",background: "#fbfbfb" }}>
-      <Row gutter={24} justify="space-around">
+    <div style={{  padding: "20px",background: "#ececec" }}>
+      <Row gutter={24}  justify="space-around">
         <Col span={6}>
-          <Card size="small" title="Chalan">
-            <Row justify="space-around">
+          <Card size="small" title="Today's Challan">
+            <Row>
               <Col>
                 <Statistic
                   title="Count"
@@ -37,7 +37,7 @@ const Dashboard = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card size="small" title="Sales">
+          <Card size="small" title="Today's Sales">
             <Row justify="space-around">
               <Col>
                 <Statistic
@@ -58,7 +58,7 @@ const Dashboard = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card size="small" title="Purchase">
+          <Card size="small" title="Today's Purchase">
             <Row justify="space-around">
               <Col>
                 <Statistic

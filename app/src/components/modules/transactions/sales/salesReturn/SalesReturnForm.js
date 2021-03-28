@@ -267,7 +267,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                         readOnly
                       >
-                        <Input defaultValue="0" style={{ width: '40%', textAlign: 'center' }} readOnly />
+                        <Input style={{ width: '40%', textAlign: 'center' }} readOnly />
                       </Form.Item>
                       <Form.Item
                         name={['billNumber']}
@@ -360,9 +360,12 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               ]}
               autoAddRow={{ ...(new BillsDetail()) }}
               beforeSave={(newRow, oldRow) => {
+                const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
-                  newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
+                  newRow.itemUnitMasterId = currentItem?.itemUnitMasterId
+                if (!newRow.rate || newRow.itemMasterId !== oldRow.itemMasterId)
+                  newRow.rate = currentItem?.salePrice
                 return newRow;
               }}
               afterSave={(newRow, oldRow, data) => {

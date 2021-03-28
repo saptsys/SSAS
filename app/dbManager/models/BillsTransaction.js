@@ -24,7 +24,7 @@ class BillsTransaction extends _BaseModel {
     CGSTAmount,
     IGSTPercentage,
     IGSTAmount,
-    ferightPercentage,
+    freightPercentage,
     freightAmount,
     commisionPercentage,
     commisionAmount,
@@ -62,7 +62,7 @@ class BillsTransaction extends _BaseModel {
     this.CGSTAmount = CGSTAmount;
     this.IGSTPercentage = IGSTPercentage;
     this.IGSTAmount = IGSTAmount;
-    this.ferightPercentage = ferightPercentage;
+    this.freightPercentage = freightPercentage;
     this.freightAmount = freightAmount;
     this.commisionPercentage = commisionPercentage;
     this.commisionAmount = commisionAmount;

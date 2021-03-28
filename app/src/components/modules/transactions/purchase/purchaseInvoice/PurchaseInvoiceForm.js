@@ -363,9 +363,12 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               ]}
               autoAddRow={{ ...(new BillsDetail()) }}
               beforeSave={(newRow, oldRow, { dataIndex, rowIndex }) => {
+                const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
-                  newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
+                  newRow.itemUnitMasterId = currentItem?.itemUnitMasterId
+                if (!newRow.rate || newRow.itemMasterId !== oldRow.itemMasterId)
+                  newRow.rate = currentItem?.purchasePrice
                 return newRow;
               }}
               afterSave={(newRow, oldRow, data, { dataIndex, rowIndex }) => {
@@ -445,7 +448,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                     <Form.Item label="+ Freight">
                       <Input.Group>
                         <Form.Item
-                          name={['ferightPercentage']}
+                          name={['freightPercentage']}
                           noStyle
                         >
                           <Input

@@ -118,7 +118,9 @@ class DeliveryChallanService extends __BaseService {
       .select([
         ...rowToModelPropertyMapper("chalan", DeliveryTransaction),
         "party.name as partyName",
-      ]).getRawMany()
+      ])
+      .orderBy("challanDate", "DESC")
+      .getRawMany()
   }
   /**
    *
@@ -154,7 +156,7 @@ class DeliveryChallanService extends __BaseService {
       const fromDate = payload.fromDate ?? null
       const toDate = payload.toDate ?? null
       let party = payload.party ?? [null]
-      if(party && party.length == 0 ){
+      if (party && party.length == 0) {
         party = [null]
       }
       const stmt = this.repository

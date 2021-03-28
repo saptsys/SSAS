@@ -185,9 +185,12 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
             ]}
             autoAddRow={{ ...(new DeliveryDetail()) }}
             beforeSave={(newRow, oldRow) => {
+              const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
               newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
               if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
-                newRow.itemUnitMasterId = allItems.find(x => x.id === newRow.itemMasterId)?.itemUnitMasterId
+                newRow.itemUnitMasterId = currentItem?.itemUnitMasterId
+              if (!newRow.rate || newRow.itemMasterId !== oldRow.itemMasterId)
+                newRow.rate = currentItem?.salePrice
               return newRow;
             }}
             afterSave={(newRow, oldRow, data) => {

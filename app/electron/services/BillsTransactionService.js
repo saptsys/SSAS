@@ -81,11 +81,11 @@ class BillsTransactionService extends __BaseService {
     const billId = payload
     try {
       const stmt = this.repository.createQueryBuilder("bill")
-      .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
-      .leftJoinAndMapOne("bill.partyMaster", PartyMaster, "party", "bill.partyMasterId = party.id")
-      .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
-      .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
-      .where("bill.id = :id", { id: billId })
+        .leftJoinAndMapMany("bill.billsDetail", BillsDetail, "detail", "bill.id = detail.billsTransactionId")
+        .leftJoinAndMapOne("bill.partyMaster", PartyMaster, "party", "bill.partyMasterId = party.id")
+        .leftJoinAndMapOne("detail.itemMasterId", ItemMaster, "item", "detail.itemMasterId = item.id")
+        .leftJoinAndMapOne("detail.itemUnitMasterId", ItemUnitMaster, "unit", "detail.itemUnitMasterId = unit.id")
+        .where("bill.id = :id", { id: billId })
 
       let result = await stmt.getOne();
       result.billsDetail = result.billsDetail?.map(x => {
@@ -116,7 +116,7 @@ class BillsTransactionService extends __BaseService {
       .select([
         ...rowToModelPropertyMapper("bill", BillsTransaction),
         "party.name as partyName",
-      ]);
+      ]).orderBy("billDate", "DESC")
     return stmt.getRawMany()
   }
   /**
@@ -159,7 +159,7 @@ class BillsTransactionService extends __BaseService {
       const fromDate = payload.fromDate ?? null
       const toDate = payload.toDate ?? null
       let party = payload.party ?? [null]
-      if(party && party.length == 0 ){
+      if (party && party.length == 0) {
         party = [null]
       }
       console.log(party)
@@ -403,7 +403,7 @@ class BillsTransactionService extends __BaseService {
       const limit = payload.limit ?? null
       let parties = payload.parties ?? null
 
-      if(parties && parties.length == 0 ){
+      if (parties && parties.length == 0) {
         parties = null
       }
 
@@ -490,7 +490,7 @@ module.exports = BillsTransactionService;
   discountAmount: 123,
   discountPercentage: 123,
   dueDate: 45,
-  ferightPercentage: 54,
+  freightPercentage: 54,
   freightAmount: 456,
   grossAmount: 123,
   id: 1,

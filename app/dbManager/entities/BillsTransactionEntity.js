@@ -98,7 +98,7 @@ module.exports = new EntitySchema({
       type: "double",
       default: 0.0,
     },
-    ferightPercentage: {
+    freightPercentage: {
       name: "freight_percentage",
       type: "double",
       default: 0.0,
