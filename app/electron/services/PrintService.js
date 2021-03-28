@@ -13,7 +13,7 @@ class PrintService {
   }
 
   print(payload) {
-    const path = payload.path
+    const modulePath = payload.path
     const printOptions = payload.options
 
     let windowOptions = {
@@ -24,21 +24,22 @@ class PrintService {
         preload: __dirname + "/preload.js",
       },
       title: "Print",
-      // parent: webContents.getFocusedWebContents()
+      show:false,
+      // parent: BrowserWindow.getFocusedWindow()
     }
 
     if (printOptions.silent) {
       windowOptions.show = false
     }
 
-    let win = new BrowserWindow(windowOptions);
+    let win = new BrowserWindow({windowOptions});
     win.setMenu(null)
-    if(!app.isPackaged){
-      win.webContents.openDevTools();
+    // if(!app.isPackaged){
+    //   win.webContents.openDevTools();
 
-    }
+    // }
 
-    win.loadURL(`file://${__dirname}/app.html#/${path}`);
+    win.loadURL(`file://${__dirname}/app.html#/${modulePath}`);
 
     win.webContents.on('did-finish-load', async () => {
 
@@ -53,7 +54,7 @@ class PrintService {
       console.log("loaded...")
       console.log(printOptions)
       if (printOptions.preview) {
-
+        win.show()
         win.webContents.print({
           silent: false,
           printBackground: true
@@ -61,33 +62,33 @@ class PrintService {
 
       } else if (printOptions.pdf) {
 
-        //not working
+        // not working
         // win.hide()
 
         // Use default printing options
-        // win.webContents.printToPDF({}).then(data => {
-        //   const pdfPath = path.join(os.homedir(), 'Desktop', 'temp.pdf')
-        //   fs.writeFile(pdfPath, data, (error) => {
-        //     if (error) throw error
-        //     console.log(`Wrote PDF successfully to ${pdfPath}`)
-        //   })
-        // }).catch(error => {
-        //   console.log(`Failed to write PDF to ${pdfPath}: `, error)
-        // }).finally(() =>{
-        //   win.close();
-        // })
+        win.webContents.printToPDF({printBackground:true}).then(data => {
+          const pdfPath = path.join(os.homedir(), 'Desktop', 'temp.pdf')
+          fs.writeFile(pdfPath, data, (error) => {
+            if (error) throw error
+            console.log(`Wrote PDF successfully to ${pdfPath}`)
+          })
+        }).catch(error => {
+          console.log(`Failed to write PDF to ${pdfPath}: `, error)
+        }).finally(() =>{
+          win.close();
+        })
 
-      }
-      else {
+      }  else {
         if (printOptions.silent) {
-          win.hide()
           setTimeout(() => {
             win.close();
-          }, 5000);
+          }, 10000);
           win.webContents.print({
             silent: true,
             printBackground: true
           })
+        }else{
+          win.show()
         }
       }
     })

@@ -49,9 +49,9 @@ export default {
         loader: 'less-loader', // compiles Less to CSS
         options: {
           lessOptions: { // If you are using less-loader@5 please spread the lessOptions to options directly
-            strictMath: true
+            strictMath: false,
+            javascriptEnabled: true,
           },
-          javascriptEnabled: true,
         },
       }],
     },
@@ -84,8 +84,6 @@ export default {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
-    }),
-
-    new webpack.NamedModulesPlugin()
+    })
   ]
 };

@@ -221,7 +221,7 @@ const InvoicePrintTemplate = () => {
             border="0"
             width="100%"
             cellSpacing="0"
-            className="nonBreakable"
+            className="nonBreakable b-bottom"
           >
             <tbody>
               <tr>
@@ -237,8 +237,8 @@ const InvoicePrintTemplate = () => {
                   <br />
                   <br />
                   <br />
-              Authorised Signatory
-            </td>
+                  Authorised Signatory
+                </td>
               </tr>
               <tr>
                 <td>

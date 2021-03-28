@@ -76,7 +76,7 @@ const ChalanPrintTemplate = () => {
           <div className="tbl" style={{ width: "100%" }}>
             <div className="tbl-body" style={{ width: "100%" }}>
               <section style={{ width: "100%" }}>
-                <table border="0" width="100%" cellspacing="0">
+                <table border="1" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th style={{ textAlign: "left" }} width="10%">Sr.</th>
