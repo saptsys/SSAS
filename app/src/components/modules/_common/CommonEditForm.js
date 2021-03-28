@@ -14,7 +14,8 @@ export const COMMON_FORM_EVENTS = {
   CANCELLED: 'calncelled',
   CREATED: "created",
   CREATED_AND_CONTINUE: "createdAndContinue",
-  DELETED: "deleted"
+  DELETED: "deleted",
+  SAVE_AND_PRINT: "saveAndPrint"
 }
 
 const CommonEditForm = ({
@@ -58,6 +59,7 @@ const CommonEditForm = ({
   }, [editId])
 
   const [isSaveAndContinue, setIsSaveAndContinue] = useState(false)
+  const [isSaveAndPrint, setIsSaveAndPrint] = useState(false)
   const saveBtnHandler = (values) => {
     dispatch(actions[methods.saveForm](values)).then((res) => {
       message.success(titleSufix + " Saved Successfuly", 4)
@@ -65,6 +67,8 @@ const CommonEditForm = ({
         setEntityForEdit(new reducerInfo.model())
         resetAndCloseDialog(COMMON_FORM_EVENTS.CREATED_AND_CONTINUE, res)
 
+      } else if (isSaveAndPrint) {
+        printBtnHandler(res)
       }
       else
         resetAndCloseDialog(COMMON_FORM_EVENTS.CREATED, res)
@@ -106,6 +110,12 @@ const CommonEditForm = ({
     })
   }
 
+  const saveAndPrint = () => {
+    setIsSaveAndPrint(true)
+    if (formRef)
+      formRef.submit()
+  }
+
   useEffect(() => formRef.resetFields(), [entityForEdit])
 
   const submitForm = (continueSave) => {
@@ -138,15 +148,18 @@ const CommonEditForm = ({
                       onClick={() => deleteBtnHandler(editId)}>
                       Delete
                   </Button>
-                    {printBtnHandler && (
-                      <Button
-                        // ref={refs.deleteBtn}
-                        type="ghost"
-                        onClick={() => printBtnHandler(entityForEdit)}>
-                        Print
-                      </Button>
-                    )}
                   </>
+                )}
+                {printBtnHandler && (
+                  <Tooltip title="Save & Print" placement="bottomLeft">
+                    <Button
+                      // ref={refs.deleteBtn}
+                      type="primary"
+                      ghost
+                      onClick={() => saveAndPrint()}>
+                      Print
+                      </Button>
+                  </Tooltip>
                 )}
                 <Tooltip title="Press enter to save" placement="bottomLeft" trigger="focus">
                   <Button

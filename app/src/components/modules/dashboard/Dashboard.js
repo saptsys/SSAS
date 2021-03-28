@@ -17,7 +17,7 @@ const Dashboard = () => {
       <Row gutter={24}  justify="space-around">
         <Col span={6}>
           <Card size="small" title="Today's Challan">
-            <Row>
+            <Row justify="space-around">
               <Col>
                 <Statistic
                   title="Count"

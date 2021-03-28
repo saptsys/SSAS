@@ -16,6 +16,7 @@ export const setDeliveryStatusMessage = async (dispatch) => {
 
 
 export const printDeliveryChallan = (id) => {
+  debugger;
   window.promiseIpc.send("Print/", {
     path: "print/chalan/" + id,
     options: {
