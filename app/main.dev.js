@@ -281,7 +281,9 @@ async function setDatabaseConnection(dbName) {
     ...typeOrmConf,
     database: dbName
   });
-  await syncTypeORM(connection);
+  if (process.env.NODE_ENV === 'production') {
+    await syncTypeORM(connection);
+  }
   return connection;
 }
 

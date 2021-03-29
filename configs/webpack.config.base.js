@@ -34,6 +34,10 @@ function filterDepWithoutEntryPoints(dep) {
 
 export default {
   externals: [
+    {
+      typeorm: 'commonjs typeorm',
+      sqlite3: 'commonjs sqlite3'
+    },
     ...Object.keys(externals || {}),
     ...Object.keys(possibleExternals || {}).filter(filterDepWithoutEntryPoints)
   ],

@@ -20,6 +20,6 @@
     "electron-squirrel-startup": "^1.0.0",
     "moment": "2.29.1",
     "sqlite3": "5.0.2",
-    "typeorm": "0.2.31"
+    "typeorm": "0.2.30"
   }
 }
