@@ -1,3 +1,4 @@
+const { BrowserWindow } = require('electron');
 const fs = require('fs');
 const path = require("path");
 const { MODAL_ROUTES } = require('../../Constants/routes');
@@ -165,6 +166,9 @@ class FirmInfoService {
         contextIsolation: false,
         preload: __dirname + "/preload.js",
       },
+      title: MODAL_ROUTES.firmInfoModal._title,
+      width: 600,
+      height: 400
       // parent: webContents.getFocusedWebContents()
     }
 
@@ -172,12 +176,12 @@ class FirmInfoService {
     win.setMenu(null)
     win.webContents.openDevTools();
 
-    win.loadURL(`file://${__dirname}/app.html#/${MODAL_ROUTES.firmInfoModal}`);
+    win.loadURL(`file://${__dirname}/app.html#${MODAL_ROUTES.firmInfoModal._path}`);
 
     win.webContents.on('did-finish-load', async () => {
 
       win.setSize(500, 500, true);
-
+      win.show()
     })
   }
 }

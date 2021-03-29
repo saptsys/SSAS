@@ -82,7 +82,7 @@ export const MODAL_ROUTES = {
 export const PRINT_ROUTES = {
   chalan: {
     _path: "/print/chalan/:id",
-    _title: "Chalan"
+    _title: "Challan"
   },
   sales: {
     _path: "/print/sales/:id",

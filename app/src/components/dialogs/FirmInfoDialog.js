@@ -1,6 +1,10 @@
-import { useForm } from 'antd/lib/form/Form';
 import React from 'react';
+import { Col, Input, Row, Form } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+import TextArea from 'antd/lib/input/TextArea';
 import Regex from '../../../Constants/Regex';
+import BorderedSwitch from '../form/BorderedSwitch';
+import { AccountTypesDropdown, StatesDropdown } from '../modules/_common/CommonDropdowns';
 
 
 
