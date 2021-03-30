@@ -22,6 +22,9 @@ import {
 import { glob } from "glob";
 import path from 'path'
 import initDB from "./InitDB"
+import fs from "fs";
+const appData =  app.getPath("appData") + "/ssas/"
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -233,12 +236,14 @@ function init() {
       }
     });
 
-    // mainWindow.on('close', function (event) {
-    //   if (!app.isQuiting) {
-    //     event.preventDefault()
-    //     mainWindow.hide()
-    //   }
-    // })
+    mainWindow.on('close', function (event) {
+      // if (!app.isQuiting) {
+      //   event.preventDefault()
+      //   mainWindow.hide()
+      // }
+      takeDatabaseBackup();
+
+    })
 
     // mainWindow.on('show', function () {
     //   appIcon.setHighlightMode('always')
@@ -253,6 +258,23 @@ function init() {
     new AppUpdater();
   });
 
+}
+
+function takeDatabaseBackup(){
+  const firm = new FirmInfoService();
+  let destFile = new Date().toLocaleDateString().split("/").join("-") + "-ssas.bak"
+  let dest =  appData + `backups/daily/`
+  if(!fs.existsSync(dest)){
+    fs.mkdirSync(dest , {recursive:true});
+  }
+
+
+  if(fs.existsSync(dest + destFile)){
+    fs.unlinkSync(dest + destFile)
+  }else{
+
+  }
+  fs.copyFileSync(firm.getActiveDB().path , dest + destFile);
 }
 
 function loadMainProcess() {
@@ -293,7 +315,7 @@ async function syncTypeORM(connection) {
 }
 
 function sout(...l) {
-  log.info(l)
+  log.info(...l)
 }
 
 
