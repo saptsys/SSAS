@@ -21,7 +21,6 @@ import {
 
 import { glob } from "glob";
 import path from 'path'
-import fs from 'fs';
 import initDB from "./InitDB"
 export default class AppUpdater {
   constructor() {
@@ -93,7 +92,7 @@ function init() {
 
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     app.relaunch()
-    app.exit()
+    // app.exit()
   }
 
   sout("database connecting: " + firmInfo.activeDBPath);
@@ -293,15 +292,8 @@ async function syncTypeORM(connection) {
   await connection.query("PRAGMA foreign_keys=ON");
 }
 
-function sout(log) {
-  // if (
-  //   process.env.NODE_ENV === 'development' ||
-  //   process.env.DEBUG_PROD === 'true'
-  // ) {
-  let line = "/n" + new Date() + " || " + log + "\n\n";
-  console.log(line)
-  require("fs").appendFileSync("log.txt", line);
-  // }
+function sout(...l) {
+  log.info(l)
 }
 
 

@@ -77,13 +77,13 @@
     ],
     "win": {
       "target": [
-        "squirrel"
+        "nsis"
       ]
     },
     "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
     },
     "directories": {
       "buildResources": "resources",

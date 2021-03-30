@@ -1,8 +1,13 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow,app } = require('electron');
 const fs = require('fs');
 const path = require("path");
+const appData =  app.getPath("appData") + "/ssas/"
+console.log(appData);
 const { MODAL_ROUTES } = require('../../Constants/routes');
-const FILE_PATH = path.join(__dirname, "../../firm-data")
+// const FILE_PATH = path.join(__dirname, "../../firm-data")
+const FILE_PATH = appData + "firm-data";
+// const DB_PATH = __dirname + '../../databases';
+const DB_PATH = appData + "/databases/";
 
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
 
@@ -135,7 +140,7 @@ class FirmInfoService {
     this.isValid = res
   }
   getActiveDB() {
-    return this.data.databases.map(x => ({ ...x, path: path.join(__dirname, '../../databases', `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
+    return this.data.databases.map(x => ({ ...x, path: path.join(DB_PATH, `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
   }
   getData() {
     return this.data
