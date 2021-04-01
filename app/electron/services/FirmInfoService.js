@@ -1,7 +1,7 @@
-const { BrowserWindow,app } = require('electron');
+const { BrowserWindow, app } = require('electron');
 const fs = require('fs');
 const path = require("path");
-const appData =  app.getPath("appData") + "/ssas/"
+const appData = app.getPath("appData") + "/ssas/"
 console.log(appData);
 const { MODAL_ROUTES } = require('../../Constants/routes');
 // const FILE_PATH = path.join(__dirname, "../../firm-data")
@@ -10,6 +10,10 @@ const FILE_PATH = appData + "firm-data";
 const DB_PATH = appData + "/databases/";
 
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
+
+const api = "https://ssas.saptsys.com/api/firm";
+
+const axios = require("axios").default
 
 const bluePrintData = {
   /**
@@ -163,13 +167,16 @@ class FirmInfoService {
   }
 
   openNewDialog() {
+    const preloadFile = (process.env.NODE_ENV === 'production')
+      ? __dirname + "/preload.js"
+      : path.join("../../", "/preload.js")
 
     let windowOptions = {
       webPreferences: {
         nodeIntegration: true,
         webSecurity: true,
         contextIsolation: false,
-        preload: __dirname + "/preload.js",
+        preload: preloadFile
       },
       title: MODAL_ROUTES.firmInfoModal._title,
       width: 600,
@@ -187,6 +194,73 @@ class FirmInfoService {
 
       win.setSize(500, 500, true);
       win.show()
+    })
+  }
+
+  /*
+  Expecting this format
+
+          name: "XENEX DESIGNS",
+          default: true,
+          state: 24,
+          gstin: "24AJIPJ6601R3ZT",
+          pan: "AJIPJ6601R",
+          mobile: "9377266111",
+          email: "xenexdesigns648@mail.com",
+          address: "822,BELGIUM TOWERRING ROAD,SURAT,GUJARAT",
+          city: "SURAT",
+  */
+
+  async save(payload) {
+
+    const that = this;
+
+    axios.post("https://ssas.saptsys.com/api/firm", {
+      gstin: payload.gstin
+    }).then(function (response) {
+      const data = response.data
+      console.log("response +++++++++++++ ", response.data)
+
+      const isExpired = data.expired
+      if (isExpired) {
+        return Promise.reject("Trial Period is Expired! If You Still Want to Use Then Buy Licence")
+      }
+
+      const isNew = !data.existing;
+
+      const year = new Date().getFullYear()
+      const fiscalYear = year - 1 + "-" +  (year % 100 )
+
+      that.createNew({
+        machineIds: [data.machine_id],
+        firms: [{
+          id: 1,
+          name: payload.name,
+          default: payload.default ?? true,
+          state: 24,
+          gstin: data.gstin,
+          pan: payload.pan,
+          mobile: payload.moble,
+          email: payload.email,
+          address: payload.address,
+          city: payload.city,
+        }],
+        databases: [{
+          id: 1,
+          year: fiscalYear,
+          active: true,
+          initialized: false
+        }],
+        expiryDate: new Date(data.end_date),
+        renewedDate: new Date(data.start_date)
+      })
+      return Promise.resolve({ message: "firm created",data:data })
+
+
+
+    }).catch(function (response) {
+      console.log("response ---------------- ", response)
+      return Promise.reject({ message: "something went wrong." })
     })
   }
 }

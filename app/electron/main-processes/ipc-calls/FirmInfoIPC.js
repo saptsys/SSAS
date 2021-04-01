@@ -39,3 +39,7 @@ promiseIpc.on(createPath("getAllDB"), () => {
 promiseIpc.on(createPath("openNew"), () => {
   service.openNewDialog()
 });
+
+promiseIpc.on(createPath("save"), (payload) => {
+  service.save(payload)
+});

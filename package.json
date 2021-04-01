@@ -41,7 +41,7 @@
     "cb": "cls & yarn b & yarn c",
     "q": "cross-env START_HOT=1 node -r @babel/register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn w",
     "w": "cross-env NODE_ENV=production webpack serve --config configs/webpack.config.renderer.prod.babel.js",
-    "fix":"powershell -Command \"(gc ./app/node_modules/typeorm/driver/sqlite/SqliteDriver.js) -replace '.verbose\\(\\)', '' | Out-File -encoding ASCII ./app/node_modules/typeorm/driver/sqlite/SqliteDriver.js\""
+    "fix": "powershell -Command \"(gc ./app/node_modules/typeorm/driver/sqlite/SqliteDriver.js) -replace '.verbose\\(\\)', '' | Out-File -encoding ASCII ./app/node_modules/typeorm/driver/sqlite/SqliteDriver.js\""
   },
   "private": true,
   "lint-staged": {
@@ -215,6 +215,7 @@
     "@hot-loader/react-dom": "^17.0.1",
     "@reduxjs/toolkit": "^1.5.1",
     "antd": "^4.14.1",
+    "axios": "^0.21.1",
     "comma-number": "^2.0.1",
     "connected-react-router": "^6.6.0",
     "core-js": "3.9.1",

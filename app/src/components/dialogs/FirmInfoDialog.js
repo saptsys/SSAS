@@ -40,26 +40,16 @@ const FirmInfoDialog = ({ intialData }) => {
         <Col span={11}>
           <Form.Item
             name="name"
-            label="Customer Name"
+            label="Firm Name"
             required
             rules={[{ required: true }]}
           >
             <Input
-              placeholder="Customer Name Here"
+              placeholder="Firm Name Here"
               tabIndex="0"
               autoFocus
             />
           </Form.Item>
-        </Col>
-        <Col span={11} offset={2}>
-          <AccountTypesDropdown
-            name="type"
-            label="Type"
-            required
-            // tooltip="Account Type"
-            rules={[{ required: true }]}
-            propsForSelect={{ tabIndex: 1 }}
-          />
         </Col>
       </Row>
 
