@@ -215,7 +215,7 @@ class FirmInfoService {
 
     const that = this;
 
-    axios.post("https://ssas.saptsys.com/api/firm", {
+    return axios.post("https://ssas.saptsys.com/api/firm", {
       gstin: payload.gstin
     }).then(function (response) {
       const data = response.data
@@ -229,7 +229,7 @@ class FirmInfoService {
       const isNew = !data.existing;
 
       const year = new Date().getFullYear()
-      const fiscalYear = year - 1 + "-" +  (year % 100 )
+      const fiscalYear = year - 1 + "-" + (year % 100)
 
       that.createNew({
         machineIds: [data.machine_id],
@@ -254,7 +254,7 @@ class FirmInfoService {
         expiryDate: new Date(data.end_date),
         renewedDate: new Date(data.start_date)
       })
-      return Promise.resolve({ message: "firm created",data:data })
+      return Promise.resolve({ message: "firm created", data: data })
 
 
 
