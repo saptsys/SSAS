@@ -254,6 +254,9 @@ class FirmInfoService {
         renewedDate: new Date(data.start_date)
       })
       return Promise.resolve({ message: "firm created", data: data })
+
+
+
     }).catch(function (response) {
       console.log("response ---------------- ", response)
       return Promise.reject({ message: "something went wrong." })

@@ -41,5 +41,5 @@ promiseIpc.on(createPath("openNew"), () => {
 });
 
 promiseIpc.on(createPath("save"), (payload) => {
-  service.save(payload)
+  return service.save(payload)
 });
