@@ -35,6 +35,20 @@ class Actions {
       dispatch(this.catchError(err))
     })
   }
+
+  save = (payload) => (dispatch) => {
+    dispatch(this.startCall(this.callTypes.SAVE));
+    return this.sendIPC("save", payload)
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.SAVE));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(this.catchError(error.message, this.callTypes.SAVE));
+        return Promise.reject(error);
+      });
+  };
 }
 
 export const FirmInfoSlice = new _BaseSlice(
@@ -46,6 +60,7 @@ export const FirmInfoSlice = new _BaseSlice(
   },
   {
     DATA: 'getData',
+    SAVE: 'saveData',
   },
   {
     reIniState: (state, action) => {

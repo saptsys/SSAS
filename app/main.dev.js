@@ -222,19 +222,19 @@ function init() {
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
 
-    // firmInfo.openNewDialog()
-    mainWindow.webContents.on('did-finish-load', () => {
-      if (!mainWindow) {
-        throw new Error('"mainWindow" is not defined');
-      }
-      if (process.env.START_MINIMIZED) {
-        mainWindow.minimize();
-      } else {
-        mainWindow.maximize();
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    });
+    firmInfo.openNewDialog()
+    // mainWindow.webContents.on('did-finish-load', () => {
+    //   if (!mainWindow) {
+    //     throw new Error('"mainWindow" is not defined');
+    //   }
+    //   if (process.env.START_MINIMIZED) {
+    //     mainWindow.minimize();
+    //   } else {
+    //     mainWindow.maximize();
+    //     mainWindow.show();
+    //     mainWindow.focus();
+    //   }
+    // });
 
     mainWindow.on('close', function (event) {
       // if (!app.isQuiting) {

@@ -4,14 +4,13 @@ const path = require("path");
 const appData = app.getPath("appData") + "/ssas/"
 console.log(appData);
 const { MODAL_ROUTES } = require('../../Constants/routes');
+const { FIRM_INFO_API_URL } = require('../../Constants/URLS');
 // const FILE_PATH = path.join(__dirname, "../../firm-data")
 const FILE_PATH = appData + "firm-data";
 // const DB_PATH = __dirname + '../../databases';
 const DB_PATH = appData + "/databases/";
 
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
-
-const api = "https://ssas.saptsys.com/api/firm";
 
 const axios = require("axios").default
 
@@ -169,30 +168,30 @@ class FirmInfoService {
   openNewDialog() {
     const preloadFile = (process.env.NODE_ENV === 'production')
       ? __dirname + "/preload.js"
-      : path.join("../../", "/preload.js")
+      : path.join(`${__dirname}/../../`, "/preload.js")
 
-    let windowOptions = {
+
+    let win = new BrowserWindow({
       webPreferences: {
         nodeIntegration: true,
         webSecurity: true,
         contextIsolation: false,
-        preload: preloadFile
+        preload: preloadFile,
       },
       title: MODAL_ROUTES.firmInfoModal._title,
-      width: 600,
-      height: 400
+      frame: false,
+      center: true,
+      height: 500
       // parent: webContents.getFocusedWebContents()
-    }
-
-    let win = new BrowserWindow(windowOptions);
+    });
     win.setMenu(null)
     win.webContents.openDevTools();
 
-    win.loadURL(`file://${__dirname}/app.html#${MODAL_ROUTES.firmInfoModal._path}`);
+    win.loadURL(`file://${__dirname}/../../app.html#${MODAL_ROUTES.firmInfoModal._path}`);
 
     win.webContents.on('did-finish-load', async () => {
 
-      win.setSize(500, 500, true);
+      // win.setSize(500, 500, true);
       win.show()
     })
   }
@@ -215,7 +214,7 @@ class FirmInfoService {
 
     const that = this;
 
-    axios.post("https://ssas.saptsys.com/api/firm", {
+    return axios.post(FIRM_INFO_API_URL, {
       gstin: payload.gstin
     }).then(function (response) {
       const data = response.data
@@ -229,12 +228,12 @@ class FirmInfoService {
       const isNew = !data.existing;
 
       const year = new Date().getFullYear()
-      const fiscalYear = year - 1 + "-" +  (year % 100 )
+      const fiscalYear = year - 1 + "-" + (year % 100)
 
       that.createNew({
         machineIds: [data.machine_id],
         firms: [{
-          id: 1,
+          id: data.id,
           name: payload.name,
           default: payload.default ?? true,
           state: 24,
@@ -254,10 +253,7 @@ class FirmInfoService {
         expiryDate: new Date(data.end_date),
         renewedDate: new Date(data.start_date)
       })
-      return Promise.resolve({ message: "firm created",data:data })
-
-
-
+      return Promise.resolve({ message: "firm created", data: data })
     }).catch(function (response) {
       console.log("response ---------------- ", response)
       return Promise.reject({ message: "something went wrong." })
