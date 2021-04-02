@@ -51,11 +51,15 @@ const FirmInfoDialog = ({ intialData }) => {
   const onFinish = (values) => {
     dispatch(FirmInfoActions.save(values)).then((res) => {
       if (res) {
-        if (expired) {
+        console.log(res)
+        if (res.expired) {
           errorDialog("Your software is expired. please contact to support person.")
         } else {
-          successDialog("Successfully created", (res.licence_type === "TRIAL" ? "Currently running in trial mode" : "") + "Press OK to relaunch.", () => {
-            app.relaunch()
+          Modal.success({
+            title: "Successfully created",
+            content:  (res.licence_type === "TRIAL" ? "Currently running in trial mode" : "") + "Press OK to relaunch.",
+            okText: "Re-Launch",
+            onOk: () => dispatch(FirmInfoActions.relauch()),
           })
         }
       }

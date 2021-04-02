@@ -4,15 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { matchPath, useLocation } from 'react-router-dom';
 import { FirmInfoActions } from './_redux/actionFiles/FirmInfoRedux';
 import { SettingsMasterActions } from './_redux/actionFiles/SettingsMasterRedux';
+import { MODAL_ROUTES } from '../Constants/routes';
 
 const InitialLoader = ({ children }) => {
     const dispatch = useDispatch()
     const location = useLocation()
     const skipLoad = useMemo(() => {
+      console.log(location.pathname)
         return !!matchPath(location.pathname, {
             //module which is not require to load after the initial process
             path: [
-
+                MODAL_ROUTES.firmInfoModal._path
             ],
             exact: true,
             strict: false

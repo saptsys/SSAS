@@ -130,8 +130,8 @@ class FirmInfoService {
       res.reason = INVALID_REASONS.DATA_NOT_FOUND
     else if ((this.data.machineIds?.length ?? 0) === 0)
       res.reason = INVALID_REASONS.CUSTOMER_INVALID
-    else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
-      res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
+    // else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
+    //   res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
     else if (this.expiryLeftDays() === 0 && this.data.trialStart && this.trialLeftDays() === 0)
       res.reason = INVALID_REASONS.TRIAL_OVER
     else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
@@ -170,6 +170,9 @@ class FirmInfoService {
       ? __dirname + "/preload.js"
       : path.join(`${__dirname}/../../`, "/preload.js")
 
+    const appHtmlFile =  (process.env.NODE_ENV === 'production')
+    ? `${__dirname}/app.html`
+    : `${__dirname}/../../app.html`
 
     let win = new BrowserWindow({
       webPreferences: {
@@ -187,7 +190,9 @@ class FirmInfoService {
     win.setMenu(null)
     win.webContents.openDevTools();
 
-    win.loadURL(`file://${__dirname}/../../app.html#${MODAL_ROUTES.firmInfoModal._path}`);
+
+    console.log(appHtmlFile)
+    win.loadURL(`file://${appHtmlFile}#${MODAL_ROUTES.firmInfoModal._path}`);
 
     win.webContents.on('did-finish-load', async () => {
 
@@ -211,6 +216,10 @@ class FirmInfoService {
   */
 
   async save(payload) {
+
+    console.log("~~~~~~~~~~~~~~~~~~~~")
+    console.log(payload)
+    console.log("~~~~~~~~~~~~~~~~~~~~")
 
     const that = this;
 

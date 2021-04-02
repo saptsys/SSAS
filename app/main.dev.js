@@ -23,6 +23,8 @@ import { glob } from "glob";
 import path from 'path'
 import initDB from "./InitDB"
 import fs from "fs";
+import promiseIpc from "electron-promise-ipc";
+
 const appData =  app.getPath("appData") + "/ssas/"
 
 export default class AppUpdater {
@@ -43,6 +45,7 @@ function init() {
   if (!gotTheLock) {
     app.isQuiting = true
     app.quit()
+    log("gotthelock")
     return
   }
   app.on('second-instance', (event, commandLine, workingDirectory) => {
@@ -53,49 +56,24 @@ function init() {
   })
 
   const firmInfo = new FirmInfoService()
-  if (firmInfo.isValid.status === false) {
+  const isValid = firmInfo.isValid.status;
+  sout("firm info is " +isValid ? "valid" : "not valid")
+  if (isValid === false) {
     const {
       reason
     } = firmInfo.isValid
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
-
-      firmInfo.createNew({
-        machineIds: ["54f5sd-sdfgdshdf-sdfhg-sdf234"],
-        firms: [{
-          id: 1,
-          name: "XENEX DESIGNS",
-          default: true,
-          state: 24,
-          gstin: "24AJIPJ6601R3ZT",
-          pan: "AJIPJ6601R",
-          mobile: "9377266111",
-          email: "xenexdesigns648@mail.com",
-          address: "822,BELGIUM TOWERRING ROAD,SURAT,GUJARAT",
-          city: "SURAT",
-        }],
-        databases: [{
-          id: 1,
-          year: '2020-21',
-          active: true,
-          initialized: false
-        }],
-        expiryDate: function () {
-          const d = new Date();
-          d.setDate(d.getDate() + 30);
-          return d
-        }(),
-        renewedDate: new Date()
+      registerFirmComponents();
+      app.on('ready', async () => {
+          firmInfo.openNewDialog()
       })
-      sout("\n\nnew dummy firm info created please restart")
 
-      // app.relaunch()
+    }else if (reason === INVALID_REASONS.SOFTWARE_EXPIRED) {
+        sout("spftware expired")
     }
 
-
-
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
-    app.relaunch()
-    // app.exit()
+    return;
   }
 
   sout("database connecting: " + firmInfo.activeDBPath);
@@ -114,6 +92,7 @@ function init() {
       }
 
       loadMainProcess();
+      registerFirmComponents();
     })
     .catch((e) => {
       console.log(e)
@@ -222,19 +201,18 @@ function init() {
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
 
-    firmInfo.openNewDialog()
-    // mainWindow.webContents.on('did-finish-load', () => {
-    //   if (!mainWindow) {
-    //     throw new Error('"mainWindow" is not defined');
-    //   }
-    //   if (process.env.START_MINIMIZED) {
-    //     mainWindow.minimize();
-    //   } else {
-    //     mainWindow.maximize();
-    //     mainWindow.show();
-    //     mainWindow.focus();
-    //   }
-    // });
+    mainWindow.webContents.on('did-finish-load', () => {
+      if (!mainWindow) {
+        throw new Error('"mainWindow" is not defined');
+      }
+      if (process.env.START_MINIMIZED) {
+        mainWindow.minimize();
+      } else {
+        mainWindow.maximize();
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    });
 
     mainWindow.on('close', function (event) {
       // if (!app.isQuiting) {
@@ -384,6 +362,22 @@ var handleStartupEvent = function () {
   }
 };
 
+function registerFirmComponents(){
+
+  require("./electron/main-processes/ipc-calls/FirmInfoIPC")
+
+  promiseIpc.on("app/relaunch", () => {
+    console.log("ASDASD")
+    app.relaunch();
+    app.exit();
+  });
+
+
+  promiseIpc.on("app/quit", () => {
+    app.quit();
+  });
+
+}
 
 
 init()

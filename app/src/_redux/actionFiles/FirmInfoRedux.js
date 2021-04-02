@@ -49,6 +49,11 @@ class Actions {
         return Promise.reject(error);
       });
   };
+
+  relauch = () => (dispatch) => {
+    return promiseIpc.send('app/relaunch')
+  }
+
 }
 
 export const FirmInfoSlice = new _BaseSlice(
