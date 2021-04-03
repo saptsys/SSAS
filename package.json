@@ -219,6 +219,7 @@
     "comma-number": "^2.0.1",
     "connected-react-router": "^6.6.0",
     "core-js": "3.9.1",
+    "dbffile": "^1.5.0",
     "electron-builder-squirrel-windows": "^22.10.5",
     "electron-debug": "^3.0.1",
     "electron-log": "^4.3.2",
