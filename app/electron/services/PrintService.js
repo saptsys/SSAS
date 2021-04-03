@@ -32,7 +32,7 @@ class PrintService {
       windowOptions.show = false
     }
 
-    let win = new BrowserWindow({windowOptions});
+    let win = new BrowserWindow(windowOptions);
     win.setMenu(null)
     // if(!app.isPackaged){
     //   win.webContents.openDevTools();
