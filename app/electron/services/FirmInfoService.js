@@ -13,6 +13,7 @@ const DB_PATH = appData + "/databases/";
 const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
 
 const axios = require("axios").default
+const moment = require("moment")
 
 const bluePrintData = {
   /**
@@ -112,10 +113,7 @@ class FirmInfoService {
     this.checkIsValid()
   }
   trialLeftDays() {
-    const trialEnd = new Date(this.data.trialStart)
-    trialEnd.setDate(trialEnd.getDate() + this.data.trialDuration)
-    const left = (trialEnd - new Date()) / (1000 * 60 * 60 * 24)
-    return left > 0 ? left : 0
+    return this.data.trialStart && this.data.trialDuration ? moment(this.data.trialStart).add(this.data.trialDuration, 'days').diff(moment(new Date()), 'days') : undefined
   }
   expiryLeftDays() {
     if (!this.data.expiryDate)
@@ -132,8 +130,8 @@ class FirmInfoService {
       res.reason = INVALID_REASONS.CUSTOMER_INVALID
     // else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
     //   res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
-    else if (this.expiryLeftDays() === 0 && this.data.trialStart && this.trialLeftDays() === 0)
-      res.reason = INVALID_REASONS.TRIAL_OVER
+    else if (this.expiryLeftDays() <= 0 && this.trialLeftDays() <= 0)
+      res.reason = INVALID_REASONS.SOFTWARE_EXPIRED
     else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
       res.reason = INVALID_REASONS.FIRM_NOT_FOUND
     else if (!this.data?.databases?.length || !this.getActiveDB())
@@ -146,7 +144,7 @@ class FirmInfoService {
     return this.data.databases.map(x => ({ ...x, path: path.join(DB_PATH, `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
   }
   getData() {
-    return this.data
+    return { ...this.data, trialLeftDays: this.trialLeftDays() }
   }
 
   /**
@@ -260,7 +258,9 @@ class FirmInfoService {
           initialized: false
         }],
         expiryDate: new Date(data.end_date),
-        renewedDate: new Date(data.start_date)
+        renewedDate: new Date(data.start_date),
+        trialStart: data.licence_type === "TRIAL" ? new Date(data.start_date) : undefined,
+        trialDuration: data.licence_type === "TRIAL" ? moment(data.end_date).diff(data.start_date, 'days') : undefined
       })
       return Promise.resolve({ message: "firm created", data: data })
     }).catch(function (response) {

@@ -1,7 +1,7 @@
 /**
- * 
+ *
  * @param {String} str
- * @returns {String} 
+ * @returns {String}
  */
 export const stringNormalize = (str) => {
   try {
@@ -19,30 +19,30 @@ export const stringNormalize = (str) => {
 }
 
 /**
- * 
- * @param {String} str 
- * @param {boolean} softFail 
+ *
+ * @param {String} str
+ * @param {boolean} softFail
  */
-export const stringToJson = (str , softFail = false) => {
+export const stringToJson = (str, softFail = false) => {
   try {
     return JSON.parse(str)
   } catch (e) {
-    if(softFail){
+    if (softFail) {
       return {};
     }
     return;
   }
 }
 /**
- * 
- * @param {String} obj 
- * @param {boolean} softFail 
+ *
+ * @param {String} obj
+ * @param {boolean} softFail
  */
-export const jsonToString = (obj , softFail = false) => {
+export const jsonToString = (obj, softFail = false) => {
   try {
     return JSON.stringify(obj)
   } catch (e) {
-    if(softFail){
+    if (softFail) {
       return {};
     }
     return;

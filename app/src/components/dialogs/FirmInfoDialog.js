@@ -50,15 +50,14 @@ const FirmInfoDialog = ({ intialData }) => {
   }, [window.navigator.onLine])
 
   const onFinish = (values) => {
-    dispatch(FirmInfoActions.save(values)).then((res) => {
-      if (res) {
-        console.log(res)
-        if (res.expired) {
+    dispatch(FirmInfoActions.save(values)).then(({ data }) => {
+      if (data) {
+        if (data.expired) {
           errorDialog("Your software is expired. please contact to support person.")
         } else {
           Modal.success({
-            title: "Successfully created",
-            content: (res.licence_type === "TRIAL" ? "Currently running in trial mode" : "") + "Press button to relaunch.",
+            title: data.existing ? " 🎉 Your firm is registered successfully. 🍻" : "Welcome back. Good to see you. 🧡",
+            content: (data.licence_type === "TRIAL" ? "Currently running in trial mode ⏳" : "Press button to relaunch."),
             okText: "Re-Launch",
             onOk: () => dispatch(FirmInfoActions.relauch()),
           })
@@ -135,7 +134,7 @@ const FirmInfoDialog = ({ intialData }) => {
 
                 <Input tabIndex="3" placeholder="PAN here" />
               </Form.Item>
-              <Form.Item name="email" label="Email" rules={[{ pattern: Regex.email }]}>
+              <Form.Item name="email" label="Email" rules={[{ pattern: Regex.email, message: "Invalid Email Address" }]}>
                 <Input tabIndex="9" placeholder="E-mail address here" />
               </Form.Item>
             </Col>
