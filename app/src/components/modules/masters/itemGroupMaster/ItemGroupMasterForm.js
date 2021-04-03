@@ -3,7 +3,7 @@ import { Form, Input } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { ItemGroupMasterActions } from "./../../../../_redux/actionFiles/ItemGroupMasterRedux";
-import { stringNormalize } from "./../../../../Helpers/utils"
+import { stringNormalize } from "./../../../../helpers/utils"
 import BorderedSwitch from "../../../form/BorderedSwitch";
 
 

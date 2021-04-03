@@ -20,7 +20,7 @@ export const printDeliveryChallan = (id) => {
   window.promiseIpc.send("Print/", {
     path: "print/chalan/" + id,
     options: {
-      silent: false
+      silent: true,
     }
   }).then(console.log).catch(err => errorDialog(err.message))
 }

@@ -7,9 +7,9 @@ import BorderedSwitch from '../form/BorderedSwitch';
 import { AccountTypesDropdown, StatesDropdown } from '../modules/_common/CommonDropdowns';
 import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FirmInfoActions } from '../../_redux/actionFiles/FirmInfoRedux';
-import { errorDialog, successDialog } from '../../Helpers/dialogs';
+import { errorDialog, successDialog } from '../../helpers/dialogs';
 import {
   app,
 } from 'electron';
@@ -28,6 +28,7 @@ const FirmInfoDialog = ({ intialData }) => {
   };
 
   const dispatch = useDispatch()
+  const firmInfoState = useSelector(s => s.FirmInfo)
 
   const gstinNumberChanged = (e) => {
     if (Regex.checkRegex(e.target.value, 'gstin')) {
@@ -57,7 +58,7 @@ const FirmInfoDialog = ({ intialData }) => {
         } else {
           Modal.success({
             title: "Successfully created",
-            content:  (res.licence_type === "TRIAL" ? "Currently running in trial mode" : "") + "Press OK to relaunch.",
+            content: (res.licence_type === "TRIAL" ? "Currently running in trial mode" : "") + "Press button to relaunch.",
             okText: "Re-Launch",
             onOk: () => dispatch(FirmInfoActions.relauch()),
           })
@@ -172,7 +173,7 @@ const FirmInfoDialog = ({ intialData }) => {
           </Row>
           <br />
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type="primary" style={{ width: '100px' }} onClick={form.submit}>SUBMIT</Button>
+            <Button type="primary" style={{ width: '100px' }} onClick={form.submit} loading={firmInfoState.loading === "saveData"} >SUBMIT</Button>
           </div>
         </Form>
       </div>

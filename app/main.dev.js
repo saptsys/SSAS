@@ -172,7 +172,7 @@ function init() {
     mainWindow.loadURL(`file://${__dirname}/app.html`);
     sout("app.isPackaged = " + app.isPackaged)
     if (!app.isPackaged) {
-      mainWindow.webContents.openDevTools({ mode: "detach" });
+      // mainWindow.webContents.openDevTools({ mode: "detach" });
     }
 
     // var appIcon = new Tray()

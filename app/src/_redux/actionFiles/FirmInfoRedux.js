@@ -45,7 +45,7 @@ class Actions {
       })
       .catch((error) => {
         console.log(error);
-        dispatch(this.catchError(error.message, this.callTypes.SAVE));
+        dispatch(this.catchError(error, this.callTypes.SAVE));
         return Promise.reject(error);
       });
   };

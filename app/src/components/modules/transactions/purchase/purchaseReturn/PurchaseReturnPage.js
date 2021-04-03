@@ -5,7 +5,7 @@ import { PurchaseReturnActions, reducerInfo } from '../../../../../_redux/action
 import PurchaseReturnForm from './PurchaseReturnForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../../_redux/actionFiles/LayoutRedux';
-import { errorDialog } from "../../../../../Helpers/dialogs";
+import { errorDialog } from "../../../../../helpers/dialogs";
 
 function PurchaseReturnPage() {
   const dispatch = useDispatch()

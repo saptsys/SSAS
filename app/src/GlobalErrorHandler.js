@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import React from 'react';
-import { errorDialog } from './Helpers/dialogs';
+import { errorDialog } from './helpers/dialogs';
 
 export default class GlobalErrorHandler extends React.Component {
   constructor(props) {

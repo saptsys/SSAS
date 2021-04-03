@@ -5,13 +5,13 @@ import { SalesInvoiceActions, reducerInfo } from '../../../../../_redux/actionFi
 import SalesInvoiceForm from './SalesInvoiceForm';
 import { useDispatch } from 'react-redux';
 import { LayoutActions } from '../../../../../_redux/actionFiles/LayoutRedux';
-import { errorDialog } from "../../../../../Helpers/dialogs";
+import { errorDialog } from "../../../../../helpers/dialogs";
 
 export const printSalesInvoice = (id) => {
   window.promiseIpc.send("Print/", {
     path: "print/sales/" + id,
     options: {
-      silent: false
+      silent: true
     }
   }).then(console.log).catch(err => errorDialog(err.message))
 }

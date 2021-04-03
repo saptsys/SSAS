@@ -170,9 +170,9 @@ class FirmInfoService {
       ? __dirname + "/preload.js"
       : path.join(`${__dirname}/../../`, "/preload.js")
 
-    const appHtmlFile =  (process.env.NODE_ENV === 'production')
-    ? `${__dirname}/app.html`
-    : `${__dirname}/../../app.html`
+    const appHtmlFile = (process.env.NODE_ENV === 'production')
+      ? `${__dirname}/app.html`
+      : `${__dirname}/../../app.html`
 
     let win = new BrowserWindow({
       webPreferences: {
@@ -188,7 +188,7 @@ class FirmInfoService {
       // parent: webContents.getFocusedWebContents()
     });
     win.setMenu(null)
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
 
     console.log(appHtmlFile)
@@ -263,12 +263,9 @@ class FirmInfoService {
         renewedDate: new Date(data.start_date)
       })
       return Promise.resolve({ message: "firm created", data: data })
-
-
-
     }).catch(function (response) {
       console.log("response ---------------- ", response)
-      return Promise.reject({ message: "something went wrong." })
+      return Promise.reject({ message: response?.message ?? "something went wrong." })
     })
   }
 }

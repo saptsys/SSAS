@@ -7,7 +7,7 @@ import moment from "moment"
 import { dateFormat } from "../../../../Constants/Formats";
 import geoStates from "../../../../Constants/States";
 import './printStyle.less';
-import { numberCurrencyIn as numToWords } from "../../../Helpers/NumToWord";
+import { numberCurrencyIn as numToWords } from "../../../helpers/NumToWord";
 import commaNumber from "comma-number";
 
 const InvoicePrintTemplate = () => {

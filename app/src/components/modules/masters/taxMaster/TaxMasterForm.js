@@ -3,7 +3,7 @@ import { Form, Input, InputNumber } from "antd";
 import validateMsgs from "../../../../helpers/validateMesseges";
 import { useDispatch } from "react-redux";
 import { TaxMasterActions } from "./../../../../_redux/actionFiles/TaxMasterRedux";
-import { stringNormalize } from "./../../../../Helpers/utils"
+import { stringNormalize } from "./../../../../helpers/utils"
 import BorderedSwitch from "../../../form/BorderedSwitch";
 import Text from "antd/lib/typography/Text";
 

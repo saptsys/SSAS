@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { ItemMasterActions } from "./../../../../_redux/actionFiles/ItemMasterRedux";
 
 import validateMsgs from "../../../../helpers/validateMesseges";
-import { stringNormalize } from "./../../../../Helpers/utils"
+import { stringNormalize } from "./../../../../helpers/utils"
 import { TaxDropdown, ItemGroupDropdown, ItemUnitDropdown } from "./../../_common/CommonDropdowns"
 import BorderedSwitch from "../../../form/BorderedSwitch";
 
