@@ -113,7 +113,7 @@ class FirmInfoService {
     this.checkIsValid()
   }
   trialLeftDays() {
-    return this.data.trialStart && this.data.trialDuration ? moment(this.data.trialStart).add(this.data.trialDuration, 'days').diff(moment(new Date()), 'days') : undefined
+    return this.data.trialStart && this.data.trialDuration ? moment(new Date()).diff(moment(this.data.trialStart).add(this.data.trialDuration, 'days'), 'days') : undefined
   }
   expiryLeftDays() {
     if (!this.data.expiryDate)
