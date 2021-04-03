@@ -32,7 +32,7 @@ const ImportChallansDialog = ({ isOpen, onImport, onCancel, parties, defaultFrom
 
   const loadData = () => {
     if (isOpen && parties.length && fromDate && toDate) {
-      dispatch(DeliveryChallanActions.getByPartyAndDates(parties, fromDate, toDate)).then(setRecords)
+      dispatch(DeliveryChallanActions.getByPartyAndDates(parties, new Date(fromDate).toISOString(), new Date(toDate).toISOString())).then(setRecords)
     }
   }
 

@@ -39,7 +39,7 @@ const BillSelectionDialog = ({ title = "Select Bill(s)", isOpen, onSelectDone, o
 
   const loadData = () => {
     if (isOpen && fromDate && toDate) {
-      dispatch(ReduxObj.actions.getByPartyListAndDateInterval(parties, fromDate, toDate)).then(setRecords)
+      dispatch(ReduxObj.actions.getByPartyListAndDateInterval(parties, new Date(fromDate).toISOString(), new Date(toDate).toISOString())).then(setRecords)
     }
   }
 
