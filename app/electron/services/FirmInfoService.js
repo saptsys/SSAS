@@ -31,19 +31,19 @@ const bluePrintData = {
   /**
    * @type {Date}
    */
-  renewedDate: null,
+  startDate: null,
   /**
    * @type {Date}
    */
-  expiryDate: null,
+  endDate: null,
   /**
-   * @type {Date}
+   * @type {boolean}
    */
-  trialStart: null,
+  isInTrialMode: false,
   /**
-   * @type {Int8Array}
+   * @type {int}
    */
-  trialDuration: 0,
+  expiryLeftDays: 0
 }
 const INVALID_REASONS = {
   DATA_NOT_FOUND: "Data Not Found.",
@@ -106,21 +106,15 @@ class FirmInfoService {
       let fromFile = fs.readFileSync(FILE_PATH, { encoding: 'utf8', flag: 'r' });
       let dataToRead = this.decode(fromFile)
       this.data = JSON.parse(dataToRead)
+      this.data.expiryLeftDays = this.expiryLeftDays()
       const dbYear = this.getActiveDB()
       if (dbYear)
         this.activeDBPath = dbYear.path
     }
     this.checkIsValid()
   }
-  trialLeftDays() {
-    return this.data.trialStart && this.data.trialDuration ? moment(new Date()).diff(moment(this.data.trialStart).add(this.data.trialDuration, 'days'), 'days') : undefined
-  }
   expiryLeftDays() {
-    if (!this.data.expiryDate)
-      return 0
-    const expiry = new Date(this.data.expiryDate)
-    const left = (expiry - new Date()) / (1000 * 60 * 60 * 24)
-    return left > 0 ? left : 0
+    return moment(this.data.endDate).diff(moment(new Date()), 'days')
   }
   checkIsValid() {
     let res = { status: false, reason: null }
@@ -130,8 +124,8 @@ class FirmInfoService {
       res.reason = INVALID_REASONS.CUSTOMER_INVALID
     // else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
     //   res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
-    else if (this.expiryLeftDays() <= 0 && this.trialLeftDays() <= 0)
-      res.reason = INVALID_REASONS.SOFTWARE_EXPIRED
+    else if (this.expiryLeftDays() <= 0)
+      res.reason = this.data.isInTrialMode ? INVALID_REASONS.TRIAL_OVER : INVALID_REASONS.SOFTWARE_EXPIRED
     else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
       res.reason = INVALID_REASONS.FIRM_NOT_FOUND
     else if (!this.data?.databases?.length || !this.getActiveDB())
@@ -144,7 +138,7 @@ class FirmInfoService {
     return this.data.databases.map(x => ({ ...x, path: path.join(DB_PATH, `FY${x.year}.db`) })).find(x => x.id && x.year && x.active === true)
   }
   getData() {
-    return { ...this.data, trialLeftDays: this.trialLeftDays() }
+    return { ...this.data }
   }
 
   /**
@@ -227,15 +221,18 @@ class FirmInfoService {
       const data = response.data
       console.log("response +++++++++++++ ", response.data)
 
-      const isExpired = data.expired
-      if (isExpired) {
-        return Promise.reject("Trial Period is Expired! If You Still Want to Use Then Buy Licence")
-      }
+      // const isExpired = data.expired
+      // if (isExpired) {
+      //   return Promise.reject("Trial Period is Expired! If You Still Want to Use Then Buy Licence")
+      // }
 
       const isNew = !data.existing;
 
-      const year = new Date().getFullYear()
-      const fiscalYear = year - 1 + "-" + (year % 100)
+      const d = new Date();
+      const year = d.getFullYear()
+      const month = d.getMonth() + 1
+      const fiscalYear = month > 3 ? year + "-" + ((year + 1) % 100) : year - 1 + "-" + (year % 100)
+
 
       that.createNew({
         machineIds: [data.machine_id],
@@ -257,10 +254,9 @@ class FirmInfoService {
           active: true,
           initialized: false
         }],
-        expiryDate: new Date(data.end_date),
-        renewedDate: new Date(data.start_date),
-        trialStart: data.licence_type === "TRIAL" ? new Date(data.start_date) : undefined,
-        trialDuration: data.licence_type === "TRIAL" ? moment(data.end_date).diff(data.start_date, 'days') : undefined
+        endDate: new Date(data.end_date),
+        startDate: new Date(data.start_date),
+        isInTrialMode: data.licence_type === "TRIAL",
       })
       return Promise.resolve({ message: "firm created", data: data })
     }).catch(function (response) {

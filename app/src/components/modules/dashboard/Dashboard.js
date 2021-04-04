@@ -7,6 +7,8 @@ import { Statistic, Card, Row, Col, Space, Alert } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import './dashboard.less'
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { MODULE_ROUTES } from '../../../../Constants/routes';
 
 
 const Dashboard = () => {
@@ -23,28 +25,31 @@ const Dashboard = () => {
 
   useEffect(() => {
     let alerts = []
-    if (firmInfo.trialLeftDays) {
-      alerts.push({
-        title: <b>{firmInfo.trialLeftDays} days left to trial is period over.</b>,
-        content: <span>Have a license key ? go to <b>Utility {'>>'} Firm/Company Info</b> to enter a key.</span>
-      })
+    if (firmInfo) {
+      if (firmInfo.isInTrialMode) {
+        alerts.push({
+          type: 'warning',
+          title: <b>Software is in trial version.</b>,
+          content: <span>{firmInfo.expiryLeftDays} days left to software trial period over. if you have a license key ? go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> to enter a key.</span>
+        })
+      } else if (firmInfo.expiryLeftDays <= 5) {
+        alerts.push({
+          type: 'warning',
+          title: <b>{firmInfo.expiryLeftDays} days left to software expiry.</b>,
+          content: <span>Have a new license key ? go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> to enter a key.</span>
+        })
+      }
     }
     setDismisibleAlerts(alerts)
   }, [firmInfo])
 
   return (
     <div className="dashboard">
-      <br />
-      <Row>
-        <Col span={22} offset={1}>
-          <Space direction="vertical">
-            {dismisibleAlerts.map((al, i) => (
-              <Alert key={i} banner description={al.content} message={al.title} type="info" />
-            ))}
-          </Space>
-        </Col>
-      </Row>
-      <br />
+
+      {dismisibleAlerts.map((al, i) => (
+        <Alert closable key={i} banner description={al.content} message={al.title} type={al.type ?? 'info'} style={{ margin: '15px 30px' }} />
+      ))}
+
       <div style={{ padding: "20px", background: "#ececec" }}>
         <Row gutter={24} justify="space-around">
           <Col span={6}>
