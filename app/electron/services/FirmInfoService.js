@@ -240,10 +240,11 @@ class FirmInfoService {
           id: data.id,
           name: payload.name,
           default: payload.default ?? true,
-          state: 24,
+          state: payload.state ?? 24,
           gstin: data.gstin,
           pan: payload.pan,
-          mobile: payload.moble,
+          mobile: payload.mobile,
+          phone: payload.phone,
           email: payload.email,
           address: payload.address,
           city: payload.city,
@@ -263,6 +264,22 @@ class FirmInfoService {
       console.log("response ---------------- ", response)
       return Promise.reject({ message: response?.message ?? "something went wrong." })
     })
+  }
+
+
+  updateFirm(payload) {
+    try {
+      this.data.firms = this.data.firms.map(firm => {
+        if (firm.id === payload.id) {
+          ["name", "address", "city", "email", "mobile", "phone"].forEach(k => firm[k] = payload[k])
+        }
+        return firm
+      })
+      this.update()
+      return Promise.resolve("updated")
+    } catch (error) {
+      return Promise.reject({ message: 'Firm not updated due to ' + (error?.message ?? "") })
+    }
   }
 }
 

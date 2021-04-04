@@ -16,6 +16,7 @@ import SalesReturnPage from './components/modules/transactions/sales/salesReturn
 import PurchaseInvoicePage from './components/modules/transactions/purchase/purchaseInvoice/PurchaseInvoicePage';
 import PurchaseReturnPage from './components/modules/transactions/purchase/purchaseReturn/PurchaseReturnPage';
 import { MODULE_ROUTES } from '../Constants/routes';
+import FirmInfoPage from './components/modules/utility/firmInfo/FirmInfoPage';
 
 const ModuleRoutes = () => {
   return (
@@ -41,6 +42,7 @@ const ModuleRoutes = () => {
 
         {/* Utilities */}
         <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
+        <Route exact path={MODULE_ROUTES.utility.firmInfo._path} component={FirmInfoPage} />
       </Switch>
     </Suspense>
   );

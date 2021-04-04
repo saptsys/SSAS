@@ -12,14 +12,11 @@ export function errorDialog(title, content, onCancel, onRetry) {
   })
 }
 
-export function successDialog(title, content, onCancel, onRetry) {
+export function successDialog(title, content, okText, onOk) {
   Modal.success({
     title: title,
     content: content,
-    okCancel: !!onRetry,
-    cancelText: "Close",
-    okText: onRetry ? 'Retry' : "Close",
-    onOk: onRetry,
-    onCancel: onCancel,
+    okText: okText ?? "OK",
+    onOk: onOk ?? undefined,
   })
 }

@@ -43,3 +43,7 @@ promiseIpc.on(createPath("openNew"), () => {
 promiseIpc.on(createPath("save"), (payload) => {
   return service.save(payload)
 });
+
+promiseIpc.on(createPath("updateFirm"), (payload) => {
+  return service.updateFirm(payload)
+});

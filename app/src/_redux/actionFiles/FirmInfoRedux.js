@@ -50,6 +50,20 @@ class Actions {
       });
   };
 
+  updateFirm = (payload) => (dispatch) => {
+    dispatch(this.startCall(this.callTypes.UPDATE_FIRM));
+    return this.sendIPC("updateFirm", payload)
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.UPDATE_FIRM));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(this.catchError(error, this.callTypes.UPDATE_FIRM));
+        return Promise.reject(error);
+      });
+  };
+
   relauch = () => (dispatch) => {
     return promiseIpc.send('app/relaunch')
   }
@@ -66,6 +80,7 @@ export const FirmInfoSlice = new _BaseSlice(
   {
     DATA: 'getData',
     SAVE: 'saveData',
+    UPDATE_FIRM: 'updateFirm',
   },
   {
     reIniState: (state, action) => {

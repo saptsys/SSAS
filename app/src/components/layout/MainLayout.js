@@ -40,8 +40,8 @@ const MainLayout = ({ children }) => {
           <Sider className="sider" id="aside-menu">
             <Tooltip placement="right" title={<span>GSTIN: {FirmInfoState.gstin ?? "Not Available"}<br />Address: {FirmInfoState.address ?? "Not Available"}</span>}>
               <div className="sider-header">
-                <Image src={logoSrc} />
-                <b>{FirmInfoState.firmName}</b>
+                {/* <Image src={logoSrc} /> */}
+                <b style={{ textTransform: 'uppercase' }}>{FirmInfoState.firmName}</b>
               </div>
             </Tooltip>
             <MainMenu />
