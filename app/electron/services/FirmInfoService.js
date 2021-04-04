@@ -298,8 +298,12 @@ class FirmInfoService {
       },
       title: type,
       frame: true,
+      maximizable: false,
+      minimizable: false,
       center: true,
-      height: 500
+      resizable: false,
+      height: 480,
+      width: 720
       // parent: webContents.getFocusedWebContents()
     });
     win.setMenu(null)
@@ -307,12 +311,13 @@ class FirmInfoService {
 
 
     console.log(appHtmlFile)
-    win.loadURL(`file://${appHtmlFile}#${MODAL_ROUTES.firmInfoModal._path.replace(":type", type)}`);
-
+    win.loadURL(`file://${appHtmlFile}#${MODAL_ROUTES.softwareValidations._path.replace(":type", type)}`);
     win.webContents.on('did-finish-load', async () => {
-
-      // win.setSize(500, 500, true);
+      win.setSize(720, 480, true);
       win.show()
+    })
+    win.on('close', () => {
+      app.quit()
     })
   }
 

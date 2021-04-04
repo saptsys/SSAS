@@ -14,6 +14,7 @@ import {
   app,
 } from 'electron';
 import FirmInfoForm from '../modules/utility/firmInfo/FirmInfoForm';
+import SupportFootLines from './SupportFootLines';
 
 
 const FirmInfoDialog = ({ intialData }) => {
@@ -67,11 +68,7 @@ const FirmInfoDialog = ({ intialData }) => {
         <br />
         <FirmInfoForm form={form} saveBtnHandler={saveBtnHandler} />
       </div>
-      <div style={{ backgroundColor: "#eee", textAlign: 'center' }} >
-        <b>&copy; 2021 by <a href="saptsys.com">Saptsys.com</a></b>
-        <br />
-        <Space direction="horizontal" size={10}><b>Contact / Support:</b> <span>+917096823708</span>  <span>+919904021519</span>  <span>hello@saptsys.com</span></Space>
-      </div>
+      <SupportFootLines />
     </div>
   );
 };

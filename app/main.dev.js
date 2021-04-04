@@ -38,6 +38,8 @@ function init() {
   if (handleStartupEvent()) {
     return;
   }
+  registerAppEventListeners();
+
   let mainWindow = null;
 
   const gotTheLock = app.requestSingleInstanceLock()
@@ -62,16 +64,15 @@ function init() {
       reason
     } = firmInfo.isValid
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
-      registerFirmComponents();
       app.on('ready', async () => {
         firmInfo.openNewDialog()
       })
 
-    } else if (reason === INVALID_REASONS.SOFTWARE_EXPIRED) {
-      sout("spftware expired")
+    } else {
+      app.on('ready', async () => {
+        firmInfo.openInvalidSoftwareDialog(reason)
+      })
     }
-
-    sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
     return;
   }
 
@@ -91,7 +92,6 @@ function init() {
       }
 
       loadMainProcess();
-      registerFirmComponents();
     })
     .catch((e) => {
       console.log(e)
@@ -361,7 +361,7 @@ var handleStartupEvent = function () {
   }
 };
 
-function registerFirmComponents() {
+function registerAppEventListeners() {
 
   require("./electron/main-processes/ipc-calls/FirmInfoIPC")
 

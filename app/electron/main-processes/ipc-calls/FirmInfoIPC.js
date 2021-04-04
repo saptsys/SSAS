@@ -47,3 +47,8 @@ promiseIpc.on(createPath("save"), (payload) => {
 promiseIpc.on(createPath("updateFirm"), (payload) => {
   return service.updateFirm(payload)
 });
+
+promiseIpc.on(createPath("openValidationDialog"), (type) => {
+  return service.openInvalidSoftwareDialog(type)
+});
+
