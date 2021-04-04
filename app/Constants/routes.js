@@ -69,6 +69,9 @@ export const MODULE_ROUTES = {
     settings: {
       _path: "/settings",
     },
+    import: {
+      _path: "/import",
+    },
   },
 };
 

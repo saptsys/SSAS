@@ -15,6 +15,8 @@ import SalesInvoicePage from './components/modules/transactions/sales/salesInvoi
 import SalesReturnPage from './components/modules/transactions/sales/salesReturn/SalesReturnPage';
 import PurchaseInvoicePage from './components/modules/transactions/purchase/purchaseInvoice/PurchaseInvoicePage';
 import PurchaseReturnPage from './components/modules/transactions/purchase/purchaseReturn/PurchaseReturnPage';
+import ImportExternal from "./components/modules/masters/settingsMaster/ImportExternal"
+
 import { MODULE_ROUTES } from '../Constants/routes';
 import FirmInfoPage from './components/modules/utility/firmInfo/FirmInfoPage';
 
@@ -43,6 +45,8 @@ const ModuleRoutes = () => {
         {/* Utilities */}
         <Route exact path={MODULE_ROUTES.utility.settings._path} component={SettingsMaster} />
         <Route exact path={MODULE_ROUTES.utility.firmInfo._path} component={FirmInfoPage} />
+        <Route exact path={MODULE_ROUTES.utility.import._path} component={ImportExternal} />
+
       </Switch>
     </Suspense>
   );

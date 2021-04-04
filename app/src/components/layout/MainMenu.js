@@ -68,6 +68,8 @@ const MainMenu = () => {
       <SubMenu key={MODULE_ROUTES.utility._path} title="Utility">
         <Menu.Item key={MODULE_ROUTES.utility.firmInfo._path}>Firm/Company Info</Menu.Item>
         <Menu.Item key={MODULE_ROUTES.utility.settings._path}>Settings</Menu.Item>
+        <Menu.Item key={MODULE_ROUTES.utility.import._path}>Import External</Menu.Item>
+
       </SubMenu>
     </Menu>
   );

@@ -24,7 +24,7 @@ class ImportFromGayatri {
    */
   async importParties(gayatri) {
 
-    const databasePath = `${gayatri.path}${this.databaseFolder}/002${gayatri.year}/${this.partyMaster}`
+    const databasePath = `${gayatri.path}/${this.databaseFolder}/002${gayatri.year}/${this.partyMaster}`
     console.log(databasePath)
     const dbf = await DBFFile.open(databasePath)
 
@@ -53,7 +53,7 @@ class ImportFromGayatri {
           address: row['ADDRESS1'] + row['ADDRESS2'] + row['ADDRESS3'],
           email: row['EMAIL_ID'],
           city: row['CITY'],
-          stateCode: this.getStateCode(row['GSTIN']), /*not sure about how they handling state so 24 is default*/
+          stateCode: this.getStateCode(row['GSTIN']),
           isActive: !(row['DACTIVATE'] ?? false),
           gstin: row['GSTIN'],
           pan: this.getPAN(row['GSTIN'])
@@ -62,14 +62,13 @@ class ImportFromGayatri {
       } catch (e) {
       }
     }
-    console.log(this.parties)
 
     return this.parties;
   }
 
   async importItems(gayatri) {
 
-    const databasePath = `${gayatri.path}${this.databaseFolder}/002${gayatri.year}/${this.itemMaster}`
+    const databasePath = `${gayatri.path}/${this.databaseFolder}/002${gayatri.year}/${this.itemMaster}`
     console.log(databasePath)
     const dbf = await DBFFile.open(databasePath)
 
@@ -91,7 +90,6 @@ class ImportFromGayatri {
       } catch (e) {
       }
     }
-    console.log(this.items)
 
     return this.items;
   }
@@ -134,12 +132,11 @@ class ImportFromGayatri {
 
 
   async importAndInsert(payload) {
+
     await this.importParties(payload)
     await this.importItems(payload)
     return this.feedToDatabase()
   }
-
-
 
 }
 
