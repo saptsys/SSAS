@@ -5,21 +5,24 @@ const appData = app.getPath("appData") + "/ssas/"
 console.log(appData);
 const { MODAL_ROUTES } = require('../../Constants/routes');
 const { FIRM_INFO_API_URL } = require('../../Constants/URLS');
+const { INVALID_REASONS } = require('../../Constants/SoftwareInvalidReasons');
 // const FILE_PATH = path.join(__dirname, "../../firm-data")
 const FILE_PATH = appData + "firm-data";
 // const DB_PATH = __dirname + '../../databases';
 const DB_PATH = appData + "/databases/";
 
-const CURRENT_MACHINE_ID = "54f5sd-sdfgdshdf-sdfhg-sdf234" // we need to install machine id related library for now it is static
-
 const axios = require("axios").default
 const moment = require("moment")
+const { machineIdSync } = require('node-machine-id')
+
+
+const CURRENT_MACHINE_ID = machineIdSync({ original: true })
 
 const bluePrintData = {
   /**
    * @type {Array.<string>}
    */
-  machineIds: [],
+  machineId: null,
   /**
    * @type {Array.<{id: BigInt, name: String, gstin: String, pan: String, address: String, city: String, state: String, mobile: String, phone: String, email: String, default: Boolean}>}
    */
@@ -45,16 +48,6 @@ const bluePrintData = {
    */
   expiryLeftDays: 0
 }
-const INVALID_REASONS = {
-  DATA_NOT_FOUND: "Data Not Found.",
-  SOFTWARE_EXPIRED: "Software is expired.",
-  TRIAL_OVER: "Software trial period is over.",
-  CUSTOMER_INVALID: "Customer is invalid.",
-  FIRM_NOT_FOUND: "There are no any valid firm found.",
-  DATABASE_NOT_FOUND: "There is no active database found.",
-  MACHINE_ID_NOT_MATCHED: "This software is copy of another machine/coputer's software",
-}
-
 
 class FirmInfoService {
 
@@ -120,9 +113,9 @@ class FirmInfoService {
     let res = { status: false, reason: null }
     if (!this.data)
       res.reason = INVALID_REASONS.DATA_NOT_FOUND
-    else if ((this.data.machineIds?.length ?? 0) === 0)
-      res.reason = INVALID_REASONS.CUSTOMER_INVALID
-    // else if (!this.data.machineIds?.includes(CURRENT_MACHINE_ID))
+    // else if (!(this.data.machineId ?? 0))
+    //   res.reason = INVALID_REASONS.CUSTOMER_INVALID
+    // else if (this.data.machineId !== CURRENT_MACHINE_ID)
     //   res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
     else if (this.expiryLeftDays() <= 0)
       res.reason = this.data.isInTrialMode ? INVALID_REASONS.TRIAL_OVER : INVALID_REASONS.SOFTWARE_EXPIRED
@@ -216,7 +209,8 @@ class FirmInfoService {
     const that = this;
 
     return axios.post(FIRM_INFO_API_URL, {
-      gstin: payload.gstin
+      gstin: payload.gstin,
+      machineId: CURRENT_MACHINE_ID
     }).then(function (response) {
       const data = response.data
       console.log("response +++++++++++++ ", response.data)
@@ -235,7 +229,7 @@ class FirmInfoService {
 
 
       that.createNew({
-        machineIds: [data.machine_id],
+        machineId: data.machine_id,
         firms: [{
           id: data.id,
           name: payload.name,
@@ -275,12 +269,53 @@ class FirmInfoService {
         }
         return firm
       })
-      this.update()
+      this.update(this.data)
       return Promise.resolve("updated")
     } catch (error) {
       return Promise.reject({ message: 'Firm not updated due to ' + (error?.message ?? "") })
     }
   }
+
+  /**
+   *
+   * @param {INVALID_REASONS} type
+   */
+  openInvalidSoftwareDialog(type) {
+    const preloadFile = (process.env.NODE_ENV === 'production')
+      ? __dirname + "/preload.js"
+      : path.join(`${__dirname}/../../`, "/preload.js")
+
+    const appHtmlFile = (process.env.NODE_ENV === 'production')
+      ? `${__dirname}/app.html`
+      : `${__dirname}/../../app.html`
+
+    let win = new BrowserWindow({
+      webPreferences: {
+        nodeIntegration: true,
+        webSecurity: true,
+        contextIsolation: false,
+        preload: preloadFile,
+      },
+      title: type,
+      frame: true,
+      center: true,
+      height: 500
+      // parent: webContents.getFocusedWebContents()
+    });
+    win.setMenu(null)
+    // win.webContents.openDevTools();
+
+
+    console.log(appHtmlFile)
+    win.loadURL(`file://${appHtmlFile}#${MODAL_ROUTES.firmInfoModal._path.replace(":type", type)}`);
+
+    win.webContents.on('did-finish-load', async () => {
+
+      // win.setSize(500, 500, true);
+      win.show()
+    })
+  }
+
 }
 
 module.exports = {

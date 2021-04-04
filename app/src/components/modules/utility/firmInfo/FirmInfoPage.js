@@ -34,8 +34,6 @@ const FirmInfoPage = () => {
     form.resetFields()
   }, [data])
 
-  console.log(data)
-
   return (
     <Row>
       <Col xs={{ offset: 1, span: 22 }} lg={{ offset: 4, span: 16 }} >

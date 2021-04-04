@@ -16,16 +16,15 @@ import {
 import typeOrmConf from "./ormconfig";
 import {
   FirmInfoService,
-  INVALID_REASONS
 } from "./electron/services/FirmInfoService";
-
+import { INVALID_REASONS } from "./Constants/SoftwareInvalidReasons";
 import { glob } from "glob";
 import path from 'path'
 import initDB from "./InitDB"
 import fs from "fs";
 import promiseIpc from "electron-promise-ipc";
 
-const appData =  app.getPath("appData") + "/ssas/"
+const appData = app.getPath("appData") + "/ssas/"
 
 export default class AppUpdater {
   constructor() {
@@ -57,7 +56,7 @@ function init() {
 
   const firmInfo = new FirmInfoService()
   const isValid = firmInfo.isValid.status;
-  sout("firm info is " +isValid ? "valid" : "not valid")
+  sout("firm info is " + isValid ? "valid" : "not valid")
   if (isValid === false) {
     const {
       reason
@@ -65,11 +64,11 @@ function init() {
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
       registerFirmComponents();
       app.on('ready', async () => {
-          firmInfo.openNewDialog()
+        firmInfo.openNewDialog()
       })
 
-    }else if (reason === INVALID_REASONS.SOFTWARE_EXPIRED) {
-        sout("spftware expired")
+    } else if (reason === INVALID_REASONS.SOFTWARE_EXPIRED) {
+      sout("spftware expired")
     }
 
     sout(`-*-*-*-*-*-*-*-*-* Exiting... Due to ${reason} *-*-*-*-*-*-*-*-*-*-\n\n`)
@@ -238,21 +237,21 @@ function init() {
 
 }
 
-function takeDatabaseBackup(){
+function takeDatabaseBackup() {
   const firm = new FirmInfoService();
   let destFile = new Date().toLocaleDateString().split("/").join("-") + "-ssas.bak"
-  let dest =  appData + `backups/daily/`
-  if(!fs.existsSync(dest)){
-    fs.mkdirSync(dest , {recursive:true});
+  let dest = appData + `backups/daily/`
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
   }
 
 
-  if(fs.existsSync(dest + destFile)){
+  if (fs.existsSync(dest + destFile)) {
     fs.unlinkSync(dest + destFile)
-  }else{
+  } else {
 
   }
-  fs.copyFileSync(firm.getActiveDB().path , dest + destFile);
+  fs.copyFileSync(firm.getActiveDB().path, dest + destFile);
 }
 
 function loadMainProcess() {
@@ -362,7 +361,7 @@ var handleStartupEvent = function () {
   }
 };
 
-function registerFirmComponents(){
+function registerFirmComponents() {
 
   require("./electron/main-processes/ipc-calls/FirmInfoIPC")
 

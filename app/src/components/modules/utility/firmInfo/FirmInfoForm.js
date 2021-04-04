@@ -16,7 +16,7 @@ function FirmInfoForm({ entityForEdit = {}, saveBtnHandler, form, editMode = fal
 
   const gstinNumberChanged = (e) => {
     if (Regex.checkRegex(e.target.value, 'gstin')) {
-      form.setFieldsValue({ stateCode: parseInt(e.target.value.substr(0, 2)) })
+      form.setFieldsValue({ state: parseInt(e.target.value.substr(0, 2)) })
       form.setFieldsValue({ pan: (e.target.value.substr(2, 10)) })
     }
   }
@@ -139,11 +139,10 @@ function FirmInfoForm({ entityForEdit = {}, saveBtnHandler, form, editMode = fal
             <Descriptions.Item style={{ padding: '0 5px' }} labelStyle={{ textAlign: 'center', fontWight: '600' }} span={2} label="Key">
               <Search size="middle" enterButton="Apply" type="text" value={licenseKey} onChange={e => setLicenseKey(e.target.value)} placeholder="Enter license key to activate" />
             </Descriptions.Item>
-
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Renewed Date">{moment(entityForEdit?.startDate).format(dateFormat)}</Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Expiry Date">{moment(entityForEdit?.endDate).format(dateFormat)}</Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Expiry Left Days">{entityForEdit?.expiryLeftDays} day(s)</Descriptions.Item>
-
+            <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} span={3} label="Machine Id">{entityForEdit?.machineId}</Descriptions.Item>
           </Descriptions>
         </>
       )}

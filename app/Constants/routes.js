@@ -76,7 +76,11 @@ export const MODAL_ROUTES = {
   firmInfoModal: {
     _path: "/modal/firm-info",
     _title: "Firm Info"
-  }
+  },
+  softwareValidations: {
+    _path: "/modal/software-valdation/:type",
+    _title: "Software Validation Dialog"
+  },
 }
 
 export const PRINT_ROUTES = {
