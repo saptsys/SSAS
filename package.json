@@ -1,7 +1,7 @@
 {
-  "name": "saptsys",
+  "name": "ssas",
   "productName": "ssas",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js",
@@ -64,6 +64,12 @@
     ]
   },
   "build": {
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://ssas.saptsys.com/update/"
+      }
+    ],
     "productName": "SSAS",
     "appId": "com.saptsys.ssas",
     "files": [
@@ -79,6 +85,7 @@
       "target": [
         "nsis"
       ]
+
     },
     "nsis": {
       "oneClick": true,

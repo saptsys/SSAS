@@ -4,7 +4,7 @@
 import {
   app,
   BrowserWindow,
-  Tray, Menu
+  Tray, Menu, dialog
 } from 'electron';
 import {
   autoUpdater
@@ -26,13 +26,6 @@ import promiseIpc from "electron-promise-ipc";
 
 const appData = app.getPath("appData") + "/ssas/"
 
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
 
 function init() {
   if (handleStartupEvent()) {
@@ -90,7 +83,6 @@ function init() {
           console.error(e)
         }
       }
-
       loadMainProcess();
     })
     .catch((e) => {
@@ -232,7 +224,7 @@ function init() {
 
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
-    new AppUpdater();
+    appUpdater();
   });
 
 }
@@ -375,6 +367,59 @@ function registerAppEventListeners() {
   promiseIpc.on("app/quit", () => {
     app.quit();
   });
+
+}
+
+function appUpdater() {
+  log.transports.file.level = 'info';
+  autoUpdater.logger = log;
+  autoUpdater.requestHeaders = {
+    gstin:"123",
+    machineId:"123"
+  }
+  autoUpdater.checkForUpdatesAndNotify();
+
+
+  /*checking for updates*/
+  autoUpdater.on("checking-for-update", (info) => {
+    sout("checking-for-update", info)
+  });
+
+  /*No updates available*/
+  autoUpdater.on("update-not-available", info => {
+    sout("update-not-available", info)
+  });
+
+  /*New Update Available*/
+  autoUpdater.on("update-available", info => {
+    sout("update-available", info)
+  });
+
+  /*Download Status Report*/
+  autoUpdater.on("download-progress", progressObj => {
+    sout("download-progress", progressObj)
+  });
+
+  /*Download Completion Message*/
+  autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
+    sout("update-downloaded", (event, releaseNotes, releaseName))
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Restart', 'Not Now. On next Restart'],
+      title: 'Update',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'A New Version has been Downloaded. Restart Now to Complete the Update.'
+    }
+
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) autoUpdater.quitAndInstall()
+    })
+  });
+
+  autoUpdater.on('error', message => {
+    sout('There was a problem updating the application',message)
+  })
+
 
 }
 
