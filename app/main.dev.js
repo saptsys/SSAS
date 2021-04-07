@@ -50,7 +50,7 @@ function init() {
     }
   })
 
-  const firmInfo = new FirmInfoService()
+  const firmInfo = new FirmInfoService(true)
   const isValid = firmInfo.isValid.status;
   sout("firm info is " + isValid ? "valid" : "not valid")
   if (isValid === false) {
@@ -239,14 +239,14 @@ function init() {
 }
 
 async function takeDatabaseBackup() {
-  try{
+  try {
     const firm = new FirmInfoService();
     const setting = new SettingsMasterService();
     let destFile = new Date().toLocaleDateString().split("/").join("-") + "-ssas.bak"
     let backupLocation = await setting.getSettingValue("BACKUP_LOCATION")
     let dest = appData + `backups/daily/`
 
-    console.log("_ _"+backupLocation+"_ _")
+    console.log("_ _" + backupLocation + "_ _")
     if (backupLocation) {
       dest = backupLocation + "/"
     }
@@ -261,7 +261,7 @@ async function takeDatabaseBackup() {
 
     }
     fs.copyFileSync(firm.getActiveDB().path, dest + destFile);
-  }catch(e){
+  } catch (e) {
     console.log(e)
   }
 

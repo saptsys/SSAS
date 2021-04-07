@@ -1,6 +1,7 @@
 import { Row, Input, Form, Col, Button, Divider, Descriptions, Badge, Space } from "antd";
 import Search from "antd/lib/input/Search";
 import TextArea from "antd/lib/input/TextArea";
+import Text from "antd/lib/typography/Text";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -136,13 +137,12 @@ function FirmInfoForm({ entityForEdit = {}, saveBtnHandler, form, editMode = fal
           <Divider>Software Info.</Divider>
           <Descriptions bordered size="small" >
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="License Type">{entityForEdit ? entityForEdit.isInTrialMode ? <Badge status="warning" text="Trial" /> : <Badge status="success" text="Licensed" /> : ""}</Descriptions.Item>
-            <Descriptions.Item style={{ padding: '0 5px' }} labelStyle={{ textAlign: 'center', fontWight: '600' }} span={2} label="Key">
-              <Search size="middle" enterButton="Apply" type="text" value={licenseKey} onChange={e => setLicenseKey(e.target.value)} placeholder="Enter license key to activate" />
+            <Descriptions.Item style={{ padding: '0 5px' }} labelStyle={{ textAlign: 'center', fontWight: '600' }} span={2} label="Machine Id">
+              <Text code copyable>{entityForEdit?.machineId}</Text>
             </Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Renewed Date">{moment(entityForEdit?.startDate).format(dateFormat)}</Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Expiry Date">{moment(entityForEdit?.endDate).format(dateFormat)}</Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Expiry Left Days">{entityForEdit?.expiryLeftDays} day(s)</Descriptions.Item>
-            <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} span={3} label="Machine Id">{entityForEdit?.machineId}</Descriptions.Item>
           </Descriptions>
         </>
       )}

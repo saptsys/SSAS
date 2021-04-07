@@ -30,13 +30,13 @@ const Dashboard = () => {
         alerts.push({
           type: 'warning',
           title: <b>Software is in trial version.</b>,
-          content: <span>{firmInfo.expiryLeftDays} days left to software trial period over. if you have a license key ? go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> to enter a key.</span>
+          content: <span>{firmInfo.expiryLeftDays} days left to software trial period over. go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> for more info.</span>
         })
       } else if (firmInfo.expiryLeftDays <= 5) {
         alerts.push({
           type: 'warning',
           title: <b>{firmInfo.expiryLeftDays} days left to software expiry.</b>,
-          content: <span>Have a new license key ? go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> to enter a key.</span>
+          content: <span>Go to <Link to={MODULE_ROUTES.utility.firmInfo._path}>Utility {'>>'} Firm/Company Info</Link> for more info.</span>
         })
       }
     }

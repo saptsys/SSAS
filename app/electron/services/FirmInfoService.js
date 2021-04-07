@@ -1,3 +1,4 @@
+import log from 'electron-log';
 const { BrowserWindow, app } = require('electron');
 const fs = require('fs');
 const path = require("path");
@@ -64,8 +65,11 @@ class FirmInfoService {
    */
   activeDBPath = null
 
-  constructor() {
+  constructor(syncWithServer = false) {
     this.load()
+    if (syncWithServer) {
+      this.syncWithServer()
+    }
   }
 
   encode(content) {
@@ -110,8 +114,8 @@ class FirmInfoService {
     return moment(this.data.endDate).diff(moment(new Date()), 'days')
   }
   checkIsValid() {
-    console.log("Actual Machine Id==>" + CURRENT_MACHINE_ID)
-    console.log("Stored Machine Id==>" + this.data.machineId)
+    // console.log("Actual Machine Id==>" + CURRENT_MACHINE_ID)
+    // console.log("Stored Machine Id==>" + this.data.machineId)
     let res = { status: false, reason: null }
     if (!this.data)
       res.reason = INVALID_REASONS.DATA_NOT_FOUND
@@ -259,6 +263,53 @@ class FirmInfoService {
     }).catch(function (response) {
       console.log("response ---------------- ", response)
       return Promise.reject({ message: response?.message ?? "something went wrong." })
+    })
+  }
+
+
+  async syncWithServer() {
+    console.log("Trying to syncing firm data....")
+    const that = this;
+    return axios.post(FIRM_INFO_API_URL, {
+      gstin: that.data.firms.find(x => x.default)?.gstin,
+      machineId: CURRENT_MACHINE_ID
+    }).then(async function (response) {
+
+      const data = response.data
+
+
+      const formatDateTimeForCompare = (date) => moment(new Date(date)).format('YYYY-MM-DD')
+      let needToRelaunch =
+        formatDateTimeForCompare(that.data.endDate) !== formatDateTimeForCompare(data.end_date) ||
+        formatDateTimeForCompare(that.data.startDate) !== formatDateTimeForCompare(data.start_date) ||
+        that.data.isInTrialMode !== (data.licence_type === "TRIAL");
+
+      that.data.endDate = new Date(data.end_date)
+      that.data.startDate = new Date(data.start_date)
+      that.data.isInTrialMode = data.licence_type === "TRIAL"
+      that.data.machineId = data.machine_id
+      that.data.firms = that.data.firms.map(fi => {
+        if (needToRelaunch === false)
+          needToRelaunch = fi.gstin !== data.gstin
+        if (fi.default) {
+          fi.gstin = data.gstin
+          fi.state = fi.gstin.substr(0, 2)
+          fi.pan = fi.gstin.substr(2, 10)
+        }
+        return fi;
+      })
+      await that.update(that.data)
+      console.log("Firm Data Synced.")
+      log.info("Firm Data Synced. --->", JSON.stringify(data))
+      if (needToRelaunch) {
+        console.log("Firm data changed by server, relaunching the app")
+        log.info("Firm data changed by server, relaunching the app")
+        app.relaunch()
+        app.quit()
+      }
+    }).catch(function (err) {
+      console.log("Firm Data Syncing Error ---> ", JSON.stringify(err))
+      log.info("Firm Data Syncing Error ---> ", JSON.stringify(err))
     })
   }
 
