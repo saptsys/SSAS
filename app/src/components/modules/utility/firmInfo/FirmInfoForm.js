@@ -138,7 +138,7 @@ function FirmInfoForm({ entityForEdit = {}, saveBtnHandler, form, editMode = fal
           <Descriptions bordered size="small" >
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="License Type">{entityForEdit ? entityForEdit.isInTrialMode ? <Badge status="warning" text="Trial" /> : <Badge status="success" text="Licensed" /> : ""}</Descriptions.Item>
             <Descriptions.Item style={{ padding: '0 5px' }} labelStyle={{ textAlign: 'center', fontWight: '600' }} span={2} label="Machine Id">
-              <Text code copyable>{entityForEdit?.machineId}</Text>
+              <Text copyable>{entityForEdit?.machineId}</Text>
             </Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Renewed Date">{moment(entityForEdit?.startDate).format(dateFormat)}</Descriptions.Item>
             <Descriptions.Item labelStyle={{ textAlign: 'center', fontWight: '600' }} label="Expiry Date">{moment(entityForEdit?.endDate).format(dateFormat)}</Descriptions.Item>
