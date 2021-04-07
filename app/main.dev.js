@@ -23,6 +23,7 @@ import path from 'path'
 import initDB from "./InitDB"
 import fs from "fs";
 import promiseIpc from "electron-promise-ipc";
+import SettingsMasterService from "./electron/services/SettingsMasterService";
 
 const appData = app.getPath("appData") + "/ssas/"
 
@@ -208,6 +209,11 @@ function init() {
       }
     });
 
+    app.on('before-quit', function (event) {
+      // takeDatabaseBackup();
+
+    })
+
     mainWindow.on('close', function (event) {
       // if (!app.isQuiting) {
       //   event.preventDefault()
@@ -232,21 +238,33 @@ function init() {
 
 }
 
-function takeDatabaseBackup() {
-  const firm = new FirmInfoService();
-  let destFile = new Date().toLocaleDateString().split("/").join("-") + "-ssas.bak"
-  let dest = appData + `backups/daily/`
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
+async function takeDatabaseBackup() {
+  try{
+    const firm = new FirmInfoService();
+    const setting = new SettingsMasterService();
+    let destFile = new Date().toLocaleDateString().split("/").join("-") + "-ssas.bak"
+    let backupLocation = await setting.getSettingValue("BACKUP_LOCATION")
+    let dest = appData + `backups/daily/`
+
+    console.log("_ _"+backupLocation+"_ _")
+    if (backupLocation) {
+      dest = backupLocation + "/"
+    }
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true });
+    }
+
+
+    if (fs.existsSync(dest + destFile)) {
+      fs.unlinkSync(dest + destFile)
+    } else {
+
+    }
+    fs.copyFileSync(firm.getActiveDB().path, dest + destFile);
+  }catch(e){
+    console.log(e)
   }
 
-
-  if (fs.existsSync(dest + destFile)) {
-    fs.unlinkSync(dest + destFile)
-  } else {
-
-  }
-  fs.copyFileSync(firm.getActiveDB().path, dest + destFile);
 }
 
 function loadMainProcess() {
