@@ -1,7 +1,7 @@
 {
   "name": "ssas",
   "productName": "ssas",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Saptsys Simple Accounting Software",
   "main": "./main.prod.js",
   "author": {
