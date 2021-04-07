@@ -15,9 +15,10 @@ const DB_PATH = appData + "/databases/";
 const axios = require("axios").default
 const moment = require("moment")
 const { machineIdSync } = require('node-machine-id')
-
+const os = require('os')
 
 const CURRENT_MACHINE_ID = machineIdSync({ original: true })
+const CURRENT_MACHINE_NAME = `${os.userInfo().username} @ ${os.hostname()}`
 
 const bluePrintData = {
   /**
@@ -216,7 +217,8 @@ class FirmInfoService {
 
     return axios.post(FIRM_INFO_API_URL, {
       gstin: payload.gstin,
-      machineId: CURRENT_MACHINE_ID
+      machineId: CURRENT_MACHINE_ID,
+      machineName: CURRENT_MACHINE_NAME,
     }).then(function (response) {
       const data = response.data
       console.log("response +++++++++++++ ", response.data)
@@ -272,7 +274,8 @@ class FirmInfoService {
     const that = this;
     return axios.post(FIRM_INFO_API_URL, {
       gstin: that.data.firms.find(x => x.default)?.gstin,
-      machineId: CURRENT_MACHINE_ID
+      machineId: CURRENT_MACHINE_ID,
+      machineName: CURRENT_MACHINE_NAME,
     }).then(async function (response) {
 
       const data = response.data
