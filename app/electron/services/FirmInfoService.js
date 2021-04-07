@@ -1,4 +1,4 @@
-import log from 'electron-log';
+const log = require('electron-log');
 const { BrowserWindow, app } = require('electron');
 const fs = require('fs');
 const path = require("path");
