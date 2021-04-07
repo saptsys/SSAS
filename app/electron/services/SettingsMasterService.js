@@ -7,5 +7,14 @@ class SettingsMasterService extends __BaseService {
     super(SettingsMaster)
   }
 
+  async getSettingValue(key){
+    try{
+      const setting = await this.repository.findOne({ where: { key: key, deletedAt: null } })
+      return setting.currentValue ?? null;
+    }catch(e){
+      return null
+    }
+  }
+
 }
 module.exports = SettingsMasterService;
