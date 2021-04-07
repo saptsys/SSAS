@@ -56,6 +56,9 @@ function init() {
     const {
       reason
     } = firmInfo.isValid
+    console.log("\n\n-----------------------------")
+    console.log("INFO INFO INVALID REASON: " + reason)
+    console.log("-----------------------------\n\n")
     if (reason === INVALID_REASONS.DATA_NOT_FOUND) {
       app.on('ready', async () => {
         firmInfo.openNewDialog()
@@ -374,8 +377,8 @@ function appUpdater() {
   log.transports.file.level = 'info';
   autoUpdater.logger = log;
   autoUpdater.requestHeaders = {
-    gstin:"123",
-    machineId:"123"
+    gstin: "123",
+    machineId: "123"
   }
   autoUpdater.checkForUpdatesAndNotify();
 
@@ -417,7 +420,7 @@ function appUpdater() {
   });
 
   autoUpdater.on('error', message => {
-    sout('There was a problem updating the application',message)
+    sout('There was a problem updating the application', message)
   })
 
 

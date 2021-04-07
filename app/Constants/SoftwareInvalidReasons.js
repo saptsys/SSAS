@@ -5,5 +5,5 @@ export const INVALID_REASONS = {
   CUSTOMER_INVALID: "Customer is invalid.",
   FIRM_NOT_FOUND: "There are no any valid firm found.",
   DATABASE_NOT_FOUND: "There is no active database found.",
-  MACHINE_ID_NOT_MATCHED: "This software is copy of another machine/coputer's software",
+  MACHINE_ID_NOT_MATCHED: "This software seems copied/moved from other machine/system.",
 }

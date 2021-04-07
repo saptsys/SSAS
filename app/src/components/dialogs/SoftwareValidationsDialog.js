@@ -6,7 +6,6 @@ import SupportFootLines from './SupportFootLines';
 
 
 const SoftwareValidationsDialog = ({ match: { params: { type } } }) => {
-
   const relaunch = () => promiseIpc.send('app/relaunch')
   const quit = () => promiseIpc.send('app/quit')
   const askForTrial = () => {
@@ -47,7 +46,7 @@ const SoftwareValidationsDialog = ({ match: { params: { type } } }) => {
                 <Result
                   status="error"
                   title={type}
-                  subTitle="Press contact support person."
+                  subTitle="Please contact to support person."
                   extra={
                     <Button onClick={quit} type="default" style={{ width: '100px' }}>
                       Exit

@@ -110,13 +110,15 @@ class FirmInfoService {
     return moment(this.data.endDate).diff(moment(new Date()), 'days')
   }
   checkIsValid() {
+    console.log("Actual Machine Id==>" + CURRENT_MACHINE_ID)
+    console.log("Stored Machine Id==>" + this.data.machineId)
     let res = { status: false, reason: null }
     if (!this.data)
       res.reason = INVALID_REASONS.DATA_NOT_FOUND
     // else if (!(this.data.machineId ?? 0))
     //   res.reason = INVALID_REASONS.CUSTOMER_INVALID
-    // else if (this.data.machineId !== CURRENT_MACHINE_ID)
-    //   res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
+    else if (this.data.machineId !== CURRENT_MACHINE_ID)
+      res.reason = INVALID_REASONS.MACHINE_ID_NOT_MATCHED
     else if (this.expiryLeftDays() <= 0)
       res.reason = this.data.isInTrialMode ? INVALID_REASONS.TRIAL_OVER : INVALID_REASONS.SOFTWARE_EXPIRED
     else if (!this.data?.firms?.length || !this.data.firms.some(x => x.id && x.name && x.default))
@@ -307,7 +309,8 @@ class FirmInfoService {
       // parent: webContents.getFocusedWebContents()
     });
     win.setMenu(null)
-    // win.webContents.openDevTools();
+    if (process.env.NODE_ENV !== 'production')
+      win.webContents.openDevTools();
 
 
     console.log(appHtmlFile)
