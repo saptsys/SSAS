@@ -52,3 +52,7 @@ promiseIpc.on(createPath("openValidationDialog"), (type) => {
   return service.openInvalidSoftwareDialog(type)
 });
 
+promiseIpc.on(createPath("askForTrial"), () => {
+  return service.askForTrial()
+});
+

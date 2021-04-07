@@ -1,15 +1,28 @@
-import { Button, Result } from 'antd';
+import { Button, Modal, Result } from 'antd';
 import { exists } from 'original-fs';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { INVALID_REASONS } from '../../../Constants/SoftwareInvalidReasons';
+import { errorDialog } from '../../helpers/dialogs';
+import { FirmInfoActions } from '../../_redux/actionFiles/FirmInfoRedux';
 import SupportFootLines from './SupportFootLines';
 
 
 const SoftwareValidationsDialog = ({ match: { params: { type } } }) => {
+
+  const dispatch = useDispatch()
+  const firmState = useSelector(s => s.FirmInfo)
+
   const relaunch = () => promiseIpc.send('app/relaunch')
   const quit = () => promiseIpc.send('app/quit')
   const askForTrial = () => {
-    alert("Trial granted for 14 days please restart app")
+    dispatch(FirmInfoActions.askForTrial()).then(res => {
+      Modal.success({
+        title: res?.message ?? "Now try to relaunch.",
+        okText: "Re-Launch",
+        onOk: () => dispatch(FirmInfoActions.relauch()),
+      })
+    }).catch((err) => errorDialog(err?.message))
   }
 
   return (
@@ -36,7 +49,7 @@ const SoftwareValidationsDialog = ({ match: { params: { type } } }) => {
                   title="This software is expired."
                   subTitle={<>Please buy a license. or you can ask for trial</>}
                   extra={
-                    <Button type="primary" onClick={askForTrial} >
+                    <Button type="primary" onClick={askForTrial} loading={firmState.loading === "askForTrial"} >
                       Ask For Trial
                     </Button>
                   }

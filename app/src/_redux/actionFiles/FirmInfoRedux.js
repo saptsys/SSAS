@@ -68,6 +68,19 @@ class Actions {
     return promiseIpc.send('app/relaunch')
   }
 
+  askForTrial = () => dispatch => {
+    return this.sendIPC("askForTrial")
+      .then((res) => {
+        dispatch(this.stopCall(this.callTypes.ASK_FOR_TRIAL));
+        return Promise.resolve(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(this.catchError(error, this.callTypes.ASK_FOR_TRIAL));
+        return Promise.reject(error);
+      });
+  }
+
 }
 
 export const FirmInfoSlice = new _BaseSlice(
@@ -81,6 +94,7 @@ export const FirmInfoSlice = new _BaseSlice(
     DATA: 'getData',
     SAVE: 'saveData',
     UPDATE_FIRM: 'updateFirm',
+    ASK_FOR_TRIAL: 'askForTrial',
   },
   {
     reIniState: (state, action) => {
@@ -111,4 +125,5 @@ export const FirmInfoSlice = new _BaseSlice(
     },
   }
 )
+
 export const FirmInfoActions = new Actions(reducerInfo.name, FirmInfoSlice)

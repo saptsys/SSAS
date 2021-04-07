@@ -5,7 +5,7 @@ const path = require("path");
 const appData = app.getPath("appData") + "/ssas/"
 console.log(appData);
 const { MODAL_ROUTES } = require('../../Constants/routes');
-const { FIRM_INFO_API_URL } = require('../../Constants/URLS');
+const { FIRM_INFO_API_URL, ASK_FOR_TRIAL_API_URL } = require('../../Constants/URLS');
 const { INVALID_REASONS } = require('../../Constants/SoftwareInvalidReasons');
 // const FILE_PATH = path.join(__dirname, "../../firm-data")
 const FILE_PATH = appData + "firm-data";
@@ -359,7 +359,8 @@ class FirmInfoService {
       center: true,
       resizable: false,
       height: 480,
-      width: 720
+      width: 720,
+      alwaysOnTop: true,
       // parent: webContents.getFocusedWebContents()
     });
     win.setMenu(null)
@@ -375,6 +376,30 @@ class FirmInfoService {
     })
     win.on('close', () => {
       app.quit()
+    })
+  }
+
+  askForTrial() {
+
+    const that = this;
+
+    return axios.post(ASK_FOR_TRIAL_API_URL, {
+      gstin: that.data.firms.find(x => x.default)?.gstin,
+      machineId: that.data.machineId,
+      machineName: CURRENT_MACHINE_NAME,
+    }).then(function (response) {
+      const data = response.data
+
+      that.data.endDate = new Date(data.end_date)
+      that.data.startDate = new Date(data.start_date)
+      that.data.isInTrialMode = data.licence_type === "TRIAL"
+      that.update(that.data)
+
+      return Promise.resolve({ message: `😉 Trial granted for ${that.expiryLeftDays()} day(s) from today. 🎉`, data: data })
+
+    }).catch(function (response) {
+      console.log("response ---------------- ", response)
+      return Promise.reject({ message: response?.message ?? "something went wrong." })
     })
   }
 
