@@ -68,7 +68,7 @@ class FirmInfoService {
 
   constructor(syncWithServer = false) {
     this.load()
-    if (syncWithServer) {
+    if (syncWithServer && (!this.isValid?.status ?? false ? this.isValid.reason != INVALID_REASONS.DATA_NOT_FOUND : true)) {
       this.syncWithServer()
     }
   }

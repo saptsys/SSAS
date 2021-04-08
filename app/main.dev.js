@@ -34,6 +34,9 @@ function init() {
   }
   registerAppEventListeners();
 
+  /**
+   * @type {BrowserWindow}
+   */
   let mainWindow = null;
 
   const gotTheLock = app.requestSingleInstanceLock()
@@ -209,9 +212,11 @@ function init() {
       }
     });
 
-    app.on('before-quit', function (event) {
+    app.on('before-quit', async function (event) {
       // takeDatabaseBackup();
-
+      event.preventDefault();
+      await takeDatabaseBackup();
+      app.exit();
     })
 
     mainWindow.on('close', function (event) {
@@ -219,7 +224,6 @@ function init() {
       //   event.preventDefault()
       //   mainWindow.hide()
       // }
-      takeDatabaseBackup();
 
     })
 
