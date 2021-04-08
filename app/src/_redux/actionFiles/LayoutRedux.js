@@ -33,13 +33,10 @@ const reducers = {
     }
   },
   clear: (state, action) => {
-    state = {
-      ...state,
-      title: "",
-      toolbar: null,
-      information: null,
-      message: null
-    }
+    state.title = ""
+    state.toolbar = null
+    state.information = null
+    state.message = null
   }
 }
 
@@ -68,7 +65,10 @@ class Actions {
   }
 
   clearAll = () => dispatch => {
-    dispatch(this.actions.clear())
+    return new Promise(async (res, rej) => {
+      await dispatch(this.actions.clear())
+      res()
+    })
   }
 
 }

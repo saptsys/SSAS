@@ -14,17 +14,28 @@ const MainMenu = () => {
 
 
   const handleMenuClicked = ({ item, key, keyPath, domEvent }) => {
-    dispatch(LayoutActions.clearAll())
-    setTimeout(() => {
-      const title = getTitleByUrl(key)
-      dispatch(LayoutActions.setTitle(title))
-      history.push(key)
-    }, 10)
+    dispatch(LayoutActions.clearAll()).then(() => {
+      setTimeout(() => {
+        const title = getTitleByUrl(key)
+        dispatch(LayoutActions.setTitle(title))
+        history.push(key)
+      }, 10)
+    })
   }
 
   useEffect(() => {
     const title = getTitleByUrl(location.pathname.split("#").join("")) ?? document.getElementsByClassName("ant-menu-item-selected")?.item(0)?.innerText
     dispatch(LayoutActions.setTitle(title))
+
+    // const unListenHistory = history.listen((location, action) => {
+    //   dispatch(LayoutActions.setTitle(null))
+    //   dispatch(LayoutActions.setInformation(null))
+    //   dispatch(LayoutActions.setMessage(null))
+    //   dispatch(LayoutActions.setToolbar(null))
+    //   dispatch(LayoutActions.clearAll(null))
+    // })
+    // return unListenHistory;
+
   }, [])
   return (
     <Menu
