@@ -40,7 +40,7 @@ function init() {
   if (!gotTheLock) {
     app.isQuiting = true
     app.quit()
-    log("gotthelock")
+    sout("gotthelock")
     return
   }
   app.on('second-instance', (event, commandLine, workingDirectory) => {
