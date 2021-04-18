@@ -157,13 +157,22 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
                 width: '15%',
                 editor: {
                   type: 'select',
-                  getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id }))
+                  getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id })),
                 },
               }, {
                 title: "Qty",
                 dataIndex: "quantity",
                 editor: {
                   type: 'number',
+                  onKeyPress: (evt) => {
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                      evt.preventDefault();
+                      evt.stopPropagation();
+                      return false;
+                    }
+                    return true;
+                  }
                 },
                 footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.quantity ?? 0), 0),
                 width: '10%',
@@ -173,6 +182,15 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
                 dataIndex: "rate",
                 editor: {
                   type: 'number',
+                  onKeyPress: (evt) => {
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                      evt.preventDefault();
+                      evt.stopPropagation();
+                      return false;
+                    }
+                    return true;
+                  }
                 },
                 width: '10%',
                 align: 'right'

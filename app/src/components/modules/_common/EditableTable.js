@@ -33,12 +33,15 @@ const EditableCell = ({
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
   const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
   const elmToReturn = function () {
-    const { type, onChange, getOptions, getCustomCoponent, ...elmProps } = editor
+    const { type, onChange, onKeyPress, getOptions, getCustomCoponent, ...elmProps } = editor
     switch (type) {
       case "number":
         return <Input
           step={undefined}
           value={curCellVal()}
+          onKeyPress={e => {
+            return (onKeyPress ? onKeyPress(e) : true)
+          }}
           onChange={e => setVal((e.target.value)) && onChange && onChange(e)}
           size="small"
           style={{ textAlign: 'right' }}
