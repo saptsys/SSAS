@@ -30,20 +30,39 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
   const { itemState, partyState } = useSelector(s => ({ itemState: s.itemMaster, partyState: s.partyMaster }))
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
+  const [dueAmount, setDueAmount] = useState(0)
 
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
-    if (!entityForEdit.id)
+    if (!entityForEdit.id){
       dispatch(DeliveryChallanActions.getLastChalanAndVoucherNumber()).then((res) => {
         form.setFieldsValue({ challanNumber: res.challanNumber + 1, voucherNumber: res.voucherNumber + 1 })
       })
+    }
+    setDueAmount(entityForEdit.previousDue ?? 0.0);
   }, [entityForEdit])
 
   const calcTotals = (data) => {
-    const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
+    const previousDue = parseFloat(form.getFieldValue("previousDue") ?? 0.0);
+    const subTotal = parseFloat(data?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0) + previousDue).toFixed(2)
     form.setFieldsValue({ grossAmount: subTotal })
-    form.setFieldsValue({ netAmount: subTotal })
+  }
+
+  const previousDueChanged = (e) => {
+    const previousDue = parseFloat(e ?? 0.0);
+
+    const grossAmount = parseFloat(form.getFieldValue("grossAmount") ?? 0.0);
+    const subTotal = parseFloat(grossAmount - dueAmount + previousDue).toFixed(2)
+
+    console.log("dueAmount", dueAmount)
+
+    console.log("grossAmount", grossAmount)
+    console.log("grossAmount!", grossAmount)
+    console.log("subTotal", subTotal)
+
+    form.setFieldsValue({ grossAmount: subTotal })
+    setDueAmount(e)
   }
 
   return (
@@ -237,6 +256,31 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
           </Form.Item>
         </Col>
         <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 5 }}>
+
+          <Form.Item noStyle shouldUpdate labelAlign>
+            {() => {
+              return (
+                <>
+                  <Form.Item
+                    name="previousDue"
+                    label="Previous Due"
+                    value={dueAmount}
+                    shouldUpdate
+                  >
+                    <InputNumber value={dueAmount} onChange={previousDueChanged} tabIndex="4" style={{ width: '100%' }} />
+                  </Form.Item>
+                </>
+              )
+            }}
+          </Form.Item>
+
+          {/* <Form.Item
+            name="previousDue"
+            label="Previous Due"
+            value={dueAmount}
+          >
+            <InputNumber value={dueAmount} onChange={previousDueChanged} tabIndex="4" style={{ width: '100%' }} />
+          </Form.Item> */}
           <Form.Item noStyle shouldUpdate labelAlign>
             {() => {
               return (
@@ -248,7 +292,7 @@ function DeliveryChallanForm({ entityForEdit, saveBtnHandler, form }) {
                     rules={[{ required: true }]}
                     shouldUpdate
                   >
-                    <InputNumber tabIndex="4" style={{ width: '100%' }} readOnly />
+                    <InputNumber tabIndex="5" style={{ width: '100%' }} readOnly />
                   </Form.Item>
                 </>
               )

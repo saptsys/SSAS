@@ -100,8 +100,8 @@ const ChalanPrintTemplate = () => {
                           <td style={{ textAlign: "right", verticalAlign: "top" }}>{i + 1}</td>
                           <td style={{ verticalAlign: "top" }}>{chalan.itemMaster.name + (chalan.itemMaster.description ? ` (${chalan.itemMaster.description})` : "")}</td>
                           <td style={{ textAlign: "right", verticalAlign: "top" }} >{chalan.quantity}</td>
-                          <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(chalan.rate)}</td>
-                          <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(chalan.amount)}</td>
+                          <td style={{ textAlign: "right", verticalAlign: "top" }} > {commaNumber(chalan.rate)}</td>
+                          <td style={{ textAlign: "right", verticalAlign: "top" }} > {commaNumber(chalan.amount)}</td>
                         </tr>
                       )
                     })}
@@ -112,15 +112,25 @@ const ChalanPrintTemplate = () => {
                       <th style={{ textAlign: "right" }} className="border-r-0" colspan="2">Total:</th>
                       <th style={{ textAlign: "right" }}>{billData.deliveryDetails.map(x => x.quantity).reduce((x, y) => x + y)}</th>
                       <th style={{ textAlign: "left" }}></th>
-                      <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y))}</th>
+                      <th style={{ textAlign: "right" }}> {commaNumber(billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y))}</th>
                     </tr>
+
+                    <tr>
+                      <th style={{ textAlign: "right" }} className="border-r-0" colspan="2">
+                        Previous Due:
+                      </th>
+                      <th style={{ textAlign: "left" }}></th>
+                      <th style={{ textAlign: "left" }}></th>
+                      <th style={{ textAlign: "right" }}> {commaNumber(billData.previousDue ?? 0.0)}</th>
+                    </tr>
+
                     <tr>
                       <th style={{ textAlign: "right" }} className="border-r-0" colspan="2">
                         Net Amount:
-                </th>
+                      </th>
                       <th style={{ textAlign: "left" }}></th>
                       <th style={{ textAlign: "left" }}></th>
-                      <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.deliveryDetails.map(x => x.amount).reduce((x, y) => x + y))}</th>
+                      <th style={{ textAlign: "right" }}> {commaNumber(billData.grossAmount)}</th>
                     </tr>
                   </tfoot>
                 </table>
@@ -147,7 +157,7 @@ const ChalanPrintTemplate = () => {
   }
 
   return (
-    <body class="a5-half" className={["b-top","b-bottom","b-left","b-right"]}>
+    <body class="a5-half" className={["b-top", "b-bottom", "b-left", "b-right"]}>
       { getRenderData()}
     </body>
 

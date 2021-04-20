@@ -16,6 +16,7 @@ class DeliveryTransaction extends _BaseModel {
     partyMasterId,
     deliveryDetails,
     deliveryAddress,
+    previousDue,
     ...rest
   } = {}) {
     super(rest), (this.id = id);
@@ -31,7 +32,8 @@ class DeliveryTransaction extends _BaseModel {
     this.remarks = remarks;
     this.partyMasterId = partyMasterId;
     this.deliveryDetails = deliveryDetails;
-    this.deliveryAddress = deliveryAddress
+    this.previousDue = previousDue;
+    this.deliveryAddress = deliveryAddress;
   }
 }
 module.exports = { DeliveryTransaction: DeliveryTransaction };

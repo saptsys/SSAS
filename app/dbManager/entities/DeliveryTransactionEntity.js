@@ -32,6 +32,11 @@ module.exports = new EntitySchema({
       type: "double",
       default: 0.0,
     },
+    previousDue: {
+      name: "previous_due",
+      type: "double",
+      default: 0.0,
+    },
     netAmount: {
       name: "net_amount",
       type: "double",

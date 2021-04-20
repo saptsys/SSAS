@@ -159,11 +159,11 @@ const InvoicePrintTemplate = () => {
                   {(billData.billsDetail ?? []).map(function (bill, i) {
                     return (
                       <tr style={{ backgroundColor: "#f5f5f5 min-height: 200px" }}>
-                        <td style={{ textAlign: "right", verticalAlign: "top" }}>{i + 1}</td>
+                        <td style={{ textAlign: "left", verticalAlign: "top" }}>{i + 1}</td>
                         <td style={{ verticalAlign: "top" }}>{bill.itemMaster.name + (bill.itemMaster.description ? ` (${bill.itemMaster.description})` : "")}</td>
                         <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.quantity}</td>
-                        <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(bill.rate)}</td>
-                        <td style={{ textAlign: "right", verticalAlign: "top" }} >₹ {commaNumber(bill.amount)}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} > {commaNumber(bill.rate)}</td>
+                        <td style={{ textAlign: "right", verticalAlign: "top" }} > {commaNumber(bill.amount)}</td>
                       </tr>
                     )
                   })}
@@ -174,7 +174,7 @@ const InvoicePrintTemplate = () => {
                 </th>
                   <th style={{ textAlign: "right" }}>{billData.billsDetail.map(x => x.quantity).reduce((x, y) => x + y)}</th>
                   <th style={{ textAlign: "left" }}></th>
-                  <th style={{ textAlign: "right" }}>₹ {commaNumber(billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y))}</th>
+                  <th style={{ textAlign: "right" }}> {commaNumber(billData.billsDetail.map(x => x.amount).reduce((x, y) => x + y))}</th>
                 </tfoot>
               </table>
             </section>
@@ -195,22 +195,22 @@ const InvoicePrintTemplate = () => {
               </tr>
               <tr>
                 <td className="b-right">SGST {billData.SGSTPercentage ?? 0}%</td>
-                <td className="border-t-0" style={{ textAlign: "right" }}>₹ {commaNumber(billData.SGSTAmount ?? 0)}</td>
+                <td className="border-t-0" style={{ textAlign: "right" }}> {commaNumber(billData.SGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <td className="b-right">CGST {billData.CGSTPercentage ?? 0}%</td>
-                <td style={{ textAlign: "right" }}>₹ {commaNumber(billData.CGSTAmount ?? 0)}</td>
+                <td style={{ textAlign: "right" }}> {commaNumber(billData.CGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <td className="b-right">IGST {billData.IGSTPercentage ?? 0}%</td>
-                <td style={{ textAlign: "right" }}>₹ {commaNumber(billData.IGSTAmount ?? 0)}</td>
+                <td style={{ textAlign: "right" }}> {commaNumber(billData.IGSTAmount ?? 0)}</td>
               </tr>
               <tr>
                 <th className="b-right" style={{ textAlign: "left", backgroundColor: "#bbb" }}>
                   NET AMOUNT
             </th>
                 <th style={{ textAlign: "right", backgroundColor: "#bbb" }} >
-                  ₹ {commaNumber(billData.netAmount ?? 0)}
+                   {commaNumber(billData.netAmount ?? 0)}
                 </th>
               </tr>
             </tbody>
