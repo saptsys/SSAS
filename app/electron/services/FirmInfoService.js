@@ -15,7 +15,8 @@ const DB_PATH = appData + "/databases/";
 const axios = require("axios").default
 const moment = require("moment")
 const { machineIdSync } = require('node-machine-id')
-const os = require('os')
+const os = require('os');
+const { parseServerDate } = require('../../src/helpers/utils');
 
 const CURRENT_MACHINE_ID = machineIdSync({ original: true })
 const CURRENT_MACHINE_NAME = `${os.userInfo().username} @ ${os.hostname()}`
@@ -112,7 +113,7 @@ class FirmInfoService {
     this.checkIsValid()
   }
   expiryLeftDays() {
-    return moment(this.data.endDate).diff(moment(new Date()), 'days')
+    return (new Date(this.data.endDate).getDate()) - (new Date().getDate())
   }
   checkIsValid() {
     // console.log("Actual Machine Id==>" + CURRENT_MACHINE_ID)
@@ -257,8 +258,8 @@ class FirmInfoService {
           active: true,
           initialized: false
         }],
-        endDate: new Date(data.end_date),
-        startDate: new Date(data.start_date),
+        endDate: parseServerDate(data.end_date),
+        startDate: parseServerDate(data.start_date),
         isInTrialMode: data.licence_type === "TRIAL",
       })
       return Promise.resolve({ message: "firm created", data: data })
@@ -278,8 +279,11 @@ class FirmInfoService {
       machineName: CURRENT_MACHINE_NAME,
     }).then(async function (response) {
 
-      const data = response.data
-
+      const data = {
+        ...response.data,
+        end_date: parseServerDate(response.data.end_date),
+        start_date: parseServerDate(response.data.start_date),
+      }
 
       const formatDateTimeForCompare = (date) => moment(new Date(date)).format('YYYY-MM-DD')
       let needToRelaunch =

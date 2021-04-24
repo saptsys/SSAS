@@ -48,3 +48,6 @@ export const jsonToString = (obj, softFail = false) => {
     return;
   }
 }
+
+
+export const parseServerDate = (strDate) => new Date(strDate.split(' ').join("T") + ".000Z")
