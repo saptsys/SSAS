@@ -433,7 +433,7 @@ function appUpdater() {
       buttons: ['Restart', 'Not Now. On next Restart'],
       title: 'Update',
       message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'A New Version has been Downloaded. Restart Now to Complete the Update.'
+      detail: 'A New Version has been Downloaded. Restart SSAS software now to Complete the Update.'
     }
 
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
