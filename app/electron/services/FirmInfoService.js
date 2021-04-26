@@ -113,11 +113,9 @@ class FirmInfoService {
     this.checkIsValid()
   }
   expiryLeftDays() {
-    var today = moment();
-    console.log("TODAY-->", today)
-    console.log("END DATE-->", moment(this.data.endDate))
-    console.log("LEFT DAYS--->", moment(this.data.endDate).diff(today, 'days'))
-    return 5
+    var today = moment(new Date());
+    today = today.add(1,"days")
+    return moment(this.data.endDate).diff(today, 'days')
 
     // return (new Date(this.data.endDate).getDate()) - (new Date().getDate())
   }
