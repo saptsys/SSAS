@@ -113,7 +113,11 @@ class FirmInfoService {
     this.checkIsValid()
   }
   expiryLeftDays() {
-    return (new Date(this.data.endDate).getDate()) - (new Date().getDate())
+    var today = moment(new Date());
+    today = today.add(1,"days")
+    return moment(this.data.endDate).diff(today, 'days')
+
+    // return (new Date(this.data.endDate).getDate()) - (new Date().getDate())
   }
   checkIsValid() {
     // console.log("Actual Machine Id==>" + CURRENT_MACHINE_ID)
