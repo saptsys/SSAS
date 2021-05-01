@@ -401,10 +401,10 @@ class BillsTransactionService extends __BaseService {
       const fromDate = payload.fromDate ?? null
       const toDate = payload.toDate ?? null
       const limit = payload.limit ?? null
-      let parties = payload.parties ?? null
+      let parties = payload.parties ?? [null]
 
       if (parties && parties.length == 0) {
-        parties = null
+        parties = [null]
       }
 
       const includeDetail = payload.includeDetail

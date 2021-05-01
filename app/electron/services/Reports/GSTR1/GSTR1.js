@@ -1,6 +1,6 @@
 const commonModels = require("../commonModels/index")
 const models = require("./Models/index")
-
+const ObjectToCSV = require("objects-to-csv")
 // TODO : we need to create function that returns current user's home state
 const HOME_STATE = 24
 
@@ -20,11 +20,103 @@ class GSTR1 {
     sheets.cdnr = this.getCDNR()
     sheets.hsn = this.getHSN()
     sheets.cdnur = this.getCDNUR()
+
+    const csv = {};
+    csv['summary'] = this.toCSV(sheets.summary , "SUMMARY");
+    csv['b2b'] = this.toCSV(sheets.summary , "B2B");
+    csv['b2cs'] = this.toCSV(sheets.summary , "B2CS");
+    csv['b2cl'] = this.toCSV(sheets.summary , "B2CL");
+    csv['cdnr'] = this.toCSV(sheets.summary , "CDNR");
+    csv['hsn'] = this.toCSV(sheets.summary , "HSN");
+    csv['cdnur'] = this.toCSV(sheets.summary , "CDNUR");
+
+    // TODO : now we've to mix all these csvs into once xls file.
+
     return sheets;
 
   }
 
+  /**
+   *
+   * @param {Array} arr
+   * @param {String} type
+   */
+  toCSV(arr , type){
 
+    let data = [];
+
+    switch (type) {
+      case "SUMMARY":
+        arr.forEach(obj => {
+            let newObj = {}
+            newObj['GSTIN'] = obj.gstin
+            newObj['Invoice Number'] = obj.invoiceDetails.no
+            newObj['Invoice Date'] = obj.invoiceDetails.date
+            newObj['Invoice Value'] = obj.invoiceDetails.value
+            newObj['Rate'] = obj.rate
+            newObj['Cess Rate'] = obj.cessRate
+            newObj['Taxable Value'] = obj.taxableValue
+            newObj['Place Of Supply'] = obj.placeOfSupply
+            newObj["Integrated Tax"] = obj.taxAmounts.integratedTax
+            newObj["Central Tax"] = obj.taxAmounts.centralTax
+            newObj["State Tax"] = obj.taxAmounts.stateTax
+            newObj["Cess"] = obj.taxAmounts.cess
+
+            data.push(newObj);
+        });
+        break;
+      case "B2B":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      case "B2CS":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      case "B2CL":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      case "CDNR":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      case "HSN":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      case "CDNUR":
+          arr.forEach(obj => {
+              let newObj = {}
+
+              data.push(newObj);
+          });
+          break;
+      default:
+        break;
+    }
+
+
+    const csv = new ObjectToCSV(data);
+    csv.toDisk("./text.csv");
+
+    return csv.toString();
+  }
 
   getHSN(){
     let rows = []
