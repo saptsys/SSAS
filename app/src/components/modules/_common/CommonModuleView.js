@@ -29,7 +29,8 @@ function CommonModuleView({
   editModeChanged,
   saveAndContinueBtn = false,
   extraEditShortcuts = [],
-  printBtnHandler
+  printBtnHandler,
+  downloadBtnHandler
 }) {
   const dispatch = useDispatch()
   const { currentState, title } = useSelector(state => ({
@@ -174,6 +175,9 @@ function CommonModuleView({
         printBtnHandler={printBtnHandler ? (cell, row, index) => {
           printBtnHandler(row)
         } : undefined}
+        downloadBtnHandler={downloadBtnHandler ? (cell, row, index) => {
+          downloadBtnHandler(row)
+        } : undefined}
       />
       <CommonEditDrawer
         width={drawerWidth}
@@ -191,6 +195,7 @@ function CommonModuleView({
           methods={methods}
           saveAndContinueBtn={saveAndContinueBtn}
           printBtnHandler={printBtnHandler}
+          downloadBtnHandler={downloadBtnHandler}
         />
       </CommonEditDrawer>
     </div>

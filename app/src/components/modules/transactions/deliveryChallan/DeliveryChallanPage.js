@@ -16,11 +16,21 @@ export const setDeliveryStatusMessage = async (dispatch) => {
 
 
 export const printDeliveryChallan = (id) => {
-  debugger;
   window.promiseIpc.send("Print/", {
     path: "print/chalan/" + id,
     options: {
       silent: true,
+    }
+  }).then(console.log).catch(err => errorDialog(err.message))
+}
+
+export const downloadDeliveryChallan = (id) => {
+  window.promiseIpc.send("Print/", {
+    path: "print/chalan/" + id,
+    options: {
+      silent: false,
+      preview: false,
+      pdf: true
     }
   }).then(console.log).catch(err => errorDialog(err.message))
 }
@@ -50,6 +60,9 @@ function DeliveryChallanPage() {
     saveAndContinueBtn={true}
     printBtnHandler={record => {
       printDeliveryChallan(record.id)
+    }}
+    downloadBtnHandler={record => {
+      downloadDeliveryChallan(record.id)
     }}
   />
 }

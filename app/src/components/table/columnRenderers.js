@@ -1,5 +1,5 @@
 import React from "react";
-import { DeleteTwoTone, EditTwoTone, PrinterTwoTone, ReloadOutlined } from "@ant-design/icons";
+import { DeleteTwoTone, EditTwoTone, PrinterTwoTone, ReloadOutlined,DownloadOutlined } from "@ant-design/icons";
 import { Space, Tag, Tooltip } from "antd";
 
 export const editColumnRenderer = (text, record, index, btnHandler) => (
@@ -38,6 +38,14 @@ export const printColumnRenderer = (text, record, index, btnHandler) => (
   <Space align="center" style={{ cursor: 'pointer' }}>
     <Tooltip title="Click to Print" placement="left">
       <PrinterTwoTone style={{ fontSize: '20px', cursor: 'pointer', '&:hover': { color: "#000" } }}  onClick={() => btnHandler && btnHandler(text, record, index)} />
+    </Tooltip>
+  </Space>
+)
+
+export const downloadColumnRenderer = (text, record, index, btnHandler) => (
+  <Space align="center" style={{ cursor: 'pointer' }}>
+    <Tooltip title="Click to Download" placement="left">
+      <DownloadOutlined style={{ fontSize: '20px', cursor: 'pointer', '&:hover': { color: "#000" } }}  onClick={() => btnHandler && btnHandler(text, record, index)} />
     </Tooltip>
   </Space>
 )

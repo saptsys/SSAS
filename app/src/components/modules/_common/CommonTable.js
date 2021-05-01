@@ -2,7 +2,7 @@ import { DeleteTwoTone, EditTwoTone } from '@ant-design/icons';
 import { Space, Table, Tooltip } from 'antd';
 import React, { useMemo } from 'react';
 import { searchInArray } from '../../../helpers/arrayManipulation';
-import { deleteColumnRenderer, editColumnRenderer, printColumnRenderer } from '../../table/columnRenderers';
+import { deleteColumnRenderer, editColumnRenderer, printColumnRenderer,downloadColumnRenderer } from '../../table/columnRenderers';
 import './commonTable.less'
 
 const CommonTable = ({
@@ -10,6 +10,7 @@ const CommonTable = ({
   dataSource,
   loading = false,
   filterText = "",
+  downloadBtnHandler,
   editBtnHandler,
   deleteBtnHandler,
   printBtnHandler,
@@ -48,6 +49,15 @@ const CommonTable = ({
     }),
   ]
 
+  if (downloadBtnHandler) {
+    finalColumns.push({
+      title: '',
+      dataIndex: rowKey,
+      render: (text, row, index) => downloadColumnRenderer(text, row, index, downloadBtnHandler),
+      width: '35px',
+    })
+  }
+
   if (printBtnHandler) {
     finalColumns.push({
       title: '',
@@ -56,6 +66,8 @@ const CommonTable = ({
       width: '35px',
     })
   }
+
+
 
   if (deleteBtnHandler) {
     finalColumns.push({

@@ -15,7 +15,16 @@ export const printSalesInvoice = (id) => {
     }
   }).then(console.log).catch(err => errorDialog(err.message))
 }
-
+export const downloadDeliveryChallan = (id) => {
+  window.promiseIpc.send("Print/", {
+    path: "print/sales/" + id,
+    options: {
+      silent: false,
+      preview: false,
+      pdf: true
+    }
+  }).then(console.log).catch(err => errorDialog(err.message))
+}
 
 function SalesInvoicePage() {
   const dispatch = useDispatch()
@@ -56,6 +65,9 @@ function SalesInvoicePage() {
     ]}
     printBtnHandler={row => {
       printSalesInvoice(row.id)
+    }}
+    downloadBtnHandler={record => {
+      downloadDeliveryChallan(record.id)
     }}
   />
 }

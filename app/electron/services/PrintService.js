@@ -2,6 +2,8 @@ const { webContents, BrowserWindow,app } = require("electron");
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
+const dialog = require('electron').dialog;
+const moment = require("moment");
 class PrintService {
   constructor() {
     this.prefs = {
@@ -12,7 +14,7 @@ class PrintService {
     this.count = 0;
   }
 
-  print(payload) {
+  async print(payload) {
     const modulePath = payload.path
     const printOptions = payload.options
 
@@ -66,8 +68,17 @@ class PrintService {
         // win.hide()
 
         // Use default printing options
-        win.webContents.printToPDF({printBackground:true}).then(data => {
-          const pdfPath = path.join(os.homedir(), 'Desktop', 'temp.pdf')
+        let pdfPath = await dialog.showOpenDialog({properties: ['openDirectory']});
+
+        console.log(pdfPath)
+
+        if(pdfPath.canceled){
+          return;
+        }
+        pdfPath = pdfPath.filePaths[0];
+        pdfPath = path.join(pdfPath, `${moment().format("DDMMYY-hms")}.pdf`)
+
+        win.webContents.printToPDF({printBackground:true}).then( (data) => {
           fs.writeFile(pdfPath, data, (error) => {
             if (error) throw error
             console.log(`Wrote PDF successfully to ${pdfPath}`)
