@@ -73,7 +73,25 @@ const MainMenu = () => {
       </SubMenu>
 
       <SubMenu key={MODULE_ROUTES.reports._path} title="Reports">
-        {/* <Menu.Item key={MODULE_ROUTES.reports.deliveryChallan._path}>Delivery Challan</Menu.Item> */}
+        <SubMenu key={MODULE_ROUTES.transactions.purchase._path} title="GST">
+          <Menu.Item
+            key={MODULE_ROUTES.reports.gstr1._path}
+            onClick={() => {
+              promiseIpc.send("Reports/gstr1",{
+                fromDate:"2000-04-14",
+                toDate:"2121-04-14"
+              })
+            }}
+          >
+            GSTR1
+          </Menu.Item>
+          <Menu.Item
+            key={MODULE_ROUTES.reports.gstr2._path}
+            onClick={() => console.log(MODULE_ROUTES.reports.gstr2._title) }
+          >
+            GSTR2
+          </Menu.Item>
+        </SubMenu>
       </SubMenu>
 
       <SubMenu key={MODULE_ROUTES.utility._path} title="Utility">

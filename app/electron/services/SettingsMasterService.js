@@ -7,12 +7,12 @@ class SettingsMasterService extends __BaseService {
     super(SettingsMaster)
   }
 
-  async getSettingValue(key){
+  async getSettingValue(key , relay){
     try{
       const setting = await this.repository.findOne({ where: { key: key, deletedAt: null } })
-      return setting.currentValue ?? null;
+      return setting.currentValue ?? relay ?? null;
     }catch(e){
-      return null
+      return relay ?? null;
     }
   }
 

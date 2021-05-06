@@ -3,7 +3,9 @@ const models = require("./Models/index")
 const ObjectToCSV = require("objects-to-csv")
 const ExcelJS = require('exceljs');
 const { Readable } = require("stream")
-
+const SettingsMasterService = require("./../../SettingsMasterService");
+const {app,dialog} = require("electron");
+const path = require('path')
 
 // TODO : we need to create function that returns current user's home state
 const HOME_STATE = 24
@@ -12,6 +14,18 @@ class GSTR1 {
 
   constructor(bills = []) {
     this.bills = bills
+  }
+
+  async askForLocation(){
+    let location = await dialog.showOpenDialog({properties: ['openDirectory']});
+
+    console.log(location)
+
+    if(location.canceled){
+      return null;
+    }
+    location = location.filePaths[0];
+    return location;
   }
 
   async getReport() {
@@ -39,7 +53,15 @@ class GSTR1 {
       var worksheet = await workbook.csv.read(Readable.from([value]));
       worksheet.name = key;
     }
-    await workbook.xlsx.writeFile("gstr1.xlsx");
+    const setting = new SettingsMasterService();
+    // let location = await setting.getSettingValue("REPORT_LOCATION" , app.getPath("desktop"))
+
+    let location = await this.askForLocation();
+    if(location === null){
+      return;
+    }
+    location = `${location}/GSTR1 (${new Date().toLocaleDateString().split("/").join("-")}).xlsx`
+    await workbook.xlsx.writeFile(location);
 
     return sheets;
 
@@ -232,7 +254,7 @@ class GSTR1 {
 
 
     const csv = new ObjectToCSV(data);
-    csv.toDisk("./text.csv");
+    // csv.toDisk("./text.csv");
 
     return csv.toString();
   }

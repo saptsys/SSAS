@@ -59,7 +59,15 @@ export const MODULE_ROUTES = {
     },
   },
   reports: {
-    _path: "/reports"
+    _path: "/reports",
+    gstr1: {
+      _path: "/gstr1",
+      _title: "GSTR1",
+    },
+    gstr2: {
+      _path: "/gstr2",
+      _title: "GSTR2",
+    },
   },
   utility: {
     _path: "/utility",
