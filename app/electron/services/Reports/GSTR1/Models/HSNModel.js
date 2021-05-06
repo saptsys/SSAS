@@ -9,7 +9,7 @@ class HSNModel {
     this.integratedTaxValue = ""
     this.centralTaxAmount = ""
     this.stateTaxAmount = ""
-    this.cessAmountthis = ""
+    this.cessAmount = ""
   }
 }
 

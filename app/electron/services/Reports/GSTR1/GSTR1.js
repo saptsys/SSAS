@@ -1,6 +1,10 @@
 const commonModels = require("../commonModels/index")
 const models = require("./Models/index")
 const ObjectToCSV = require("objects-to-csv")
+const ExcelJS = require('exceljs');
+const { Readable } = require("stream")
+
+
 // TODO : we need to create function that returns current user's home state
 const HOME_STATE = 24
 
@@ -10,7 +14,7 @@ class GSTR1 {
     this.bills = bills
   }
 
-  getReport() {
+  async getReport() {
     let sheets = {}
 
     sheets.summary = this.getSummary();
@@ -20,17 +24,22 @@ class GSTR1 {
     sheets.cdnr = this.getCDNR()
     sheets.hsn = this.getHSN()
     sheets.cdnur = this.getCDNUR()
+    const workbook = new ExcelJS.Workbook();
 
     const csv = {};
-    csv['summary'] = this.toCSV(sheets.summary , "SUMMARY");
-    csv['b2b'] = this.toCSV(sheets.summary , "B2B");
-    csv['b2cs'] = this.toCSV(sheets.summary , "B2CS");
-    csv['b2cl'] = this.toCSV(sheets.summary , "B2CL");
-    csv['cdnr'] = this.toCSV(sheets.summary , "CDNR");
-    csv['hsn'] = this.toCSV(sheets.summary , "HSN");
-    csv['cdnur'] = this.toCSV(sheets.summary , "CDNUR");
+    // csv['summary'] = this.toCSV(sheets.summary, "SUMMARY");
+    csv['b2b'] = this.toCSV(sheets.b2b, "B2B");
+    csv['b2cs'] = this.toCSV(sheets.b2cs, "B2CS");
+    csv['b2cl'] = this.toCSV(sheets.b2cl, "B2CL");
+    csv['cdnr'] = this.toCSV(sheets.cdnr, "CDNR");
+    csv['hsn'] = this.toCSV(sheets.hsn, "HSN");
+    csv['cdnur'] = this.toCSV(sheets.cdnur, "CDNUR");
 
-    // TODO : now we've to mix all these csvs into once xls file.
+    for (let [key, value] of Object.entries(csv)) {
+      var worksheet = await workbook.csv.read(Readable.from([value]));
+      worksheet.name = key;
+    }
+    await workbook.xlsx.writeFile("gstr1.xlsx");
 
     return sheets;
 
@@ -41,72 +50,182 @@ class GSTR1 {
    * @param {Array} arr
    * @param {String} type
    */
-  toCSV(arr , type){
+  toCSV(arr, type) {
 
     let data = [];
 
     switch (type) {
       case "SUMMARY":
+        if(arr.length == 0){
+          arr[0] = {}
+        }
         arr.forEach(obj => {
-            let newObj = {}
-            newObj['GSTIN'] = obj.gstin
-            newObj['Invoice Number'] = obj.invoiceDetails.no
-            newObj['Invoice Date'] = obj.invoiceDetails.date
-            newObj['Invoice Value'] = obj.invoiceDetails.value
-            newObj['Rate'] = obj.rate
-            newObj['Cess Rate'] = obj.cessRate
-            newObj['Taxable Value'] = obj.taxableValue
-            newObj['Place Of Supply'] = obj.placeOfSupply
-            newObj["Integrated Tax"] = obj.taxAmounts.integratedTax
-            newObj["Central Tax"] = obj.taxAmounts.centralTax
-            newObj["State Tax"] = obj.taxAmounts.stateTax
-            newObj["Cess"] = obj.taxAmounts.cess
+          let newObj = {}
+          newObj['GSTIN/UIN of Recipient'] = obj.gstin
+          newObj['Invoice Number'] = obj?.invoiceDetails?.no
+          newObj['Invoice Date'] = obj?.invoiceDetails?.date
+          newObj['Invoice Value'] = obj?.invoiceDetails?.value
+          newObj['Rate'] = obj.rate
+          newObj['Cess Rate'] = obj.cessRate
+          newObj['Taxable Value'] = obj.taxableValue
+          newObj['Place Of Supply'] = obj.placeOfSupply
+          newObj["Integrated Tax"] = obj?.taxAmounts?.integratedTax
+          newObj["Central Tax"] = obj?.taxAmounts?.centralTax
+          newObj["State Tax"] = obj?.taxAmounts?.stateTax
+          newObj["Cess Amount"] = obj?.taxAmounts?.cess
 
-            data.push(newObj);
+          data.push(newObj);
         });
         break;
       case "B2B":
-          arr.forEach(obj => {
-              let newObj = {}
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
 
-              data.push(newObj);
-          });
-          break;
+          newObj['GSTIN/UIN of Recipient'] = obj.gstin
+          newObj['Receiver Name'] = obj.receiverName
+          newObj['Invoice Number'] = obj?.invoiceDetails?.no
+          newObj['Invoice Date'] = obj?.invoiceDetails?.date
+          newObj['Invoice Value'] = obj?.invoiceDetails?.value
+          newObj['Place Of Supply'] = obj.placeOfSupply
+          newObj['Reverse Charge'] = obj.reverseCharge
+          newObj['Applicable Percentage'] = obj.applicablePercentage
+          newObj['Invoice Type'] = obj.invoiceType
+          newObj['E-Commerce GSTIN'] = obj.gstinOfEcom
+          newObj['Rate'] = obj.rate
+          newObj['Taxable Value'] = obj.taxableValue
+          newObj["Cess Amount"] = obj.cessAmount
+
+          data.push(newObj);
+        });
+        break;
       case "B2CS":
-          arr.forEach(obj => {
-              let newObj = {}
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
+          // Type	Place Of Supply	Rate	Taxable Value	Cess Amount	E-Commerce GSTIN
 
-              data.push(newObj);
-          });
-          break;
+          newObj['Type'] = obj.type
+          newObj['Place Of Supply'] = obj.placeOfSupply
+          newObj['Taxable Value'] = obj.taxableValue
+          newObj['Cess Amount'] = obj.cessAmount
+          newObj['E-Commerce GSTIN'] = obj.gstinOfEcom
+          newObj['Applicable Percentage'] = obj.applicablePercentage
+          data.push(newObj);
+
+        });
+        break;
       case "B2CL":
-          arr.forEach(obj => {
-              let newObj = {}
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
+          // Invoice Number	Invoice date	Invoice Value	Place Of Supply	Rate	Taxable Value	Cess Amount	E-Commerce GSTIN
+          newObj['Invoice Number'] = obj?.invoiceDetails?.no
+          newObj['Invoice Date'] = obj?.invoiceDetails?.date
+          newObj['Invoice Value'] = obj?.invoiceDetails?.value
+          newObj['Place Of Supply'] = obj.placeOfSupply
+          newObj['E-Commerce GSTIN'] = obj.gstinOfEcom
+          newObj['Rate'] = obj.rate
+          newObj['Taxable Value'] = obj.taxableValue
+          newObj["Cess Amount"] = obj.cessAmount
+          data.push(newObj);
 
-              data.push(newObj);
-          });
-          break;
+        });
+        break;
       case "CDNR":
-          arr.forEach(obj => {
-              let newObj = {}
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
+          // GSTIN/UIN of Recipient	Receiver Name	Note Number	Note Date	Note Type
+          // Place Of Supply	Reverse Charge	Note Supply Type	Note Value	Applicable % of Tax Rate	Rate	Taxable Value	Cess Amount
+          newObj['GSTIN/UIN of Recipient'] = obj.gstin
+          newObj['Receiver Name'] = obj.receiverName
+          newObj['Note Number'] = obj.noteNumber
+          newObj['Note Date'] = obj.noteDate
+          newObj['Note Type'] = obj.noteType
+          newObj['Place Of Supply'] = obj.placeOfSupply
+          newObj['Reverse Charge'] = obj.reverseCharge
+          newObj['Note Supply Type'] = obj.noteSupplyType
+          newObj['Note Value'] = obj.noteValue
+          newObj['Applicable % of Tax Rate'] = obj.applicablePercentage
+          newObj['Rate'] = obj.rate
+          newObj['Taxable Value'] = obj.taxableAmount
+          newObj['Cess Amount'] = obj.cessAmount
 
-              data.push(newObj);
-          });
-          break;
+          data.push(newObj);
+        });
+        break;
       case "HSN":
-          arr.forEach(obj => {
-              let newObj = {}
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
+          /*
+          HSN
+          Description
+          UQC
+          Total Quantity
+          Total Value
+          Taxable Value
+          Integrated Tax Amount
+          Central Tax Amount
+          State/UT Tax Amount
+          Cess Amount
+          */
+          newObj['hsn'] = obj.hsn
+          newObj['Description'] = obj.description
+          newObj['UQC'] = obj.uqc
+          newObj['Total Quantity'] = obj.totalQuantity
+          newObj['Total Value'] = obj.totalValue
+          newObj['Taxable Value'] = obj.taxableValue
+          newObj['Integrated Tax Amount'] = obj.integratedTaxValue
+          newObj['Central Tax Amount'] = obj.centralTaxAmount
+          newObj['State/UT Tax Amount'] = obj.stateTaxAmount
+          newObj['Cess Amount'] = obj.cessAmount
 
-              data.push(newObj);
-          });
-          break;
+          data.push(newObj);
+        });
+        break;
       case "CDNUR":
-          arr.forEach(obj => {
-              let newObj = {}
-
-              data.push(newObj);
-          });
-          break;
+        if(arr.length == 0){
+          arr[0] = {}
+        }
+        arr.forEach(obj => {
+          let newObj = {}
+          /*
+          UR Type
+          Note Number
+          Note Date
+          Note Type
+          Place Of Supply
+          Note Value
+          Applicable % of Tax Rate
+          Rate
+          Taxable Value
+          Cess Amount
+          */
+         newObj['UR Type'] = obj.urType
+         newObj['Note Number'] = obj.noteNumber
+         newObj['Note Date'] = obj.noteDate
+         newObj['Note Type'] = obj.noteType
+         newObj['Place Of Supply'] = obj.placeOfSupply
+         newObj['Note Value'] = obj.taxableValue
+         newObj['Applicable % of Tax Rate'] = obj.applicablePercentages
+         newObj['Rate'] = obj.rate
+         newObj['Taxable Value'] = obj.taxableAmount
+         newObj['Cess Amount'] = obj.cessAmount
+        data.push(newObj);
+        });
+        break;
       default:
         break;
     }
@@ -118,7 +237,7 @@ class GSTR1 {
     return csv.toString();
   }
 
-  getHSN(){
+  getHSN() {
     let rows = []
 
     return rows
@@ -127,7 +246,7 @@ class GSTR1 {
   /**
    Credit/ Debit Notes/Refund vouchers issued to the unregistered persons against interstate invoice value is  more than Rs 2.5 lakh
    */
-  getCDNUR(){
+  getCDNUR() {
     let rows = []
     const bills = this.bills.filter(x => {
       if (x.billing === "RETAIL" && x.tag === "SR") {
@@ -319,7 +438,7 @@ class GSTR1 {
 
       let row = new GSTR1SummaryModel();
       let invoiceDetails = new commonModels.InvoiceDetails();
-      let taxAmounts  = new commonModels.TaxAmounts();
+      let taxAmounts = new commonModels.TaxAmounts();
 
       row.gstin = bill.partyMasterId.gstin
       invoiceDetails.no = bill.billNumber
