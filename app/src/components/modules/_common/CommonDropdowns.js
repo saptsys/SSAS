@@ -56,6 +56,7 @@ export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
         allowClear={true}
         loading={isLoading}
         defaultActiveFirstOption={false}
+        defaultValue={1}
       />
     </Form.Item>
   )
@@ -95,6 +96,7 @@ export const ItemGroupDropdown = ({ propsForSelect = {}, ...props }) => {
         allowClear={true}
         loading={isLoading}
         defaultActiveFirstOption={false}
+        defaultValue={1}
       />
     </Form.Item>)
   return (
@@ -132,6 +134,7 @@ export const ItemUnitDropdown = ({ propsForSelect = {}, ...props }) => {
         allowClear={true}
         loading={isLoading}
         defaultActiveFirstOption={false}
+        defaultValue={1}
       />
     </Form.Item>)
   return (
@@ -196,6 +199,7 @@ export const AccountTypesDropdown = ({ propsForSelect = {}, ...props }) => {
         showAction="focus"
         allowClear={true}
         defaultActiveFirstOption={false}
+        defaultValue={1}
       />
     </Form.Item>)
   return (
