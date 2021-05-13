@@ -29,11 +29,14 @@ const EditableCell = ({
     currentCellValue = { [rowIndex]: { ...record, [dataIndex]: val } }
     setCurrentCellValue(currentCellValue)
     setCurrentCellName({ dataIndex, colIndex, rowIndex })
+    return true
   }
   const iniCurCell = () => { /*setCurrentCellValue({ [rowIndex]: { ...record } })*/ }
-  const curCellVal = () => currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
+  const curCellVal = () => {
+    return currentCellValue && currentCellValue[rowIndex] ? currentCellValue[rowIndex][dataIndex] : record[dataIndex]
+  }
   const elmToReturn = function () {
-    const { type, onChange, onKeyPress, getOptions, getCustomCoponent, ...elmProps } = editor
+    const { type, onChange, onKeyPress, getOptions, getCustomCoponent, getDefaultOption, ...elmProps } = editor
     switch (type) {
       case "number":
         return <Input
@@ -49,7 +52,9 @@ const EditableCell = ({
         />
       case "select":
         return <Select
-          value={curCellVal()}
+          value={function () {
+            return curCellVal();
+          }()}
           onChange={val => {
             setVal(val) && onChange && onChange(val)
           }}

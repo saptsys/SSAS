@@ -46,6 +46,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const [selectedParty, setSelectedParty] = useState(null)
   const [activeTax, setActiveTax] = useState(null)
   const [currnetEditInfoData, setCurrnetEditInfoData] = useState(null)
+  const [defaultSelectedValue, setDefaultSelectedValue] = useState({});
 
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
@@ -166,7 +167,10 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
         initialValues={
           {
             ...entityForEdit,
-            billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
+            billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail({
+              itemUnitMasterId:1,
+              amount:0.0
+            })],
             billDate: moment(entityForEdit.billDate ?? new Date()),
             itemWiseTotals: calcItemWiseTotals((entityForEdit.billsDetail ?? []))
           }}
@@ -308,7 +312,17 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   width: '12%',
                   editor: {
                     type: 'select',
-                    getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id }))
+                    getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id })),
+                    getDefaultOption: () => {
+                      return defaultSelectedValue["itemUnitMasterId"] ?? 1;
+                    },
+                    onChange: (value) => {
+                      setDefaultSelectedValue({
+                        ...defaultSelectedValue,
+                        "itemUnitMasterId":value
+                      });
+                      return true
+                    }
                   },
                 }, {
                   title: "Qty",
@@ -361,12 +375,15 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.amount ?? 0), 0),
                 }
               ]}
-              autoAddRow={{ ...(new BillsDetail()) }}
+              autoAddRow={{ ...(new BillsDetail({
+                itemUnitMasterId:1,
+                amount:0.0
+              })) }}
               beforeSave={(newRow, oldRow, { dataIndex, rowIndex }) => {
                 const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
-                  newRow.itemUnitMasterId = currentItem?.itemUnitMasterId
+                  newRow.itemUnitMasterId = newRow.itemUnitMasterId ?? currentItem?.itemUnitMasterId
                 if (!newRow.rate || newRow.itemMasterId !== oldRow.itemMasterId)
                   newRow.rate = currentItem?.purchasePrice
                 return newRow;

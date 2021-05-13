@@ -48,6 +48,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const [activeTax, setActiveTax] = useState(null)
   const [billSelectionDialogVisibility, setBillSelectionDialogVisibility] = useState(false)
   const [itemSelectVisibility, setItemSelectVisibility] = useState(false)
+  const [defaultSelectedValue, setDefaultSelectedValue] = useState({});
 
 
   const startSelectAgainstBill = () => {
@@ -162,7 +163,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
         name="sales-return-form"
         initialValues={{
           ...entityForEdit,
-          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail()],
+          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail({itemUnitMasterId:1,amount:0.0})],
           billDate: moment(entityForEdit.billDate ?? new Date()),
           againstBillDate: moment(entityForEdit.againstBillDate)
         }}
@@ -332,7 +333,17 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                   width: '12%',
                   editor: {
                     type: 'select',
-                    getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id }))
+                    getOptions: () => allUnits?.map(x => ({ label: x.name, value: x.id })),
+                    getDefaultOption: () => {
+                      return defaultSelectedValue["itemUnitMasterId"] ?? 1;
+                    },
+                    onChange: (value) => {
+                      setDefaultSelectedValue({
+                        ...defaultSelectedValue,
+                        "itemUnitMasterId":value
+                      });
+                      return true
+                    }
                   },
                 }, {
                   title: "Qty",
@@ -376,12 +387,15 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                   align: 'right'
                 }
               ]}
-              autoAddRow={{ ...(new BillsDetail()) }}
+              autoAddRow={{ ...(new BillsDetail({
+                itemUnitMasterId : defaultSelectedValue["itemUnitMasterId"] ?? 1,
+                amount: 0.0
+              })) }}
               beforeSave={(newRow, oldRow) => {
                 const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
                 if (!newRow.itemUnitMasterId || oldRow.itemMasterId !== newRow.itemMasterId)
-                  newRow.itemUnitMasterId = currentItem?.itemUnitMasterId
+                  newRow.itemUnitMasterId = newRow.itemUnitMasterId ?? currentItem?.itemUnitMasterId
                 if (!newRow.rate || newRow.itemMasterId !== oldRow.itemMasterId)
                   newRow.rate = currentItem?.salePrice
                 return newRow;
