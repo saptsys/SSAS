@@ -7,12 +7,14 @@ import moment from "moment"
 import { dateFormat } from "../../../../Constants/Formats";
 import geoStates from "../../../../Constants/States";
 import './printStyle.less';
+import './a4Style.less';
 import { numberCurrencyIn as numToWords } from "../../../helpers/NumToWord";
 import commaNumber from "comma-number";
 
 const InvoicePrintTemplate = () => {
   const dispatch = useDispatch()
   const [billData, setBillData] = useState(null)
+  const [emptyRows, setEmptyRows] = useState(0)
   let { id } = useParams();
   const { FirmInfoState, SettingsMasterState } = useSelector(state => ({
     FirmInfoState: {
@@ -27,10 +29,63 @@ const InvoicePrintTemplate = () => {
       list: state.SettingsMaster.list
     }
   }))
-  console.log(FirmInfoState)
+  // console.log(FirmInfoState)
   useEffect(() => {
     dispatch(SalesInvoiceActions.getByIdWithDetails(id)).then(setBillData)
   }, [])
+
+  useEffect(() => {
+    try{
+      if(billData){
+        console.log("Aa");
+
+        const sizeWithUpDown = 26;
+        const sizeWithDown = 39;
+        const sizeWithUp = 38;
+        const sizeWithoutUpDown = 48;
+
+
+        const rows = billData?.billsDetail ? billData.billsDetail.length : 0
+
+        let pages = Math.ceil(rows / sizeWithUpDown);
+        let emptyRows = (pages * sizeWithUpDown) - rows;
+
+        let extraEmptyRows = 0;
+
+        if(pages > 1){
+          let tempRows = rows; //39
+          tempRows = rows - sizeWithUp; // 39 - 38 = 1
+
+          let lastPage = 0;
+
+          while(tempRows > 0){
+            lastPage = tempRows;
+            tempRows -= sizeWithoutUpDown;
+          }
+
+          lastPage = (sizeWithDown - lastPage) - emptyRows;
+          if(lastPage < 0){
+            lastPage = 0
+          }
+          extraEmptyRows = lastPage;
+        }
+
+
+        console.log("empty rows : " + emptyRows);
+        console.log("extraEmptyRows : " + extraEmptyRows);
+
+        emptyRows += extraEmptyRows;
+
+        setEmptyRows(emptyRows);
+        // setEmptyRows(0);
+      }
+
+    }catch(e){
+      console.log(e)
+    }
+
+  }, [billData])
+
   let padding = 20;
   const getRenderData = () => {
     return (billData ?
@@ -139,26 +194,25 @@ const InvoicePrintTemplate = () => {
                   <tr>
                     <th style={{ textAlign: "left" }} width="10%">
                       Sr.
-                </th>
+                    </th>
                     <th style={{ textAlign: "left" }} width="45%">
                       Item
-                </th>
+                    </th>
                     <th style={{ textAlign: "right" }} width="15%">
                       Quantity
-                </th>
+                    </th>
                     <th style={{ textAlign: "right" }} width="15%">
                       Rate
-                </th>
+                    </th>
                     <th style={{ textAlign: "right" }} width="15%">
                       Amount
-                </th>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-
                   {(billData.billsDetail ?? []).map(function (bill, i) {
                     return (
-                      <tr style={{ backgroundColor: "#f5f5f5 min-height: 200px" }}>
+                      <tr style={{ backgroundColor: "#f5f5f5" }}>
                         <td style={{ textAlign: "left", verticalAlign: "top" }}>{i + 1}</td>
                         <td style={{ verticalAlign: "top" }}>{bill.itemMaster.name + (bill.itemMaster.description ? ` (${bill.itemMaster.description})` : "")}</td>
                         <td style={{ textAlign: "right", verticalAlign: "top" }} >{bill.quantity}</td>
@@ -167,6 +221,16 @@ const InvoicePrintTemplate = () => {
                       </tr>
                     )
                   })}
+                  {/* <h1>{emptyRows}</h1> */}
+                  {[...Array(emptyRows)].map(() => (
+                    <tr style={{ backgroundColor: "#f5f5f5" }}>
+                      <td>&nbsp;</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  ))}
                 </tbody>
                 <tfoot>
                   <th style={{ textAlign: "right" }} className="border-r-0" colSpan="2">
@@ -210,7 +274,7 @@ const InvoicePrintTemplate = () => {
                   NET AMOUNT
             </th>
                 <th style={{ textAlign: "right", backgroundColor: "#bbb" }} >
-                   {commaNumber(billData.netAmount ?? 0)}
+                  {commaNumber(billData.netAmount ?? 0)}
                 </th>
               </tr>
             </tbody>

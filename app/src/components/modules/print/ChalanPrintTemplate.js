@@ -6,6 +6,7 @@ import { DeliveryChallanActions } from '../../../_redux/actionFiles/DeliveryChal
 import moment from "moment"
 import { dateFormat } from "../../../../Constants/Formats";
 import './printStyle.less';
+import './a5HalfStyle.less';
 import commaNumber from "comma-number";
 
 const ChalanPrintTemplate = () => {
