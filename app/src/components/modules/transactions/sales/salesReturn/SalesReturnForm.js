@@ -136,11 +136,11 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount - discountAmount)
-    const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const SGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const CGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0
+    const IGSTPercentage = parseInt(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
@@ -163,7 +163,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
         name="sales-return-form"
         initialValues={{
           ...entityForEdit,
-          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail({itemUnitMasterId:1,amount:0.0})],
+          billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail({ itemUnitMasterId: 1, amount: 0.0 })],
           billDate: moment(entityForEdit.billDate ?? new Date()),
           againstBillDate: moment(entityForEdit.againstBillDate)
         }}
@@ -340,7 +340,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                     onChange: (value) => {
                       setDefaultSelectedValue({
                         ...defaultSelectedValue,
-                        "itemUnitMasterId":value
+                        "itemUnitMasterId": value
                       });
                       return true
                     }
@@ -387,10 +387,12 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
                   align: 'right'
                 }
               ]}
-              autoAddRow={{ ...(new BillsDetail({
-                itemUnitMasterId : defaultSelectedValue["itemUnitMasterId"] ?? 1,
-                amount: 0.0
-              })) }}
+              autoAddRow={{
+                ...(new BillsDetail({
+                  itemUnitMasterId: defaultSelectedValue["itemUnitMasterId"] ?? 1,
+                  amount: 0.0
+                }))
+              }}
               beforeSave={(newRow, oldRow) => {
                 const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)

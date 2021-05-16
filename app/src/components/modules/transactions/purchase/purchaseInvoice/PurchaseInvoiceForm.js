@@ -120,11 +120,11 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const freightAmount = form.getFieldValue("freightAmount") ?? 0
     const commisionAmount = form.getFieldValue("freightAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount + freightAmount + commisionAmount - discountAmount)
-    const SGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const SGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = defaultFirm.state === currentPartyStateCode ? activeTax.taxPercentage / 2 : 0
+    const CGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = defaultFirm.state !== currentPartyStateCode ? activeTax.taxPercentage : 0
+    const IGSTPercentage = parseInt(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
@@ -168,8 +168,8 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           {
             ...entityForEdit,
             billsDetail: [...(entityForEdit.billsDetail ?? []), new BillsDetail({
-              itemUnitMasterId:1,
-              amount:0.0
+              itemUnitMasterId: 1,
+              amount: 0.0
             })],
             billDate: moment(entityForEdit.billDate ?? new Date()),
             itemWiseTotals: calcItemWiseTotals((entityForEdit.billsDetail ?? []))
@@ -319,7 +319,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                     onChange: (value) => {
                       setDefaultSelectedValue({
                         ...defaultSelectedValue,
-                        "itemUnitMasterId":value
+                        "itemUnitMasterId": value
                       });
                       return true
                     }
@@ -375,10 +375,12 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                   footer: (data) => data.reduce((a, b) => parseInt(a) + parseInt(b.amount ?? 0), 0),
                 }
               ]}
-              autoAddRow={{ ...(new BillsDetail({
-                itemUnitMasterId:1,
-                amount:0.0
-              })) }}
+              autoAddRow={{
+                ...(new BillsDetail({
+                  itemUnitMasterId: 1,
+                  amount: 0.0
+                }))
+              }}
               beforeSave={(newRow, oldRow, { dataIndex, rowIndex }) => {
                 const currentItem = allItems.find(x => x.id === newRow.itemMasterId)
                 newRow.amount = (parseFloat(newRow.quantity ?? 0) * parseFloat(newRow.rate ?? 0)).toFixed(2)
