@@ -455,205 +455,206 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
             <Form.Item noStyle shouldUpdate labelAlign>
               {() => {
                 return (
-                  <div className="footer-fields">
-                    <Form.Item
-                      label="Gross Amount"
-                      shouldUpdate
-                    >
-                      <Form.Item name="grossAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
+                  <>
+                    <div className="footer-fields">
+                      <Form.Item
+                        label="Gross Amount"
+                        shouldUpdate
+                      >
+                        <Form.Item name="grossAmount" noStyle>
+                          <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
+                        </Form.Item>
                       </Form.Item>
-                    </Form.Item>
-                    <Form.Item label="+ Freight">
-                      <Input.Group>
-                        <Form.Item
-                          name={['freightPercentage']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (gAmt * e.target.value) / 100
-                                form.setFieldsValue({ freightAmount: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0"
-                            tabIndex="5"
-                            suffix='%'
-                            style={{ width: '40%', textAlign: 'right' }}
+                      <Form.Item label="+ Freight">
+                        <Input.Group>
+                          <Form.Item
+                            name={['freightPercentage']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (gAmt * e.target.value) / 100
+                                  form.setFieldsValue({ freightAmount: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0"
+                              tabIndex="5"
+                              suffix='%'
+                              style={{ width: '40%', textAlign: 'right' }}
 
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          name={['freightAmount']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (100 * e.target.value) / gAmt
-                                form.setFieldsValue({ freightPercentage: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0.00"
-                            tabIndex="6"
-                            suffix=" "
-                            style={{ width: '60%' }}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            name={['freightAmount']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (100 * e.target.value) / gAmt
+                                  form.setFieldsValue({ freightPercentage: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0.00"
+                              tabIndex="6"
+                              suffix=" "
+                              style={{ width: '60%' }}
 
-                          />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item label="+ Commission">
-                      <Input.Group>
-                        <Form.Item
-                          name={['commisionPercentage']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (gAmt * e.target.value) / 100
-                                form.setFieldsValue({ commisionAmount: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0"
-                            tabIndex="7"
-                            suffix='%'
-                            style={{ width: '40%', textAlign: 'right' }}
-
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          name={['commisionAmount']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (100 * e.target.value) / gAmt
-                                form.setFieldsValue({ commisionPercentage: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0.00"
-                            tabIndex="8"
-                            suffix=" "
-                            style={{ width: '60%' }}
-
-                          />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item label="- Discount">
-                      <Input.Group>
-                        <Form.Item
-                          name={['discountPercentage']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (gAmt * e.target.value) / 100
-                                form.setFieldsValue({ discountAmount: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0"
-                            tabIndex="9"
-                            suffix='%'
-                            style={{ width: '40%', textAlign: 'right' }}
-
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          name={['discountAmount']}
-                          noStyle
-                        >
-                          <Input
-                            onChange={e => {
-                              if (e.target.value) {
-                                const gAmt = form.getFieldValue("grossAmount")
-                                const dRs = (100 * e.target.value) / gAmt
-                                form.setFieldsValue({ discountPercentage: dRs })
-                                calcTotals()
-                              }
-                            }}
-                            defaultValue="0.00"
-                            tabIndex="10"
-                            suffix=" "
-                            style={{ width: '60%' }}
-
-                          />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item
-                      label="Taxable Amount"
-                      rules={[{ required: true }]}
-                      shouldUpdate
-                    >
-                      <Form.Item name="taxableAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
+                            />
+                          </Form.Item>
+                        </Input.Group>
                       </Form.Item>
-                    </Form.Item>
-                    <Form.Item label="+ SGST">
-                      <Input.Group>
-                        <Form.Item
-                          name={['SGSTPercentage']}
-                          noStyle
-                        >
-                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
+                      <Form.Item label="+ Commission">
+                        <Input.Group>
+                          <Form.Item
+                            name={['commisionPercentage']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (gAmt * e.target.value) / 100
+                                  form.setFieldsValue({ commisionAmount: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0"
+                              tabIndex="7"
+                              suffix='%'
+                              style={{ width: '40%', textAlign: 'right' }}
+
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            name={['commisionAmount']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (100 * e.target.value) / gAmt
+                                  form.setFieldsValue({ commisionPercentage: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0.00"
+                              tabIndex="8"
+                              suffix=" "
+                              style={{ width: '60%' }}
+
+                            />
+                          </Form.Item>
+                        </Input.Group>
+                      </Form.Item>
+                      <Form.Item label="- Discount">
+                        <Input.Group>
+                          <Form.Item
+                            name={['discountPercentage']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (gAmt * e.target.value) / 100
+                                  form.setFieldsValue({ discountAmount: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0"
+                              tabIndex="9"
+                              suffix='%'
+                              style={{ width: '40%', textAlign: 'right' }}
+
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            name={['discountAmount']}
+                            noStyle
+                          >
+                            <Input
+                              onChange={e => {
+                                if (e.target.value) {
+                                  const gAmt = form.getFieldValue("grossAmount")
+                                  const dRs = (100 * e.target.value) / gAmt
+                                  form.setFieldsValue({ discountPercentage: dRs })
+                                  calcTotals()
+                                }
+                              }}
+                              defaultValue="0.00"
+                              tabIndex="10"
+                              suffix=" "
+                              style={{ width: '60%' }}
+
+                            />
+                          </Form.Item>
+                        </Input.Group>
+                      </Form.Item>
+                      <Form.Item
+                        label="Taxable Amount"
+                        rules={[{ required: true }]}
+                        shouldUpdate
+                      >
+                        <Form.Item name="taxableAmount" noStyle>
+                          <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
                         </Form.Item>
-                        <Form.Item
-                          name={['SGSTAmount']}
-                          noStyle
-                        >
-                          <Input defaultValue="0.00" tabIndex="12" suffix=" " style={{ width: '60%' }} readOnly />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item label="+ CGST">
-                      <Input.Group>
-                        <Form.Item
-                          name={['CGSTPercentage']}
-                          noStyle
-                        >
-                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
-                        </Form.Item>
-                        <Form.Item
-                          name={['CGSTAmount']}
-                          noStyle
-                        >
-                          <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item label="+ IGST">
-                      <Input.Group>
-                        <Form.Item
-                          name={['IGSTPercentage']}
-                          noStyle
-                        >
-                          <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
-                        </Form.Item>
-                        <Form.Item
-                          name={['IGSTAmount']}
-                          noStyle
-                        >
-                          <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
-                        </Form.Item>
-                      </Input.Group>
-                    </Form.Item>
-                    <Form.Item
+                      </Form.Item>
+                      <Form.Item label="+ SGST">
+                        <Input.Group>
+                          <Form.Item
+                            name={['SGSTPercentage']}
+                            noStyle
+                          >
+                            <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
+                          </Form.Item>
+                          <Form.Item
+                            name={['SGSTAmount']}
+                            noStyle
+                          >
+                            <Input defaultValue="0.00" tabIndex="12" suffix=" " style={{ width: '60%' }} readOnly />
+                          </Form.Item>
+                        </Input.Group>
+                      </Form.Item>
+                      <Form.Item label="+ CGST">
+                        <Input.Group>
+                          <Form.Item
+                            name={['CGSTPercentage']}
+                            noStyle
+                          >
+                            <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
+                          </Form.Item>
+                          <Form.Item
+                            name={['CGSTAmount']}
+                            noStyle
+                          >
+                            <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
+                          </Form.Item>
+                        </Input.Group>
+                      </Form.Item>
+                      <Form.Item label="+ IGST">
+                        <Input.Group>
+                          <Form.Item
+                            name={['IGSTPercentage']}
+                            noStyle
+                          >
+                            <Input defaultValue="0" suffix='%' style={{ width: '40%', textAlign: 'right' }} readOnly />
+                          </Form.Item>
+                          <Form.Item
+                            name={['IGSTAmount']}
+                            noStyle
+                          >
+                            <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
+                          </Form.Item>
+                        </Input.Group>
+                      </Form.Item>
+                      {/* <Form.Item
                       label="Net Amount"
                       rules={[{ required: true }]}
                       shouldUpdate
@@ -661,8 +662,20 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       <Form.Item name="netAmount" noStyle>
                         <Input defaultValue="0.00" tabIndex="15" style={{ width: '100%' }} readOnly />
                       </Form.Item>
+                    </Form.Item> */}
+                    </div>
+                    <Form.Item
+                      className="netAmt"
+                      label="Net Amount"
+                      rules={[{ required: true }]}
+                      shouldUpdate
+                      style={{ marginTop: '7px', fontWeight: '600' }}
+                    >
+                      <Form.Item name="netAmount" noStyle>
+                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%', fontWeight: '600' }} readOnly />
+                      </Form.Item>
                     </Form.Item>
-                  </div>
+                  </>
                 )
               }}
             </Form.Item>
