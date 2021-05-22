@@ -49,6 +49,10 @@ const EditableCell = ({
           size="small"
           style={{ textAlign: 'right' }}
           {...elmProps}
+          onFocus={e => {
+            elmProps.onFocus && elmProps.onFocus(e);
+            e.target.setSelectionRange(0, e.target.value.length)
+          }}
         />
       case "select":
         return <Select
@@ -78,6 +82,10 @@ const EditableCell = ({
           onChange={e => setVal(e.target.value) && onChange && onChange(e)}
           size="small"
           {...elmProps}
+          onFocus={e => {
+            elmProps.onFocus && elmProps.onFocus(e);
+            e.target.setSelectionRange(0, e.target.value.length)
+          }}
         />
     }
   }
