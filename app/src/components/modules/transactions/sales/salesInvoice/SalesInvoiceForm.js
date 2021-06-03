@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Row, Col, InputNumber, DatePicker, Table, Button } from "antd";
 import validateMsgs from "../../../../../helpers/validateMesseges";
-import { PartyDropdown } from "../../../_common/CommonDropdowns";
+import { PartyDropdown, TaxDropdown } from "../../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../../Constants/Formats";
 import EditableTable, { getFirstFocusableCell } from "../../../_common/EditableTable";
 import CustomDatePicker from "../../../../form/CustomDatePicker";
@@ -192,7 +192,27 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               <TextArea style={{ width: '100%' }} rows={3} />
             </Form.Item>
           </Col>
-          <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
+          <Col lg={{ offset: 1, span: 5 }} md={{ offset: 0, span: 4 }} xs={{ span: 5, offset: 0 }}>
+            {/* <Form.Item shouldUpdate noStyle> */}
+              <TaxDropdown
+                shouldUpdate={(o, n) => {
+                  return o?.selectedParty !== n?.selectedParty;
+                }}
+                name={() => "taxMasterId"}
+                labelCol={{ span: 7 }} wrapperCol={{ span: 16 }}
+                label="Tax"
+                required
+                rules={() => [{ required: true }]}
+                propsForSelect={{
+                  tabIndex: "0",
+                  filterForOptions: options => {
+                    return options.map(x => ({ ...x, name: (selectedParty?.gstin ? 'TAX - ' : 'RETAIL - ') + x.name }))
+                  }
+                }}
+              />
+            {/* </Form.Item> */}
+          </Col>
+          <Col lg={{ offset: 0, span: 6 }} md={{ offset: 0, span: 7 }} xs={{ span: 5, offset: 0 }}>
             <Form.Item noStyle shouldUpdate>
               {() => (
                 <>
@@ -503,7 +523,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       style={{ marginTop: '7px', fontWeight: '600' }}
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%',fontWeight:'600' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%', fontWeight: '600' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </>

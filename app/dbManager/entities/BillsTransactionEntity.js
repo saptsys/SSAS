@@ -163,6 +163,11 @@ module.exports = new EntitySchema({
       enum: ALL_BILLINGS,
       nullable: true,
     },
+    taxMasterId: {
+      name: "tax_mst_id",
+      type: "integer",
+      nullable: true,
+    },
   },
   relations: {
     partyMaster: {
@@ -182,6 +187,18 @@ module.exports = new EntitySchema({
       },
       inverseSide: 'billsTransaction',
       type: "one-to-many",
-    }
+    },
+    taxMaster: {
+      target: "TaxMaster",
+      type: "many-to-one",
+      joinTable: true,
+      cascade: true,
+      nullable: true,
+      inverseSide: 'id',
+      joinColumn: {
+        name: "tax_mst_id",
+        referencedColumnName: 'id'
+      },
+    },
   },
 });

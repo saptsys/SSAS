@@ -110,7 +110,7 @@ module.exports = new EntitySchema({
       target: "ItemGroupMaster",
       type: "many-to-one",
       joinTable: true,
-      cascade: false,
+      cascade: true,
       nullable: true,
       inverseSide: 'id',
       joinColumn: {

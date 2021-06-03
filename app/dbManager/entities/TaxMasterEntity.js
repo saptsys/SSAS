@@ -3,7 +3,7 @@ const __BaseEntity = require("./__BaseEntity");
 
 const NAME = "TaxMaster";
 const TABLE_NAME = "tax_mst";
-const {TaxMaster} = require(`../models/TaxMaster`)
+const { TaxMaster } = require(`../models/TaxMaster`)
 
 module.exports = new EntitySchema({
   name: NAME,
@@ -20,7 +20,7 @@ module.exports = new EntitySchema({
       name: "code",
       type: "text",
       nullable: false,
-      unique:true
+      unique: true
     },
     description: {
       name: "description",
@@ -37,15 +37,24 @@ module.exports = new EntitySchema({
       type: "boolean",
       default: false,
     },
-    taxPercentage:{
-      name:"tax_percentage",
-      type:"double",
-      nullable:false,
+    taxPercentage: {
+      name: "tax_percentage",
+      type: "double",
+      nullable: false,
     }
   },
   relations: {
     items: {
       target: "ItemMaster",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: 'taxMaster'
+      },
+      inverseSide: 'taxMaster',
+      type: "one-to-many",
+    },
+    bills: {
+      target: "BillsTransaction",
       joinColumn: {
         name: "id",
         referencedColumnName: 'taxMaster'

@@ -28,7 +28,7 @@ const subscribers = []
 export default {
   "type": "sqlite",
   'folder': DB_FILES_FOLDER,
-  "synchronize": false,
+  "synchronize": true,
   "logging": false,
   "entities": entities,
   "migrations": migrations,
