@@ -32,6 +32,7 @@ class BillsTransaction extends _BaseModel {
     netAmount,
     remarks,
     partyMasterId,
+    taxMasterId,
     billsDetail,
     taxableAmount,
     billingAddress,
@@ -70,6 +71,7 @@ class BillsTransaction extends _BaseModel {
     this.netAmount = netAmount;
     this.remarks = remarks;
     this.partyMasterId = partyMasterId;
+    this.taxMasterId = taxMasterId;
     this.billsDetail = billsDetail;
     this.taxableAmount = taxableAmount,
 		this.billingAddress = billingAddress;

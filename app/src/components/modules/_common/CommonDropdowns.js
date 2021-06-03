@@ -26,10 +26,11 @@ const formItemPropGenerator = (props) => {
       }), {})
 }
 
-export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
+export const TaxDropdown = ({ propsForSelect = {}, getRecordOnChange = () => { }, ...props }) => {
   const dispatch = useDispatch();
   const [options, setOptions] = React.useState([]);
   const isLoading = useSelector(s => s.TaxMaster.list.loading === "getAll")
+  const [value, setValue] = useState(null)
 
   React.useEffect(() => {
     if (!propsForSelect.options) {
@@ -40,9 +41,17 @@ export const TaxDropdown = ({ propsForSelect = {}, ...props }) => {
     return () => setOptions([])
   }, []);
 
+  useEffect(() => {
+    // propsForSelect.onChange && propsForSelect.onChange(value)
+    getRecordOnChange((propsForSelect.filterForOptions
+      ? propsForSelect.filterForOptions(options)
+      : (propsForSelect.options ?? options)).find(x => x.id === value))
+  }, [value, options, propsForSelect.options])
+
   const subItem = () => (
-    <Form.Item {...formItemPropGenerator(props)}>
+    <Form.Item {...formItemPropGenerator(props)} getValueProps={(val) => { if (value !== val) setValue(val); return val; }}>
       <Select
+        value={value}
         options={(propsForSelect.filterForOptions ? propsForSelect.filterForOptions(options) : options).map((x) => {
           return {
             label: x.name,
