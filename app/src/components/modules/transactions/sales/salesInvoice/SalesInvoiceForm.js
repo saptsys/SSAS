@@ -120,22 +120,22 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount - discountAmount)
-    const SGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) / 2 : 0
+    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) / 2 : 0
+    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = parseInt(defaultFirm.state) !== parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) : 0
+    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? (tax?.taxPercentage ?? 0) : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
       grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
       // discountAmount: parseFloat(discountAmount ?? 0).toFixed(2),
       taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
-      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
+      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(2),
       SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
-      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(0),
+      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(2),
       CGSTAmount: parseFloat(CGSTAmount ?? 0).toFixed(2),
-      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
+      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(2),
       IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
       netAmount: parseFloat(netAmount ?? 0).toFixed(2),
     })
@@ -204,10 +204,11 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={() => [{ required: true }]}
               propsForSelect={{
-                tabIndex: "0",
+                tabIndex: "1",
                 filterForOptions: options => {
-                  return options.map(x => ({ ...x, name: (form.getFieldValue('billing') ? form.getFieldValue('billing') + ' - ' : "") + x.name }))
-                }
+                  return options.map(x => ({ ...x, name: (form.getFieldValue('billing') ? form.getFieldValue('billing') + ' - ' : "") + x.name })).sort((a, b) => a.isActive ? -1 : 1)
+                },
+                defaultActiveFirstOption: true
               }}
               getRecordOnChange={tax => {
                 setSelectedTax(tax)
@@ -250,7 +251,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                       >
                         <Input
-                          tabIndex="1"
+                          tabIndex="2"
                           style={{ width: '60%' }} />
                       </Form.Item>
                     </Input.Group>
@@ -268,7 +269,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetail"} />
+              <CustomDatePicker format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
@@ -276,7 +277,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           <Col span={24}>
             <EditableTable
               name="billsDetail"
-              nextTabIndex="3"
+              nextTabIndex="4"
               form={form}
               columns={[
                 {
@@ -399,7 +400,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               name="remarks"
               label="Remarks"
             >
-              <TextArea style={{ width: '100%' }} rows={3} tabIndex="3" />
+              <TextArea style={{ width: '100%' }} rows={3} tabIndex="4" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
@@ -413,7 +414,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         shouldUpdate
                       >
                         <Form.Item name="grossAmount" noStyle>
-                          <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="5" style={{ width: '100%' }} readOnly />
                         </Form.Item>
                       </Form.Item>
                       <Form.Item label="- Discount">
@@ -432,7 +433,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0"
-                              tabIndex="5"
+                              tabIndex="6"
                               suffix='%'
                               style={{ width: '40%', textAlign: 'right' }}
 
@@ -452,7 +453,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0.00"
-                              tabIndex="6"
+                              tabIndex="7"
                               suffix=" "
                               style={{ width: '60%' }}
 
@@ -466,7 +467,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         shouldUpdate
                       >
                         <Form.Item name="taxableAmount" noStyle>
-                          <Input defaultValue="0.00" tabIndex="7" style={{ width: '100%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="8" style={{ width: '100%' }} readOnly />
                         </Form.Item>
                       </Form.Item>
                       <Form.Item label="+ SGST">
@@ -481,7 +482,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['SGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="8" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -497,7 +498,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['CGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="9" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -513,7 +514,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['IGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="10" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="11" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -527,7 +528,7 @@ function SalesInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       style={{ marginTop: '7px', fontWeight: '600' }}
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%', fontWeight: '600' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="12" style={{ width: '100%', fontWeight: '600' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </>

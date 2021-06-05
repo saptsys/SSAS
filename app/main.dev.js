@@ -80,7 +80,11 @@ function init() {
   setDatabaseConnection(firmInfo.activeDBPath)
     .then(async (connection) => {
       sout("database connected ");
-
+      sout("database synchronizing... ");
+      await connection.query('PRAGMA foreign_keys=OFF');
+      await connection.synchronize();
+      await connection.query('PRAGMA foreign_keys=ON');
+      sout("database synchronized... ");
       if (!firmInfo.getActiveDB().initialized) {
         try {
           if (await initDB(connection)) {

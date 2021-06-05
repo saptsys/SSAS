@@ -120,21 +120,21 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const freightAmount = form.getFieldValue("freightAmount") ?? 0
     const commisionAmount = form.getFieldValue("freightAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount + freightAmount + commisionAmount - discountAmount)
-    const SGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = parseInt(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = parseInt(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
+    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
       grossAmount: parseFloat(grossAmount ?? 0).toFixed(2),
       taxableAmount: parseFloat(taxableAmount ?? 0).toFixed(2),
-      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(0),
+      SGSTPercentage: parseFloat(SGSTPercentage ?? 0).toFixed(2),
       SGSTAmount: parseFloat(SGSTAmount ?? 0).toFixed(2),
-      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(0),
+      CGSTPercentage: parseFloat(CGSTPercentage ?? 0).toFixed(2),
       CGSTAmount: parseFloat(CGSTAmount ?? 0).toFixed(2),
-      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(0),
+      IGSTPercentage: parseFloat(IGSTPercentage ?? 0).toFixed(2),
       IGSTAmount: parseFloat(IGSTAmount ?? 0).toFixed(2),
       netAmount: parseFloat(netAmount ?? 0).toFixed(2),
       itemWiseTotals: itemWiseTotals
