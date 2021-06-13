@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Row, Col, InputNumber, DatePicker, Table, Button } from "antd";
 import validateMsgs from "../../../../../helpers/validateMesseges";
-import { PartyDropdown } from "../../../_common/CommonDropdowns";
+import { PartyDropdown, TaxDropdown } from "../../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../../Constants/Formats";
 import EditableTable, { getFirstFocusableCell } from "../../../_common/EditableTable";
 import CustomDatePicker from "../../../../form/CustomDatePicker";
@@ -45,7 +45,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
-  const [activeTax, setActiveTax] = useState(null)
+  const [selectedTax, setSelectedTax] = useState(null)
   const [billSelectionDialogVisibility, setBillSelectionDialogVisibility] = useState(false)
   const [itemSelectVisibility, setItemSelectVisibility] = useState(false)
   const [defaultSelectedValue, setDefaultSelectedValue] = useState({});
@@ -69,7 +69,7 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
-    dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
+    // dispatch(TaxMasterActions.getActiveTax()).then(setSelectedTax)
 
 
     const handleKeyDown = (event) => {
@@ -107,8 +107,9 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
       form.setFieldsValue({
         againstBillNumber: rows[0].billNumber,
         againstBilling: rows[0].billing,
-        againstBillDate: moment(rows[0].billDate)
-      })
+        againstBillDate: moment(rows[0].billDate),
+        taxMasterId: rows[0].taxMasterId
+      });
     }
   }
   const onItemsSelect = (rows) => {
@@ -131,16 +132,16 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
   }
 
 
-  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty) => {
+  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty, tax = selectedTax) => {
     const currentPartyStateCode = party?.stateCode
     const grossAmount = parseFloat(rows?.reduce((a, b) => a + parseFloat(b.amount ?? 0), 0)).toFixed(2)
     const discountAmount = form.getFieldValue("discountAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount - discountAmount)
-    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? tax?.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? tax?.taxPercentage / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
+    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? tax?.taxPercentage : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
@@ -241,7 +242,32 @@ function SalesReturnForm({ entityForEdit, saveBtnHandler, form }) {
               </Input.Group>
             </Form.Item>
           </Col>
-          <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
+          <Col lg={{ offset: 1, span: 5 }} md={{ offset: 0, span: 4 }} xs={{ span: 5, offset: 0 }}>
+            {/* <Form.Item shouldUpdate noStyle> */}
+            <TaxDropdown
+              shouldUpdate={(o, n) => {
+                return o?.selectedParty !== n?.selectedParty;
+              }}
+              name={() => "taxMasterId"}
+              labelCol={{ span: 7 }} wrapperCol={{ span: 16 }}
+              label="Tax"
+              required
+              rules={() => [{ required: true }]}
+              propsForSelect={{
+                tabIndex: "1",
+                filterForOptions: options => {
+                  return options.map(x => ({ ...x, name: (form.getFieldValue('billing') ? form.getFieldValue('billing') + ' - ' : "") + x.name })).sort((a, b) => a.isActive ? -1 : 1)
+                },
+                defaultActiveFirstOption: true
+              }}
+              getRecordOnChange={tax => {
+                setSelectedTax(tax)
+                calcTotals(form.getFieldValue("billsDetail"), selectedParty, tax)
+              }}
+            />
+            {/* </Form.Item> */}
+          </Col>
+          <Col lg={{ offset: 0, span: 6 }} md={{ offset: 0, span: 7 }} xs={{ span: 5, offset: 0 }}>
             <Form.Item noStyle shouldUpdate>
               {() => (
                 <>
