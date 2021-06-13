@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Row, Col, InputNumber, DatePicker, Table, Button } from "antd";
 import validateMsgs from "../../../../../helpers/validateMesseges";
-import { PartyDropdown } from "../../../_common/CommonDropdowns";
+import { PartyDropdown, TaxDropdown } from "../../../_common/CommonDropdowns";
 import { dateFormat } from "../../../../../../Constants/Formats";
 import EditableTable, { getFirstFocusableCell } from "../../../_common/EditableTable";
 import CustomDatePicker from "../../../../form/CustomDatePicker";
@@ -44,14 +44,14 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
   const [allItems, setAllItems] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [selectedParty, setSelectedParty] = useState(null)
-  const [activeTax, setActiveTax] = useState(null)
+  const [selectedTax, setSelectedTax] = useState(null)
   const [currnetEditInfoData, setCurrnetEditInfoData] = useState(null)
   const [defaultSelectedValue, setDefaultSelectedValue] = useState({});
 
   useEffect(() => {
     dispatch(ItemMasterActions.getAll()).then(setAllItems)
     dispatch(ItemUnitMasterActions.getAll()).then(setAllUnits)
-    dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
+    // dispatch(TaxMasterActions.getActiveTax()).then(setActiveTax)
 
 
     const handleKeyDown = (event) => {
@@ -111,7 +111,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     })
   }
 
-  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty) => {
+  const calcTotals = (rows = form.getFieldValue("billsDetail"), party = selectedParty, tax = selectedTax) => {
     const itemWiseTotals = calcItemWiseTotals(rows)
     const currentPartyStateCode = party?.stateCode
     console.log(currentPartyStateCode)
@@ -120,11 +120,11 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
     const freightAmount = form.getFieldValue("freightAmount") ?? 0
     const commisionAmount = form.getFieldValue("freightAmount") ?? 0
     const taxableAmount = parseFloat(grossAmount + freightAmount + commisionAmount - discountAmount)
-    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const SGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? tax?.taxPercentage / 2 : 0
     const SGSTAmount = (SGSTPercentage * taxableAmount) / 100
-    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? activeTax.taxPercentage / 2 : 0
+    const CGSTPercentage = parseFloat(defaultFirm.state) === parseInt(currentPartyStateCode) ? tax?.taxPercentage / 2 : 0
     const CGSTAmount = (CGSTPercentage * taxableAmount) / 100
-    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? activeTax.taxPercentage : 0
+    const IGSTPercentage = parseFloat(defaultFirm.state) !== parseInt(currentPartyStateCode) ? tax?.taxPercentage : 0
     const IGSTAmount = (IGSTPercentage * taxableAmount) / 100
     const netAmount = taxableAmount + SGSTAmount + CGSTAmount + IGSTAmount
     form.setFieldsValue({
@@ -220,7 +220,32 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               <TextArea style={{ width: '100%' }} rows={3} readOnly />
             </Form.Item>
           </Col>
-          <Col lg={{ offset: 6, span: 6 }} md={{ offset: 4, span: 7 }} xs={{ span: 9, offset: 1 }}>
+          <Col lg={{ offset: 1, span: 5 }} md={{ offset: 0, span: 4 }} xs={{ span: 5, offset: 0 }}>
+            {/* <Form.Item shouldUpdate noStyle> */}
+            <TaxDropdown
+              shouldUpdate={(o, n) => {
+                return o?.selectedParty !== n?.selectedParty;
+              }}
+              name={() => "taxMasterId"}
+              labelCol={{ span: 7 }} wrapperCol={{ span: 16 }}
+              label="Tax"
+              required
+              rules={() => [{ required: true }]}
+              propsForSelect={{
+                tabIndex: "1",
+                filterForOptions: options => {
+                  return options.map(x => ({ ...x, name: (form.getFieldValue('billing') ? form.getFieldValue('billing') + ' - ' : "") + x.name })).sort((a, b) => a.isActive ? -1 : 1)
+                },
+                defaultActiveFirstOption: true
+              }}
+              getRecordOnChange={tax => {
+                setSelectedTax(tax)
+                calcTotals(form.getFieldValue("billsDetail"), selectedParty, tax)
+              }}
+            />
+            {/* </Form.Item> */}
+          </Col>
+          <Col lg={{ offset: 0, span: 6 }} md={{ offset: 0, span: 7 }} xs={{ span: 5, offset: 0 }}>
             <Form.Item noStyle shouldUpdate>
               {() => (
                 <>
@@ -254,7 +279,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         noStyle
                       >
                         <Input
-                          tabIndex="1"
+                          tabIndex="2"
                           style={{ width: '60%' }} />
                       </Form.Item>
                     </Input.Group>
@@ -272,7 +297,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               required
               rules={[{ required: true }]}
             >
-              <CustomDatePicker format={dateFormat} tabIndex="2" style={{ width: '100%' }} data-focustable={"billsDetail"} />
+              <CustomDatePicker format={dateFormat} tabIndex="3" style={{ width: '100%' }} data-focustable={"billsDetail"} />
             </Form.Item>
           </Col>
         </Row>
@@ -280,7 +305,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
           <Col span={24}>
             <EditableTable
               name="billsDetail"
-              nextTabIndex="3"
+              nextTabIndex="4"
               form={form}
               columns={[
                 {
@@ -448,7 +473,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
               name="remarks"
               label="Remarks"
             >
-              <TextArea style={{ width: '100%' }} rows={2} tabIndex="3" />
+              <TextArea style={{ width: '100%' }} rows={2} tabIndex="4" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 10, offset: 2 }} md={{ span: 8, offset: 4 }}>
@@ -462,7 +487,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         shouldUpdate
                       >
                         <Form.Item name="grossAmount" noStyle>
-                          <Input defaultValue="0.00" tabIndex="4" style={{ width: '100%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="5" style={{ width: '100%' }} readOnly />
                         </Form.Item>
                       </Form.Item>
                       <Form.Item label="+ Freight">
@@ -481,7 +506,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0"
-                              tabIndex="5"
+                              tabIndex="6"
                               suffix='%'
                               style={{ width: '40%', textAlign: 'right' }}
 
@@ -501,7 +526,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0.00"
-                              tabIndex="6"
+                              tabIndex="7"
                               suffix=" "
                               style={{ width: '60%' }}
 
@@ -525,7 +550,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0"
-                              tabIndex="7"
+                              tabIndex="8"
                               suffix='%'
                               style={{ width: '40%', textAlign: 'right' }}
 
@@ -545,7 +570,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0.00"
-                              tabIndex="8"
+                              tabIndex="9"
                               suffix=" "
                               style={{ width: '60%' }}
 
@@ -569,7 +594,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0"
-                              tabIndex="9"
+                              tabIndex="10"
                               suffix='%'
                               style={{ width: '40%', textAlign: 'right' }}
 
@@ -589,7 +614,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                                 }
                               }}
                               defaultValue="0.00"
-                              tabIndex="10"
+                              tabIndex="11"
                               suffix=" "
                               style={{ width: '60%' }}
 
@@ -603,7 +628,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                         shouldUpdate
                       >
                         <Form.Item name="taxableAmount" noStyle>
-                          <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%' }} readOnly />
+                          <Input defaultValue="0.00" tabIndex="12" style={{ width: '100%' }} readOnly />
                         </Form.Item>
                       </Form.Item>
                       <Form.Item label="+ SGST">
@@ -618,7 +643,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['SGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="12" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -634,7 +659,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['CGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="13" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -650,7 +675,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                             name={['IGSTAmount']}
                             noStyle
                           >
-                            <Input defaultValue="0.00" tabIndex="14" suffix=" " style={{ width: '60%' }} readOnly />
+                            <Input defaultValue="0.00" tabIndex="15" suffix=" " style={{ width: '60%' }} readOnly />
                           </Form.Item>
                         </Input.Group>
                       </Form.Item>
@@ -660,7 +685,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       shouldUpdate
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="15" style={{ width: '100%' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="16" style={{ width: '100%' }} readOnly />
                       </Form.Item>
                     </Form.Item> */}
                     </div>
@@ -672,7 +697,7 @@ function PurchaseInvoiceForm({ entityForEdit, saveBtnHandler, form }) {
                       style={{ marginTop: '7px', fontWeight: '600' }}
                     >
                       <Form.Item name="netAmount" noStyle>
-                        <Input defaultValue="0.00" tabIndex="11" style={{ width: '100%', fontWeight: '600' }} readOnly />
+                        <Input defaultValue="0.00" tabIndex="16" style={{ width: '100%', fontWeight: '600' }} readOnly />
                       </Form.Item>
                     </Form.Item>
                   </>
